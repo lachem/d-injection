@@ -1,0 +1,9 @@
+- [done] change use to set next not already set object of given type
+- [done] add replace(int, object) to replace already set object at given position
+- add varying template count factories up to ten
+- use boost::preprocessor or your own macros to generate multiple factories
+- add support for parametrized constructors in factories
+- add error handling (exceptions) and static_asserts
+- synchronization (the same factory producing at once on different threads)
+- make it possible to use inject<Type> instead of inject<Type,Class> (will be probably less efficient in multi-threading env)
+- is builder possible?
