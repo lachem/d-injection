@@ -9,23 +9,15 @@
 #include <boost/fusion/include/vector.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include "slot.hpp"
+#include "generator.hpp"
 
-template<typename T>
-struct Slot {
-	typedef T* type;
+#define BOOST_PP_LOCAL_LIMITS (1, MAX_NUM_INJECTIONS)
+#include BOOST_PP_LOCAL_ITERATE()
 
-	Slot() : object(0), occupied(false) {}
+GENERATE_INJECTABLE(MAX_NUM_INJECTIONS)
 
-	void reset() {
-		object = 0;
-		occupied = false;
-	}
-
-	type object;
-	bool occupied;
-};
-
-template<typename T1>
+/*template<typename T1>
 class Injectable1 {
 public:
 	typedef boost::fusion::vector< Slot<T1> > type;
@@ -58,6 +50,6 @@ public:
 };
 
 template<typename T1, typename T2, typename T3>
-typename Injectable<T1,T2,T3>::type Injectable<T1,T2,T3>::injections;
+typename Injectable<T1,T2,T3>::type Injectable<T1,T2,T3>::injections;*/
 
 #endif
