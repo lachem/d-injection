@@ -8,6 +8,8 @@
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/static_assert.hpp>
+#include "slot.hpp"
 
 namespace detail {
 
@@ -31,14 +33,14 @@ struct get_same_unocuppied_type {
 	get_same_unocuppied_type(T** obj) : object(obj), set(false){};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
 		if(!v.occupied && !set) {
-			*object = v.object;
+			(*object) = v.object;
 			v.occupied = set = true;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
 		//empty
 	}
 private:
@@ -52,14 +54,15 @@ struct set_next_same_type {
 	set_next_same_type(T* obj) : object(obj), set(false){};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
+		BOOST_STATIC_ASSERT((boost::is_same<typename V::type,T* >::value));
 		if(!v.object && !set) {
 			v.object = object;
 			set = true;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
 		//empty
 	}
 
@@ -74,13 +77,13 @@ struct set_nth_same_type {
 	set_nth_same_type(T* obj,int at) : object(obj), counter(at){};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
 		if(0 == counter--) {
 			v.object = object;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
 		//empty
 	}
 

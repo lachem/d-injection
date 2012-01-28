@@ -1,7 +1,6 @@
 - [done] change use to set next not already set object of given type
 - [done] add replace(int, object) to replace already set object at given position
-- add varying template count factories up to ten
-- use boost::preprocessor or your own macros to generate multiple factories
+- [done] use boost::preprocessor or your own macros to generate multiple factories
 - add support for parametrized constructors in factories
 - add error handling (exceptions) and static_asserts
 - synchronization (the same factory producing at once on different threads)

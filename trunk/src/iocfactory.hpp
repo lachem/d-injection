@@ -13,7 +13,6 @@ class IocFactory {
 public:
 	IocFactory() {
 		boost::fusion::for_each(injections,detail::set_null());
-		boost::fusion::for_each(T::injections,detail::set_null());
 	}
 	T* create() {
 		//TODO: static_assert for type compatibility
