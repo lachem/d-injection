@@ -1,2 +1,9 @@
+
+GTEST_DIR = ../gtest-1.6.0
+BOOST_DIR = ../boost_1_48_0
+
+SRC = test/main.cpp $(GTEST_DIR)/src/gtest-all.cc
+INC = ./src $(BOOST_DIR) ${GTEST_DIR}/include ${GTEST_DIR}
+
 all: 
-	g++ main.cpp -I ./ -I ../boost_1_48_0 -g -o di_test
+	g++ $(SRC) $(addprefix -I, $(INC)) -lpthread -g -o di_test

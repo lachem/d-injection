@@ -13,7 +13,7 @@ template<typename T, typename U>
 class Inject {
 public:
 	Inject() {
-		boost::fusion::for_each(U::injections,get_next_same_type<T>(&object));
+		boost::fusion::for_each(U::injections,detail::get_same_unocuppied_type<T>(&object));
 	}
 
 	T* operator->() {

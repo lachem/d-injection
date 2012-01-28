@@ -9,6 +9,8 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 
+namespace detail {
+
 struct set_null {
 	template<typename V>
 	void operator()(V& v) const {
@@ -24,9 +26,9 @@ struct set_unoccupied {
 };
 
 template<typename T>
-struct get_next_same_type {
+struct get_same_unocuppied_type {
 
-	get_next_same_type(T** obj) : object(obj), set(false){};
+	get_same_unocuppied_type(T** obj) : object(obj), set(false){};
 
 	template<typename V>
 	void operator()(V& v,typename boost::enable_if<boost::is_same<typename V::type,T*> >::type* dummy = 0) const {
@@ -86,6 +88,8 @@ private:
 	mutable T* object;
 	mutable int counter;
 };
+
+} // namespace detail
 
 #endif //HELPERS_HPP
 

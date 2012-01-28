@@ -12,29 +12,30 @@ template<typename T>
 class IocFactory {	
 public:
 	IocFactory() {
-		boost::fusion::for_each(injections,set_null());
+		boost::fusion::for_each(injections,detail::set_null());
+		boost::fusion::for_each(T::injections,detail::set_null());
 	}
 	T* create() {
 		//TODO: static_assert for type compatibility
 		//FIXME:  must be synchronized
-		boost::fusion::for_each(injections,set_unoccupied());
+		boost::fusion::for_each(injections,detail::set_unoccupied());
 		T::injections = injections;
 		return new T;
 	}
 	template<typename U>
 	IocFactory<T>& use(U& object) {
 		//FIXME: must be synchronized
-		boost::fusion::for_each(injections,set_next_same_type<U>(&object));
+		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
 		return *this;
 	}
 	template<typename U>
-	IocFactory<T>& replace(int at, U& object) {
+	IocFactory<T>& replace(U& object, int at=0) {
 		//FIXME: must be synchronized
-		boost::fusion::for_each(injections,set_nth_same_type<U>(&object,at));
+		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
 		return *this;
 	}
 private:
-	typename T::inj_type injections;
+	typename T::type injections;
 };
 
 #endif //IOCFACTORY_HPP

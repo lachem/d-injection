@@ -53,11 +53,11 @@ public:
 						Injectable2<T1,T2>,
 						Injectable3<T1,T2,T3>
 					>
-				>::type inj_type;
-	static inj_type injections;
+				>::type type;
+	static type injections;
 };
 
 template<typename T1, typename T2, typename T3>
-typename Injectable<T1,T2,T3>::inj_type Injectable<T1,T2,T3>::injections;
+typename Injectable<T1,T2,T3>::type Injectable<T1,T2,T3>::injections;
 
 #endif
