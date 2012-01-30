@@ -16,10 +16,12 @@ public:
 	}
 	T* create() {
 		//TODO: static_assert for type compatibility
-		//FIXME:  must be synchronized
-		boost::fusion::for_each(injections,detail::set_unoccupied());
-		T::injections = injections;
-		return new T;
+		//FIXME: synchronize
+		//boost::fusion::for_each(injections,detail::set_unoccupied());
+		//T::injections = injections;
+		T* subject = new T;
+		boost::fusion::for_each(injections,detail::perform_injection<T>(subject));
+		return subject;
 	}
 	template<typename U>
 	IocFactory<T>& use(U& object) {
