@@ -19,22 +19,22 @@ struct D3:public D{};
 
 class Different3Types : public Injectable<D1,D2,D3> {
 public:
-	Inject<D1,Different3Types> some_var;
-	Inject<D2,Different3Types> some_var2;
-	Inject<D3,Different3Types> some_var3;
+	Inject<D1> some_var;
+	Inject<D2> some_var2;
+	Inject<D3> some_var3;
 };
 
 class Same3Types : public Injectable<D3,D3,D3> {
 public:
-	Inject<D3,Same3Types> some_var;
-	Inject<D3,Same3Types> some_var2;
-	Inject<D3,Same3Types> some_var3;
+	Inject<D3> some_var;
+	Inject<D3> some_var2;
+	Inject<D3> some_var3;
 };
 
 class Same2Types : public Injectable<D3,D3> {
 public:
-	Inject<D3,Same2Types> some_var;
-	Inject<D3,Same2Types> some_var2;
+	Inject<D3> some_var;
+	Inject<D3> some_var2;
 };
 
 namespace {

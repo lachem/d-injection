@@ -8,7 +8,7 @@
 
 template<typename T>
 struct Slot {
-	typedef T* type;
+	typedef T type;
 
 	Slot() : object(0), occupied(false) {}
 

@@ -8,44 +8,16 @@
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/static_assert.hpp>
-#include "slot.hpp"
+#include <boost/type_traits/remove_pointer.hpp>
+#include "inject.hpp"
 
 namespace detail {
 
 struct set_null {
 	template<typename V>
 	void operator()(V& v) const {
-		v.object = 0;
+		v = 0;
 	}
-};
-
-struct set_unoccupied {
-	template<typename V>
-	void operator()(V& v) const {
-		v.occupied = false;
-	}
-};
-
-template<typename T>
-struct get_same_unocuppied_type {
-
-	get_same_unocuppied_type(T** obj) : object(obj), set(false){};
-
-	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
-		if(!v.occupied && !set) {
-			(*object) = v.object;
-			v.occupied = set = true;
-		}
-	}
-	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
-		//empty
-	}
-private:
-	mutable T** object;
-	mutable bool set;
 };
 
 template<typename T>
@@ -54,15 +26,14 @@ struct set_next_same_type {
 	set_next_same_type(T* obj) : object(obj), set(false){};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
-		BOOST_STATIC_ASSERT((boost::is_same<typename V::type,T* >::value));
-		if(!v.object && !set) {
-			v.object = object;
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
+		if(!v && !set) {
+			v = object;
 			set = true;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
 		//empty
 	}
 
@@ -77,19 +48,36 @@ struct set_nth_same_type {
 	set_nth_same_type(T* obj,int at) : object(obj), counter(at){};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
 		if(0 == counter--) {
-			v.object = object;
+			v = object;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,Slot<T> > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
 		//empty
 	}
 
 private:
 	mutable T* object;
 	mutable int counter;
+};
+
+template<typename T>
+struct perform_injection {
+	perform_injection(T* sub) : subject(sub) {}
+
+	template<typename V>
+	void operator()(V& v) const {
+		typedef Inject<typename boost::remove_pointer<V>::type> inject;
+		V* injection = inject::getFirstUnoccupied(reinterpret_cast<char*>(subject),sizeof(T));
+		if(0 != injection) {
+			*injection = v;
+		}
+	}
+
+private:
+	mutable T* subject;
 };
 
 } // namespace detail

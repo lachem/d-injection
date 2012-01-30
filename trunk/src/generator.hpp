@@ -19,7 +19,7 @@
 #define BOOST_PP_LOCAL_MACRO(N) \
 template < BOOST_PP_ENUM_BINARY_PARAMS(N, typename T, BOOST_PP_INTERCEPT)> \
 struct Injectable##N{ \
-	typedef boost::fusion::vector<BOOST_PP_ENUM_BINARY_PARAMS(N, Slot<T,>BOOST_PP_INTERCEPT) > type; \
+	typedef boost::fusion::vector<BOOST_PP_ENUM_BINARY_PARAMS(N, T,*BOOST_PP_INTERCEPT) > type; \
 };
 
 //GENERATE THE MAIN INJECTABLE WITH DEFAULT TEMPLATE PARAMETERS

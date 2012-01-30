@@ -9,7 +9,6 @@
 #include <boost/fusion/include/vector.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include "slot.hpp"
 #include "generator.hpp"
 
 #define BOOST_PP_LOCAL_LIMITS (1, MAX_NUM_INJECTIONS)
@@ -20,19 +19,19 @@ GENERATE_INJECTABLE(MAX_NUM_INJECTIONS)
 /*template<typename T1>
 class Injectable1 {
 public:
-	typedef boost::fusion::vector< Slot<T1> > type;
+	typedef boost::fusion::vector< T1* > type;
 };
 
 template<typename T1,typename T2>
 class Injectable2 {
 public:
-	typedef boost::fusion::vector< Slot<T1>,Slot<T2> > type;
+	typedef boost::fusion::vector< T1*,T2* > type;
 };
 
 template<typename T1,typename T2, typename T3>
 class Injectable3 {
 public:
-	typedef boost::fusion::vector< Slot<T1>,Slot<T2>,Slot<T3> > type;
+	typedef boost::fusion::vector< T1*,T2*,T3* > type;
 };
 
 
