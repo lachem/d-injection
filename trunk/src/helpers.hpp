@@ -3,14 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef HELPERS_HPP
-#define HELPERS_HPP
+#ifndef DI_HELPERS_HPP
+#define DI_HELPERS_HPP
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 #include "inject.hpp"
 
+namespace di {
 namespace detail {
 
 struct set_null {
@@ -69,8 +70,8 @@ struct perform_injection {
 
 	template<typename V>
 	void operator()(V& v) const {
-		typedef Inject<typename boost::remove_pointer<V>::type> inject;
-		V* injection = inject::getFirstUnoccupied(reinterpret_cast<char*>(subject),sizeof(T));
+		typedef inject<typename boost::remove_pointer<V>::type> inject;
+		V* injection = inject::removeFirstMatching(reinterpret_cast<char*>(subject),sizeof(T));
 		if(0 != injection) {
 			*injection = v;
 		}
@@ -81,6 +82,6 @@ private:
 };
 
 } // namespace detail
-
-#endif //HELPERS_HPP
+} // namspace di
+#endif //DI_HELPERS_HPP
 
