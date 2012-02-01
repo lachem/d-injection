@@ -13,6 +13,10 @@
 
 namespace di {
 
+#ifndef MAX_NUM_INJECTIONS
+#define MAX_NUM_INJECTIONS 10
+#endif
+
 #define BOOST_PP_LOCAL_LIMITS (1, MAX_NUM_INJECTIONS)
 #include BOOST_PP_LOCAL_ITERATE()
 
