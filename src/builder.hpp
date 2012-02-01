@@ -3,18 +3,20 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef IOCFACTORY_HPP
-#define IOCFACTORY_HPP
+#ifndef DI_BUILDER_HPP
+#define DI_BUILDER_HPP
 
 #include <boost/fusion/include/for_each.hpp>
 
+namespace di {
+
 template<typename T>
-class IocFactory {	
+class builder {	
 public:
-	IocFactory() {
+	builder() {
 		boost::fusion::for_each(injections,detail::set_null());
 	}
-	T* create() {
+	T* build() {
 		//TODO: static_assert for type compatibility
 		//FIXME: synchronize
 		//boost::fusion::for_each(injections,detail::set_unoccupied());
@@ -24,13 +26,13 @@ public:
 		return subject;
 	}
 	template<typename U>
-	IocFactory<T>& use(U& object) {
+	builder<T>& use(U& object) {
 		//FIXME: must be synchronized
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
 		return *this;
 	}
 	template<typename U>
-	IocFactory<T>& replace(U& object, int at=0) {
+	builder<T>& replace(U& object, int at=0) {
 		//FIXME: must be synchronized
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
 		return *this;
@@ -39,5 +41,7 @@ private:
 	typename T::type injections;
 };
 
-#endif //IOCFACTORY_HPP
+} //namspace di
+
+#endif //DI_BUILDER_HPP
 
