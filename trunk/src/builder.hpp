@@ -7,6 +7,7 @@
 #define DI_BUILDER_HPP
 
 #include <boost/fusion/include/for_each.hpp>
+#include <cstdlib>
 
 namespace di {
 
@@ -19,8 +20,10 @@ public:
 	T* build() {
 		//TODO: static_assert for type compatibility
 		//FIXME: synchronize
-		//boost::fusion::for_each(injections,detail::set_unoccupied());
-		//T::injections = injections;
+		boost::fusion::for_each(injections,detail::reset_list());
+		//void* memory = malloc(sizeof(T));
+		//can do something inbetween
+		//T* subject = new (memory) T;
 		T* subject = new T;
 		boost::fusion::for_each(injections,detail::perform_injection<T>(subject));
 		return subject;

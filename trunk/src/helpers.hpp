@@ -81,6 +81,13 @@ private:
 	mutable T* subject;
 };
 
+struct reset_list {
+	template<typename V>
+	void operator()(V& v) const {
+		inject<boost::remove_pointer<V>::type>::resetList();
+	}
+};
+
 } // namespace detail
 } // namspace di
 #endif //DI_HELPERS_HPP
