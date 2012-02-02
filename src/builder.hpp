@@ -20,7 +20,7 @@ public:
 	T* build() {
 		//TODO: static_assert for type compatibility
 		//FIXME: synchronize
-		boost::fusion::for_each(injections,detail::reset_list());
+		//boost::fusion::for_each(injections,detail::reset_list());
 		//void* memory = malloc(sizeof(T));
 		//can do something inbetween
 		//T* subject = new (memory) T;
