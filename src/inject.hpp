@@ -7,18 +7,12 @@
 #define DI_INJECT_HPP
 
 #include <boost/fusion/include/for_each.hpp>
+#include "configuration.hpp"
 
 namespace di {
 
 template<typename T>
 class inject {
-
-	struct node {
-		node() : injection(0), next(0) {}
-		inject<T>* injection;
-		node* next;
-	};
-
 public:
 	inject() {
 		addNode(this);
@@ -57,47 +51,17 @@ public:
 	}
 
 	//TODO synchronize
-	static void addNode(inject<T>* injection) {
-		if(0 == head) {
-			head = new node();
-			head->injection = injection;
-		}
-		else {
-			node* currentNode = head;
-			while(0 != currentNode->next) {
-				currentNode = currentNode->next;
-			}
-			node* newNode = new node();
-			newNode->injection = injection;
-			currentNode->next = newNode;
-		}
+	inline static void addNode(inject<T>* injection) {
+		list[tail++] = injection;
 	}
 
 	//TODO synchronize
-	static T** removeFirstMatching(char* address, size_t range) {
-		if(0 != head) {
-			if(isObjectInRange(head->injection,address,range)) {
-				T** injection = &(head->injection->object);
-				node* tmp = head;
-				head = head->next;
-				delete tmp;
-				return injection;
-			}
-			node* current = head;
-			while(0 != current->next) {
-				node* next = current->next;
-				if(isObjectInRange(next->injection,address,range)) {
-					T** injection = &(next->injection->object);
-					node* tmp = next;
-					head = next->next;
-					delete next;
-					return injection;
-				}
-				current = next;
-			}
-		}
-		
-		return 0;
+	inline static T** removeFirstMatching(char* address, size_t range) {
+		return (tail != head) ? &(list[head++]->object) : 0;
+	}
+
+	inline static void resetList() {
+		head = tail = 0;
 	}
 
 private:
@@ -108,11 +72,19 @@ private:
 
 private:
 	T* object;
-	static node* head;
+	static unsigned int head;
+	static unsigned int tail;
+	static inject<T>* list[MAX_CONCURRENT_INJECTIONS];
 };
 
 template<typename T>
-typename inject<T>::node* inject<T>::head = 0;
+typename inject<T>* inject<T>::list[MAX_CONCURRENT_INJECTIONS];
+
+template<typename T>
+unsigned int inject<T>::head = 0;
+
+template<typename T>
+unsigned int inject<T>::tail = 0;
 
 } //namspace di
 

@@ -93,8 +93,10 @@ protected:
 	T8 t8;
 	T9 t9;
 
-	Injection10different* inj10Different;
+	Injection10different*	inj10Different;
+	InjectionMixedTypes*	inj10Mixed;
 	NoInjection10different* noInj10Different;
+	NoInjectionMixedTypes*  noInj10Mixed;
 
 	virtual void SetUp() {
 		inj10Different = 0;
@@ -109,6 +111,14 @@ protected:
 			builder<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
 			inj10Different = builder.build();
+		}
+	}
+
+	void create10MixedWithDiBuilder(int times = 1) {
+		for(int i=0; i<times ; ++i) {
+			builder<InjectionMixedTypes> builder;
+			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
+			inj10Mixed = builder.build();
 		}
 	}
 
@@ -128,9 +138,46 @@ protected:
 		}
 	}
 
+	void create10MixedNormally(int times = 1) {
+		for(int i=0; i<times ; ++i) {
+			noInj10Mixed = new NoInjectionMixedTypes;
+			noInj10Mixed->use(t0_0,t0_1,t0_2,t0_3);
+			noInj10Mixed->use(t4_0,t4_1,t4_2);
+			noInj10Mixed->use(t7);
+			noInj10Mixed->use(t8);
+			noInj10Mixed->use(t9);
+		}
+	}
+
 };
 
 TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
+	LARGE_INTEGER proc_freq;
+	QueryPerformanceFrequency(&proc_freq);
+
+	LARGE_INTEGER start;
+	LARGE_INTEGER stop;
+
+	::QueryPerformanceCounter(&start);
+	create10MixedWithDiBuilder(1000);
+	::QueryPerformanceCounter(&stop);
+
+	double di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
+	
+	::QueryPerformanceCounter(&start);
+	create10MixedNormally(1000);
+	::QueryPerformanceCounter(&stop);
+
+	double no_di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
+
+	EXPECT_EQ(di_performance, no_di_performance);
+
+	double performance_percantage = (no_di_performance/(double)di_performance)*100;
+	EXPECT_GE(performance_percantage, 50);
+
+}
+
+TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
 	LARGE_INTEGER proc_freq;
 	QueryPerformanceFrequency(&proc_freq);
 
@@ -152,7 +199,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 	EXPECT_EQ(di_performance, no_di_performance);
 
 	double performance_percantage = (no_di_performance/(double)di_performance)*100;
-	EXPECT_GE(performance_percantage, 100);
+	EXPECT_GE(performance_percantage, 50);
 
 }
 
