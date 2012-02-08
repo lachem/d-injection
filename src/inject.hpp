@@ -7,55 +7,11 @@
 #define DI_INJECT_HPP
 
 #include <boost/fusion/include/for_each.hpp>
-#include "configuration.hpp"
 #include <cassert>
+#include "configuration.hpp"
+#include "memory_pool.hpp"
 
 namespace di {
-
-namespace detail {
-
-template<unsigned int size>
-class MemoryPool {
-	struct MemBlock{void* p1; void* p2;};
-	
-	static MemBlock availableMem[INJECTIONS_MEMPOOL_SIZE];
-	static MemBlock* stack[INJECTIONS_MEMPOOL_SIZE];
-	static unsigned int head;
-
-public:
-	MemoryPool() : head(INJECTIONS_MEMPOOL_SIZE) {
-		for(int i=0; i<INJECTIONS_MEMPOOL_SIZE; ++i) {
-			stack[i] = availableMem[i];
-		}
-	}
-
-	static void* malloc() {
-		return stack[--head];
-	}
-
-	static void free(void* block) {
-		stack[head++] = reinterpret_cast<MemBlock*>(block);
-	}
-
-	static bool empty() {
-		return head == 0;
-	}
-
-	static bool owns(void* block) {
-		return (availableMem >= block) && (block < availableMem + INJECTIONS_MEMPOOL_SIZE);
-	}	
-};
-
-template<unsigned int size>
-typename MemoryPool<size>::MemBlock MemoryPool<size>::availableMem[INJECTIONS_MEMPOOL_SIZE];
-
-template<unsigned int size>
-typename MemoryPool<size>::MemBlock* MemoryPool<size>::stack[INJECTIONS_MEMPOOL_SIZE];
-
-template<unsigned int size>
-unsigned int MemoryPool<size>::head;
-
-}
 
 template<typename T>
 class inject {
@@ -68,16 +24,16 @@ class inject {
 
 		void* operator new(size_t size) {
 			assert(size == 8);
-			return detail::MemoryPool<sizeof(node)>::empty() ? malloc(size) : detail::MemoryPool<sizeof(node)>::malloc() ;
+			return detail::memory_pool<>::malloc();
 		}
 		void operator delete(void* block) {
-			detail::MemoryPool<sizeof(node)>::owns(block) ? detail::MemoryPool<sizeof(node)>::free(block) : free(block);
+			detail::memory_pool<>::free(block);
 		}
 	};
 
 public:
 	inject() {
-		addNode(this);
+		add_node(this);
 	}
 
 	T* operator->() {
@@ -113,26 +69,26 @@ public:
 	}
 
 	//TODO synchronize
-	static void addNode(inject<T>* injection) {
+	static void add_node(inject<T>* injection) {
 		if(0 == head) {
 			head = new node();
 			head->injection = injection;
 		}
 		else {
-			node* currentNode = head;
-			while(0 != currentNode->next) {
-				currentNode = currentNode->next;
+			node* current_node = head;
+			while(0 != current_node->next) {
+				current_node = current_node->next;
 			}
-			node* newNode = new node();
-			newNode->injection = injection;
-			currentNode->next = newNode;
+			node* new_node = new node();
+			new_node->injection = injection;
+			current_node->next = new_node;
 		}
 	}
 
 	//TODO synchronize
-	static T** removeFirstMatching(char* address, size_t range) {
+	static T** remove_first_matching(char* address, size_t range) {
 		if(0 != head) {
-			if(isObjectInRange(head->injection,address,range)) {
+			if(is_object_in_range(head->injection,address,range)) {
 				T** injection = &(head->injection->object);
 				node* tmp = head;
 				head = head->next;
@@ -142,10 +98,10 @@ public:
 			node* current = head;
 			while(0 != current->next) {
 				node* next = current->next;
-				if(isObjectInRange(next->injection,address,range)) {
+				if(is_object_in_range(next->injection,address,range)) {
 					T** injection = &(next->injection->object);
 					node* tmp = next;
-					head = next->next;
+					current->next = next->next;
 					delete next;
 					return injection;
 				}
@@ -157,9 +113,9 @@ public:
 	}
 
 private:
-	static inline bool isObjectInRange(inject<T>* injection, char* address, size_t range) {
-		char* injectAddress = reinterpret_cast<char*>(injection);
-		return (injectAddress >= address && injectAddress < address + range);
+	static inline bool is_object_in_range(inject<T>* injection, char* address, size_t range) {
+		char* inject_address = reinterpret_cast<char*>(injection);
+		return (inject_address >= address && inject_address < address + range);
 	}
 
 private:

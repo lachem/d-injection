@@ -7,6 +7,7 @@
 #define DI_BUILDER_HPP
 
 #include <boost/fusion/include/for_each.hpp>
+#include "helpers.hpp"
 #include <cstdlib>
 
 namespace di {
@@ -30,13 +31,13 @@ public:
 	}
 	template<typename U>
 	builder<T>& use(U& object) {
-		//FIXME: must be synchronized
+		//FIXME: must be synchronized, or not?
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
 		return *this;
 	}
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		//FIXME: must be synchronized
+		//FIXME: must be synchronized, or not?
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
 		return *this;
 	}

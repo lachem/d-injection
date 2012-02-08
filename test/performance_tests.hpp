@@ -12,14 +12,13 @@
 #include <string>
 #include <inject.hpp>
 #include <injectable.hpp>
-#include <helpers.hpp>
 #include <builder.hpp>
 
 #include <Windows.h>
 
 using namespace di;
 
-namespace {
+namespace performance {
 
 struct T0{}; struct T1{}; struct T2{};
 struct T3{}; struct T4{}; struct T5{};
@@ -93,14 +92,7 @@ protected:
 	T8 t8;
 	T9 t9;
 
-	Injection10different*	inj10Different;
-	InjectionMixedTypes*	inj10Mixed;
-	NoInjection10different* noInj10Different;
-	NoInjectionMixedTypes*  noInj10Mixed;
-
 	virtual void SetUp() {
-		inj10Different = 0;
-		noInj10Different = 0;
 	}
 
 	virtual void TearDown() {	
@@ -110,7 +102,7 @@ protected:
 		for(int i=0; i<times ; ++i) {
 			builder<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
-			inj10Different = builder.build();
+			delete builder.build();
 		}
 	}
 
@@ -118,13 +110,13 @@ protected:
 		for(int i=0; i<times ; ++i) {
 			builder<InjectionMixedTypes> builder;
 			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
-			inj10Mixed = builder.build();
+			delete builder.build();
 		}
 	}
 
 	void create10DifferentNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			noInj10Different = new NoInjection10different;
+			NoInjection10different* noInj10Different = new NoInjection10different;
 			noInj10Different->use(t0_0);
 			noInj10Different->use(t1);
 			noInj10Different->use(t2);
@@ -135,17 +127,21 @@ protected:
 			noInj10Different->use(t7);
 			noInj10Different->use(t8);
 			noInj10Different->use(t9);
+
+			delete noInj10Different;
 		}
 	}
 
 	void create10MixedNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			noInj10Mixed = new NoInjectionMixedTypes;
+			NoInjectionMixedTypes* noInj10Mixed = new NoInjectionMixedTypes;
 			noInj10Mixed->use(t0_0,t0_1,t0_2,t0_3);
 			noInj10Mixed->use(t4_0,t4_1,t4_2);
 			noInj10Mixed->use(t7);
 			noInj10Mixed->use(t8);
 			noInj10Mixed->use(t9);
+			
+			delete noInj10Mixed;
 		}
 	}
 

@@ -71,7 +71,7 @@ struct perform_injection {
 	template<typename V>
 	void operator()(V& v) const {
 		typedef inject<typename boost::remove_pointer<V>::type> inject;
-		V* injection = inject::removeFirstMatching(reinterpret_cast<char*>(subject),sizeof(T));
+		V* injection = inject::remove_first_matching(reinterpret_cast<char*>(subject),sizeof(T));
 		if(0 != injection) {
 			*injection = v;
 		}
