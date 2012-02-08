@@ -5,6 +5,7 @@
 
 #include "injection_tests.hpp"
 #include "performance_tests.hpp"
+#include "multithread_tests.hpp"
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
