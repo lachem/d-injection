@@ -11,26 +11,30 @@
 namespace di {
 namespace detail {
 
-template<size_t size = INJECTIONS_MEMPOOL_SIZE>
+template<size_t size>
 class memory_pool {
+private:
 	struct mem_block{void* p1; void* p2;};
 	
-	static mem_block available_mem[size];
-	static mem_block* stack[size];
-	static unsigned int head;
+private:
+	mem_block available_mem[size];
+	mem_block* stack[size];
+	unsigned int head;
 
 public:
-	memory_pool() : head(size) {
+	memory_pool() {
+		head = size;
 		for(int i=0; i<size; ++i) {
-			stack[i] = available_mem[i];
+			stack[i] = available_mem + i;
 		}
 	}
 
-	static void* malloc() {
-		return empty() ? ::malloc(size) : stack[--head] ;
+	void* malloc() {
+		return empty() ? ::malloc(sizeof(mem_block)) : stack[--head];
 	}
 
-	static void free(void* block) {
+	void free(void* block) {
+		assert(0 != block);
 		if(owns(block)) {
 			stack[head++] = reinterpret_cast<mem_block*>(block);
 		}
@@ -39,23 +43,14 @@ public:
 		}
 	}
 
-	static bool empty() {
-		return head == 0;
+	bool empty() {
+		return 0 == head;
 	}
 
-	static bool owns(void* block) {
-		return (available_mem >= block) && (block < available_mem + size);
+	bool owns(void* block) {
+		return (available_mem <= block) && (block < available_mem + size);
 	}	
 };
-
-template<size_t size>
-typename memory_pool<size>::mem_block memory_pool<size>::available_mem[size];
-
-template<size_t size>
-typename memory_pool<size>::mem_block* memory_pool<size>::stack[size];
-
-template<size_t size>
-unsigned int memory_pool<size>::head;
 
 } //namespace detail
 } //namespace di

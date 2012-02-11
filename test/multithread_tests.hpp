@@ -37,7 +37,7 @@ struct InjectionMixedTypes : public injectable<T0,T0,T0,T0,T4,T4,T4,T7,T8,T9> {
 	inject<T9> var9;
 };
 
-class ThreadSafeBuilderShould {
+class ThreadSafeBuilderShould : public ::testing::Test {
 protected:
 	T0 t0_0, t0_1, t0_2, t0_3;
 	T1 t1; 
@@ -57,11 +57,6 @@ protected:
 	}
 
 public:
-	void passAllTests() {
-
-	}
-
-private:
 	void expect10DifferentInjectedCorrectly(int times = 1) {
 		for(int i=0; i<times ; ++i) {
 			builder<Injection10different> builder;
@@ -103,57 +98,53 @@ private:
 			delete inj10Mixed;
 		}
 	}
-
-
-	void injectObjectsOfDifferentTypesFor2Threads() {
-		boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-		boost::thread thread2(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-
-		thread1.join();
-		thread2.join();
-	}
-
-	void injectObjectsOfDifferentTypesFor5Threads() {
-
-		boost::thread thread0(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-		boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-		boost::thread thread2(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-		boost::thread thread3(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-		boost::thread thread4(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
-
-		thread0.join();
-		thread1.join();
-		thread2.join();
-		thread3.join();
-		thread4.join();
-	}
-
-	void injectObjectsOfSameTypesFor2Threads() {
-		boost::thread thread0(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
-		boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
-
-		thread0.join();
-		thread1.join();
-	}
-
-	void injectObjectsOfSameTypesFor20Threads() {
-		boost::thread* threads[20];
-		for(int i=0; i<20; ++i) {
-			threads[i] = new boost::thread(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
-		}
-
-		for(int i=0; i<20; ++i) {
-			threads[i]->join();
-		}
-		
-		for(int i=0; i<20; ++i) {
-			delete threads[i];
-		}
-	}
-
 };
 
+TEST_F(ThreadSafeBuilderShould, injectObjectsOfDifferentTypesFor2Threads) {
+	boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+	boost::thread thread2(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
 
+	thread1.join();
+	thread2.join();
+}
+
+TEST_F(ThreadSafeBuilderShould, injectObjectsOfDifferentTypesFor5Threads) {
+
+	boost::thread thread0(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+	boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+	boost::thread thread2(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+	boost::thread thread3(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+	boost::thread thread4(boost::bind(&ThreadSafeBuilderShould::expect10DifferentInjectedCorrectly,this,1000));
+
+	thread0.join();
+	thread1.join();
+	thread2.join();
+	thread3.join();
+	thread4.join();
+}
+
+TEST_F(ThreadSafeBuilderShould, injectObjectsOfSameTypesFor2Threads) {
+	boost::thread thread0(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
+	boost::thread thread1(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
+
+	thread0.join();
+	thread1.join();
+}
+
+TEST_F(ThreadSafeBuilderShould, injectObjectsOfSameTypesFor20Threads) {
+	boost::thread* threads[20];
+	for(int i=0; i<20; ++i) {
+		threads[i] = new boost::thread(boost::bind(&ThreadSafeBuilderShould::expect10MixedInjectedCorrectly,this,1000));
+	}
+
+	for(int i=0; i<20; ++i) {
+		threads[i]->join();
+	}
+	
+	for(int i=0; i<20; ++i) {
+		delete threads[i];
+	}
+}
 
 }  // namespace
 
