@@ -8,6 +8,8 @@
 
 #include "gtest/gtest.h"
 
+#include <boost/chrono.hpp>
+
 #include <iostream>
 #include <string>
 #include <inject.hpp>
@@ -153,7 +155,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 
 	LARGE_INTEGER start;
 	LARGE_INTEGER stop;
-
+	
 	::QueryPerformanceCounter(&start);
 	create10MixedWithDiBuilder(1000);
 	::QueryPerformanceCounter(&stop);

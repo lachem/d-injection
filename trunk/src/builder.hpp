@@ -7,10 +7,15 @@
 #define DI_BUILDER_HPP
 
 #include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/value_at.hpp>
+#include <boost/preprocessor.hpp>
+#include "configuration.hpp"
 #include "helpers.hpp"
-#include <cstdlib>
+//#include <cstdlib>
 
 namespace di {
+
+
 
 template<typename T>
 class builder {	
@@ -29,6 +34,7 @@ public:
 		boost::fusion::for_each(injections,detail::perform_injection<T>(subject));
 		return subject;
 	}
+
 	template<typename U>
 	builder<T>& use(U& object) {
 		//FIXME: must be synchronized, or not?

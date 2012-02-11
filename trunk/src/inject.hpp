@@ -7,7 +7,10 @@
 #define DI_INJECT_HPP
 
 #include <boost/fusion/include/for_each.hpp>
+
 #include <cassert>
+
+#include "spin_lock.hpp"
 #include "configuration.hpp"
 #include "memory_pool.hpp"
 
@@ -16,20 +19,25 @@ namespace di {
 template<typename T>
 class inject {
 
-	struct node {
-		node() : injection(0), next(0) {}
-		
+	class node {
+		static detail::memory_pool<MAX_NUM_INJECTIONS> mem_pool;
+
+	public:
 		inject<T>* injection;
 		node* next;
 
+		node() : injection(0), next(0) {}
+	
 		void* operator new(size_t size) {
-			assert(size == 8);
-			return detail::memory_pool<>::malloc();
+			return mem_pool.malloc();
 		}
 		void operator delete(void* block) {
-			detail::memory_pool<>::free(block);
+			mem_pool.free(block);
 		}
 	};
+
+private:
+	static boost::uint32_t lock;
 
 public:
 	inject() {
@@ -70,6 +78,7 @@ public:
 
 	//TODO synchronize
 	static void add_node(inject<T>* injection) {
+		detail::spin_lock lock_handle(lock);
 		if(0 == head) {
 			head = new node();
 			head->injection = injection;
@@ -87,6 +96,7 @@ public:
 
 	//TODO synchronize
 	static T** remove_first_matching(char* address, size_t range) {
+		detail::spin_lock lock_handle(lock);
 		if(0 != head) {
 			if(is_object_in_range(head->injection,address,range)) {
 				T** injection = &(head->injection->object);
@@ -108,7 +118,6 @@ public:
 				current = next;
 			}
 		}
-		
 		return 0;
 	}
 
@@ -125,6 +134,12 @@ private:
 
 template<typename T>
 typename inject<T>::node* inject<T>::head = 0;
+
+template<typename T>
+boost::uint32_t inject<T>::lock = 0;
+
+template<typename T>
+detail::memory_pool<MAX_NUM_INJECTIONS> inject<T>::node::mem_pool;
 
 } //namspace di
 

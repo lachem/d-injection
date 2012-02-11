@@ -4,8 +4,14 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "injection_tests.hpp"
+
+#ifdef WINDOWS //using windows specific performance counters
 #include "performance_tests.hpp"
+#endif
+
+#ifdef LINUX //gtest is thread safe only using pthreads
 #include "multithread_tests.hpp"
+#endif
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
