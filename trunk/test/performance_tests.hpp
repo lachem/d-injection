@@ -8,15 +8,13 @@
 
 #include "gtest/gtest.h"
 
-#include <boost/chrono.hpp>
-
 #include <iostream>
 #include <string>
 #include <di/inject.hpp>
 #include <di/injectable.hpp>
 #include <di/builder.hpp>
 
-#include <Windows.h>
+#include "performance_counter.hpp"
 
 using namespace di;
 
@@ -150,54 +148,34 @@ protected:
 };
 
 TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
-	LARGE_INTEGER proc_freq;
-	QueryPerformanceFrequency(&proc_freq);
+	p_counter counter;
 
-	LARGE_INTEGER start;
-	LARGE_INTEGER stop;
-	
-	::QueryPerformanceCounter(&start);
+	counter.start_actual_timer();
 	create10MixedWithDiBuilder(1000);
-	::QueryPerformanceCounter(&stop);
-
-	double di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
+	counter.stop_actual_timer();
 	
-	::QueryPerformanceCounter(&start);
+	counter.start_expected_timer();
 	create10MixedNormally(1000);
-	::QueryPerformanceCounter(&stop);
+	counter.stop_expected_timer();
 
-	double no_di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
-
-//	EXPECT_EQ(no_di_performance, di_performance); //used for printing
-
-	double performance_percantage = (no_di_performance/(double)di_performance)*100;
-	EXPECT_GE(performance_percantage, 50);
+//	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
 
 TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
-	LARGE_INTEGER proc_freq;
-	QueryPerformanceFrequency(&proc_freq);
+	p_counter counter;
 
-	LARGE_INTEGER start;
-	LARGE_INTEGER stop;
-
-	::QueryPerformanceCounter(&start);
+	counter.start_actual_timer();
 	create10DifferentWithDiBuilder(1000);
-	::QueryPerformanceCounter(&stop);
-
-	double di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
+	counter.stop_actual_timer();
 	
-	::QueryPerformanceCounter(&start);
+	counter.start_expected_timer();
 	create10DifferentNormally(1000);
-	::QueryPerformanceCounter(&stop);
+	counter.stop_expected_timer();
 
-	double no_di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
-
-//	EXPECT_EQ(no_di_performance, di_performance); //used for printing
-
-	double performance_percantage = (no_di_performance/(double)di_performance)*100;
-	EXPECT_GE(performance_percantage, 50);
+//	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
 
