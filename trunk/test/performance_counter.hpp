@@ -33,7 +33,7 @@ struct p_counter {
 		#ifdef WINDOWS
 		QueryPerformanceFrequency(&proc_freq);
 		#else
-		clock_getres(CLOCK_MONOTONIC,&proc_freq);
+		clock_getres(CLOCK_PROCESS_CPUTIME_ID,&proc_freq);
 		#endif
 	}
 
@@ -41,7 +41,7 @@ struct p_counter {
 		#ifdef WINDOWS
 		::QueryPerformanceCounter(&expected_start);
 		#else
-		clock_gettime(CLOCK_MONOTONIC,&expected_start);
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&expected_start);
 		#endif
 	}
 
@@ -49,7 +49,7 @@ struct p_counter {
 		#ifdef WINDOWS
 		::QueryPerformanceCounter(&expected_stop);
 		#else
-		clock_gettime(CLOCK_MONOTONIC,&expected_stop);
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&expected_stop);
 		#endif
 	}
 
@@ -57,7 +57,7 @@ struct p_counter {
 		#ifdef WINDOWS
 		::QueryPerformanceCounter(&actual_start);
 		#else
-		clock_gettime(CLOCK_MONOTONIC,&actual_start);
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&actual_start);
 		#endif
 	}
 
@@ -65,15 +65,21 @@ struct p_counter {
 		#ifdef WINDOWS
 		::QueryPerformanceCounter(&actual_stop);
 		#else
-		clock_gettime(CLOCK_MONOTONIC,&actual_stop);
+		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&actual_stop);
 		#endif
+	}
+
+	long long diff_in_microseconds(counter_type& first, counter_type& second) {
+		const long milion = 1000000;
+		return (first.tv_sec*milion - second.tv_sec*milion) + (first.tv_nsec/1000 - second.tv_nsec/1000);
 	}
 
 	double get_actual_performance() {
 		#ifdef WINDOWS
 		return (actual_stop.QuadPart - actual_start.QuadPart)/(double)(proc_freq.QuadPart);
 		#else
-		return (actual_stop.tv_nsec - actual_start.tv_nsec)/(double)(proc_freq.tv_nsec);
+
+		return diff_in_microseconds(actual_stop,actual_start)/(double)(proc_freq.tv_nsec);
 		#endif
 	}
 
@@ -81,7 +87,7 @@ struct p_counter {
 		#ifdef WINDOWS
 		return (expected_stop.QuadPart - expected_start.QuadPart)/(double)(proc_freq.QuadPart);
 		#else
-		return (expected_stop.tv_nsec - expected_start.tv_nsec)/(double)(proc_freq.tv_nsec);
+		return diff_in_microseconds(expected_stop,expected_start)/(double)(proc_freq.tv_nsec);
 		#endif
 	}
 
