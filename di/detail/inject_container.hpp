@@ -6,6 +6,9 @@
 #ifndef DI_INJECT_CONTAINER_HPP
 #define DI_INJECT_CONTAINER_HPP
 
+#include <list>
+
+#include <di/detail/memory_pool.hpp>
 #include <di/detail/spin_lock.hpp>
 #include <di/detail/lock_guard.hpp>
 #include <di/configuration.hpp>
@@ -15,77 +18,85 @@ namespace detail {
 
 template<typename T>
 class inject_container {
-	struct holder {
-		holder() : injection(0) {}
-		explicit holder(T** a_injection) : injection(a_injection) {}
 
-		inline bool is_holding() {
-			return 0 != injection;
-		}
+	struct node {
+		node() : injection(0), next(0) {}
 
 		inline bool is_in_range(char* address, size_t range) {
 			char* inject_address = reinterpret_cast<char*>(injection);
 			return (inject_address >= address && inject_address < address + range);
 		}
 
+		void* operator new(size_t size) {
+			return mem_pool.malloc();
+		}
+
+		void operator delete(void* block) {
+			mem_pool.free(block);
+		}
+	
 		T** injection;
+		node* next;
+
+	private:
+		static detail::memory_pool<MAX_INJECTIONS_PER_TYPE> mem_pool;
 	};
 
 public:
 	inline static void insert(T** injection) {
 		detail::lock_guard<detail::spin_lock> guard(lock);
-		
-		for(size_t i=0; i < size; ++i) {
-			if(0 == injections[i].injection) {
-				injections[i].injection = injection;
-				return;
-			}
+		if(0 == head) {
+			tail = head = new node();
 		}
-
-		enlarge_and_add(injection);
+		else {
+			tail = tail->next = new node();
+		}
+		tail->injection = injection;
 	}
 
 	inline static T** remove(char* address, size_t range) {
 		detail::lock_guard<detail::spin_lock> guard(lock);
-		
-		for(size_t i=0; i < size; ++i) {
-			if(injections[i].is_holding() && injections[i].is_in_range(address, range) ) {
-				T** object = injections[i].injection;
-				injections[i].injection = 0;
-				return object;
+		if(0 != head) {
+			if(head->is_in_range(address,range)) {
+				T** injection = head->injection;
+				node* tmp = head;
+				head = head->next;
+				delete tmp;
+				return injection;
+			}
+			node* current = head;
+			while(0 != current->next) {
+				node* next = current->next;
+				if(next->is_in_range(address,range)) {
+					T** injection = next->injection;
+					node* tmp = next;
+					current->next = next->next;
+					delete next;
+					return injection;
+				}
+				current = next;
 			}
 		}
-
 		return 0;
 	}
 
 private:
-	inline static void enlarge_and_add(T** injection) {
-		size_t tmp_size = static_cast<size_t>(size*INJECTIONS_CONTAINER_RESIZE_FACTOR) + 1;
-		holder* tmp_injections = new holder[tmp_size];
-		memcpy(tmp_injections, injections, size * sizeof(holder));
-		delete [] injections;
-		injections = tmp_injections;
-		injections[size].injection = injection;
-		size = tmp_size;
-	}
-
-private:
-	static holder* injections;
-	static size_t size;
-
+	static node* head;
+	static node* tail;
 	static detail::spin_lock lock;
 };
 
 template<typename T>
-typename inject_container<T>::holder* inject_container<T>::injections = 
-	new typename inject_container<T>::holder[MAX_INJECTIONS_PER_TYPE];
+typename inject_container<T>::node* inject_container<T>::head = 0;
 
 template<typename T>
-size_t inject_container<T>::size = MAX_INJECTIONS_PER_TYPE;
+typename inject_container<T>::node* inject_container<T>::tail = 0;
 
 template<typename T>
 detail::spin_lock inject_container<T>::lock;
+
+template<typename T>
+detail::memory_pool<MAX_NUM_INJECTIONS> inject_container<T>::node::mem_pool;
 
 } //namespace detail
 } //namespace di
