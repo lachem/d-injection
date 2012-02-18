@@ -3,11 +3,19 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_CONFIGURATION_HPP_
-#define DI_CONFIGURATION_HPP_
+#ifndef DI_CONFIGURATION_HPP
+#define DI_CONFIGURATION_HPP
 
 #ifndef MAX_NUM_INJECTIONS
 #define MAX_NUM_INJECTIONS 10
 #endif
 
-#endif //DI_CONFIGURATION_HPP_
+#ifndef MAX_INJECTIONS_PER_TYPE
+#define MAX_INJECTIONS_PER_TYPE MAX_NUM_INJECTIONS
+#endif
+
+#ifndef INJECTIONS_CONTAINER_RESIZE_FACTOR
+#define INJECTIONS_CONTAINER_RESIZE_FACTOR 1.5
+#endif
+
+#endif //DI_CONFIGURATION_HPP

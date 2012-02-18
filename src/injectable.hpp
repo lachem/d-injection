@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_INJECTABLE_HPP_
-#define DI_INJECTABLE_HPP_
+#ifndef DI_INJECTABLE_HPP
+#define DI_INJECTABLE_HPP
 
 #include <boost/preprocessor.hpp>
 #include <boost/fusion/include/vector.hpp>
@@ -56,4 +56,4 @@ GENERATE_INJECTABLE(MAX_NUM_INJECTIONS)
 
 } //namspace di
 
-#endif
+#endif //DI_INJECTABLE_HPP

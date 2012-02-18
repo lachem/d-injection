@@ -168,7 +168,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 
 	double no_di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
 
-	//EXPECT_EQ(di_performance, no_di_performance);
+//	EXPECT_EQ(no_di_performance, di_performance); //used for printing
 
 	double performance_percantage = (no_di_performance/(double)di_performance)*100;
 	EXPECT_GE(performance_percantage, 50);
@@ -194,7 +194,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
 
 	double no_di_performance = (stop.QuadPart - start.QuadPart)/(double)(proc_freq.QuadPart);
 
-	//EXPECT_EQ(di_performance, no_di_performance);
+//	EXPECT_EQ(no_di_performance, di_performance); //used for printing
 
 	double performance_percantage = (no_di_performance/(double)di_performance)*100;
 	EXPECT_GE(performance_percantage, 50);

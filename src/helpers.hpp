@@ -9,7 +9,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
-#include "inject.hpp"
+#include "inject_container.hpp"
 
 namespace di {
 namespace detail {
@@ -70,8 +70,8 @@ struct perform_injection {
 
 	template<typename V>
 	void operator()(V& v) const {
-		typedef inject<typename boost::remove_pointer<V>::type> inject;
-		V* injection = inject::remove_first_matching(reinterpret_cast<char*>(subject),sizeof(T));
+		typedef inject_container<typename boost::remove_pointer<V>::type> container;
+		V* injection = container::remove(reinterpret_cast<char*>(subject),sizeof(T));
 		if(0 != injection) {
 			*injection = v;
 		}
@@ -81,14 +81,7 @@ private:
 	mutable T* subject;
 };
 
-struct reset_list {
-	template<typename V>
-	void operator()(V& v) const {
-		inject<boost::remove_pointer<V>::type>::resetList();
-	}
-};
-
 } // namespace detail
 } // namspace di
-#endif //DI_HELPERS_HPP
 
+#endif //DI_HELPERS_HPP

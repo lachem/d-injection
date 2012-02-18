@@ -9,11 +9,12 @@
 #include "performance_tests.hpp"
 #endif
 
-#ifdef LINUX //gtest is thread safe only using pthreads
+#ifdef LINUX  //gtest is thread safe only using pthreads on linux
 #include "multithread_tests.hpp"
 #endif
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int result = RUN_ALL_TESTS();
+	return result;
 }
