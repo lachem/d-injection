@@ -8,14 +8,10 @@
 
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/value_at.hpp>
-#include <boost/preprocessor.hpp>
 #include "configuration.hpp"
 #include "helpers.hpp"
-//#include <cstdlib>
 
 namespace di {
-
-
 
 template<typename T>
 class builder {	
@@ -23,13 +19,9 @@ public:
 	builder() {
 		boost::fusion::for_each(injections,detail::set_null());
 	}
+
 	T* build() {
 		//TODO: static_assert for type compatibility
-		//FIXME: synchronize
-		//boost::fusion::for_each(injections,detail::reset_list());
-		//void* memory = malloc(sizeof(T));
-		//can do something inbetween
-		//T* subject = new (memory) T;
 		T* subject = new T;
 		boost::fusion::for_each(injections,detail::perform_injection<T>(subject));
 		return subject;
@@ -37,13 +29,11 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
-		//FIXME: must be synchronized, or not?
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
 		return *this;
 	}
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		//FIXME: must be synchronized, or not?
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
 		return *this;
 	}
