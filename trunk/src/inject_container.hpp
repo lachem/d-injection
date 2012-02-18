@@ -7,6 +7,7 @@
 #define DI_INJECT_CONTAINER_HPP
 
 #include "spin_lock.hpp"
+#include "lock_guard.hpp"
 #include "configuration.hpp"
 
 namespace di {
@@ -32,7 +33,7 @@ class inject_container {
 
 public:
 	inline static void insert(T** injection) {
-		detail::spin_lock lock_handle(lock);
+		detail::lock_guard<detail::spin_lock> guard(lock);
 		
 		for(size_t i=0; i < size; ++i) {
 			if(0 == injections[i].injection) {
@@ -45,7 +46,7 @@ public:
 	}
 
 	inline static T** remove(char* address, size_t range) {
-		detail::spin_lock lock_handle(lock);
+		detail::lock_guard<detail::spin_lock> guard(lock);
 		
 		for(size_t i=0; i < size; ++i) {
 			if(injections[i].is_holding() && injections[i].is_in_range(address, range) ) {
@@ -73,7 +74,7 @@ private:
 	static holder* injections;
 	static size_t size;
 
-	static boost::uint32_t lock;
+	static detail::spin_lock lock;
 };
 
 template<typename T>
@@ -84,7 +85,7 @@ template<typename T>
 size_t inject_container<T>::size = MAX_INJECTIONS_PER_TYPE;
 
 template<typename T>
-boost::uint32_t inject_container<T>::lock = 0;
+detail::spin_lock inject_container<T>::lock;
 
 } //namespace detail
 } //namespace di

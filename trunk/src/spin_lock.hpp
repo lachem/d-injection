@@ -12,14 +12,17 @@ namespace di {
 namespace detail {
 
 class spin_lock {
-	boost::uint32_t& lock;
+	boost::uint32_t lock_var;
 
 public:
-	explicit spin_lock(boost::uint32_t& a_lock) : lock(a_lock) {
-		while(boost::interprocess::detail::atomic_cas32(&lock, 1, 0)) {}
+	spin_lock() : lock_var(0) {}
+
+	void lock() {
+		while(boost::interprocess::detail::atomic_cas32(&lock_var, 1, 0)) {}
 	}
-	~spin_lock() {
-		boost::interprocess::detail::atomic_write32(&lock, 0);
+
+	void unlock() {
+		boost::interprocess::detail::atomic_write32(&lock_var, 0);
 	}
 };
 
