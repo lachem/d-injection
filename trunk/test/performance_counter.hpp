@@ -69,10 +69,12 @@ struct p_counter {
 		#endif
 	}
 
+	#ifndef WINDOWS
 	long long diff_in_microseconds(counter_type& first, counter_type& second) {
 		const long milion = 1000000;
 		return (first.tv_sec*milion - second.tv_sec*milion) + (first.tv_nsec/1000 - second.tv_nsec/1000);
 	}
+	#endif
 
 	double get_actual_performance() {
 		#ifdef WINDOWS
