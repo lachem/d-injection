@@ -18,11 +18,11 @@ public:
 	spin_lock() : lock_var(0) {}
 
 	void lock() {
-		while(boost::interprocess::detail::atomic_cas32(&lock_var, 1, 0)) {}
+		while(boost::interprocess::ipcdetail::atomic_cas32(&lock_var, 1, 0)) {}
 	}
 
 	void unlock() {
-		boost::interprocess::detail::atomic_write32(&lock_var, 0);
+		boost::interprocess::ipcdetail::atomic_write32(&lock_var, 0);
 	}
 };
 
