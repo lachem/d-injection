@@ -6,6 +6,12 @@
 #ifndef DI_PERFORMANCE_COUNTER_HPP_
 #define DI_PERFORMANCE_COUNTER_HPP_
 
+#if (defined(_WIN32) || defined(__WIN32__) || defined(WIN32))
+#undef  WINDOWS
+#define WINDOWS
+#endif
+
+
 #ifdef WINDOWS
 #include <Windows.h>
 #else
