@@ -12,9 +12,9 @@
 
 #include <iostream>
 #include <string>
-#include <inject.hpp>
-#include <injectable.hpp>
-#include <builder.hpp>
+#include <di/inject.hpp>
+#include <di/injectable.hpp>
+#include <di/builder.hpp>
 
 #include <Windows.h>
 
