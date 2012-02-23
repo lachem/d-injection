@@ -160,7 +160,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 	create10MixedNormally(repetitions);
 	counter.stop_expected_timer();
 
-	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	//EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
 	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
@@ -176,7 +176,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
 	create10DifferentNormally(repetitions);
 	counter.stop_expected_timer();
 
-	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	//EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
 	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
