@@ -43,6 +43,8 @@ public:
 		}
 	}
 
+private:
+
 	bool empty() {
 		return 0 == head;
 	}

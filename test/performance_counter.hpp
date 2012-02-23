@@ -6,100 +6,50 @@
 #ifndef DI_PERFORMANCE_COUNTER_HPP_
 #define DI_PERFORMANCE_COUNTER_HPP_
 
-#if (defined(_WIN32) || defined(__WIN32__) || defined(WIN32))
-#undef  WINDOWS
-#define WINDOWS
-#endif
-
-
-#ifdef WINDOWS
-#include <Windows.h>
-#else
-#include <time.h>
-#endif
+#include <boost/chrono.hpp>
 
 using namespace di;
 
 namespace performance {
 
 struct p_counter {
-	#ifdef WINDOWS
-	typedef LARGE_INTEGER counter_type;
-	#else
-	typedef timespec counter_type;
-	#endif
+	typedef boost::chrono::process_cpu_clock::time_point counter_type;
 
-	p_counter() {
-		#ifdef WINDOWS
-		QueryPerformanceFrequency(&proc_freq);
-		#else
-		clock_getres(CLOCK_PROCESS_CPUTIME_ID,&proc_freq);
-		#endif
-	}
 
 	void start_expected_timer() {
-		#ifdef WINDOWS
-		::QueryPerformanceCounter(&expected_start);
-		#else
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&expected_start);
-		#endif
+		expected_start = boost::chrono::process_cpu_clock::now();
 	}
 
 	void stop_expected_timer() {
-		#ifdef WINDOWS
-		::QueryPerformanceCounter(&expected_stop);
-		#else
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&expected_stop);
-		#endif
+		expected_stop = boost::chrono::process_cpu_clock::now();
 	}
 
 	void start_actual_timer() {
-		#ifdef WINDOWS
-		::QueryPerformanceCounter(&actual_start);
-		#else
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&actual_start);
-		#endif
+		actual_start = boost::chrono::process_cpu_clock::now();
 	}
 
 	void stop_actual_timer() {
-		#ifdef WINDOWS
-		::QueryPerformanceCounter(&actual_stop);
-		#else
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&actual_stop);
-		#endif
+		actual_stop = boost::chrono::process_cpu_clock::now();
 	}
 
-	#ifndef WINDOWS
 	long long diff_in_microseconds(counter_type& first, counter_type& second) {
-		const long milion = 1000000;
-		return (first.tv_sec*milion - second.tv_sec*milion) + (first.tv_nsec/1000 - second.tv_nsec/1000);
-	}
-	#endif
-
-	double get_actual_performance() {
-		#ifdef WINDOWS
-		return (actual_stop.QuadPart - actual_start.QuadPart)/(double)(proc_freq.QuadPart);
-		#else
-
-		return diff_in_microseconds(actual_stop,actual_start)/(double)(proc_freq.tv_nsec);
-		#endif
+		boost::chrono::nanoseconds duration = first - second;
+		return duration.count()/1000;
 	}
 
-	double get_expected_performance() {
-		#ifdef WINDOWS
-		return (expected_stop.QuadPart - expected_start.QuadPart)/(double)(proc_freq.QuadPart);
-		#else
-		return diff_in_microseconds(expected_stop,expected_start)/(double)(proc_freq.tv_nsec);
-		#endif
+	long long get_actual_performance() {
+		return diff_in_microseconds(actual_stop,actual_start);
+	}
+
+	long long get_expected_performance() {
+		return diff_in_microseconds(expected_stop,expected_start);
 	}
 
 	double get_actual_percent_of_expected() {
-		return (get_expected_performance()/get_actual_performance())*100;
+		return ((double)get_expected_performance()/get_actual_performance())*100;
 	}
 
 private:
-	counter_type proc_freq;
-
 	counter_type expected_start;
 	counter_type expected_stop;
 
