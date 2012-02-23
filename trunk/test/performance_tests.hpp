@@ -81,6 +81,8 @@ struct NoInjectionMixedTypes {
 
 class BuilderPerformanceShould : public ::testing::Test {
 protected:
+	static const int repetitions = 10000000;
+
 	T0 t0_0, t0_1, t0_2, t0_3;
 	T1 t1; 
 	T2 t2; 
@@ -151,14 +153,14 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 	p_counter counter;
 
 	counter.start_actual_timer();
-	create10MixedWithDiBuilder(1000);
+	create10MixedWithDiBuilder(repetitions);
 	counter.stop_actual_timer();
 	
 	counter.start_expected_timer();
-	create10MixedNormally(1000);
+	create10MixedNormally(repetitions);
 	counter.stop_expected_timer();
 
-//	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
 	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
@@ -167,14 +169,14 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
 	p_counter counter;
 
 	counter.start_actual_timer();
-	create10DifferentWithDiBuilder(1000);
+	create10DifferentWithDiBuilder(repetitions);
 	counter.stop_actual_timer();
 	
 	counter.start_expected_timer();
-	create10DifferentNormally(1000);
+	create10DifferentNormally(repetitions);
 	counter.stop_expected_timer();
 
-//	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
+	EXPECT_EQ(counter.get_expected_performance(), counter.get_actual_performance()); //used for printing
 	EXPECT_GE(counter.get_actual_percent_of_expected(), 50);
 
 }
