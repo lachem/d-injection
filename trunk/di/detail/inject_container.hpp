@@ -40,7 +40,7 @@ class inject_container {
 		node* next;
 
 	private:
-		static detail::memory_pool<MAX_INJECTIONS_PER_TYPE> mem_pool;
+		static detail::memory_pool<DI_MAX_INJECTIONS_PER_TYPE> mem_pool;
 	};
 
 public:
@@ -102,7 +102,7 @@ template<typename T>
 detail::spin_lock inject_container<T>::lock;
 
 template<typename T>
-detail::memory_pool<MAX_NUM_INJECTIONS> inject_container<T>::node::mem_pool;
+detail::memory_pool<DI_MAX_INJECTIONS_PER_TYPE> inject_container<T>::node::mem_pool;
 
 } //namespace detail
 } //namespace di
