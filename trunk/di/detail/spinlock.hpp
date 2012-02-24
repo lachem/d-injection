@@ -7,6 +7,13 @@
 #define DI_SPIN_LOCK_HPP
 
 #include <boost/interprocess/detail/atomic.hpp>
+#include <boost/version.hpp>
+
+#if BOOST_VERSION < 104800
+	#define BOOST_ATOMIC_NAMESPACE boost::interprocess::detail
+#else
+	#define BOOST_ATOMIC_NAMESPACE boost::interprocess::ipcdetail
+#endif
 
 namespace di {
 namespace detail {
@@ -18,15 +25,17 @@ public:
 	spinlock() : lock_var(0) {}
 
 	void lock() {
-		while(boost::interprocess::ipcdetail::atomic_cas32(&lock_var, 1, 0)) {}
+		while(BOOST_ATOMIC_NAMESPACE::atomic_cas32(&lock_var, 1, 0)) {}
 	}
 
 	void unlock() {
-		boost::interprocess::ipcdetail::atomic_write32(&lock_var, 0);
+		BOOST_ATOMIC_NAMESPACE::atomic_write32(&lock_var, 0);
 	}
 };
 
 } // namespace detail
 } // namespace di
+
+#undef BOOST_ATOMIC_NAMESPACE
 
 #endif //DI_SPIN_LOCK_HPP
