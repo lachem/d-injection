@@ -28,7 +28,7 @@ struct p_counter {
 	static const long long microseconds_per_second = 1000000;
 	typedef LARGE_INTEGER counter_type;
 	#else
-	typedef boost::chrono::process_cpu_clock::time_point counter_type;
+	typedef boost::chrono::high_resolution_clock::time_point counter_type;
 	#endif
 
 	p_counter() {
@@ -41,7 +41,7 @@ struct p_counter {
 		#ifdef BOOST_CHRONO_IS_NOT_SUPPORTED
 		::QueryPerformanceCounter(&expected_start);
 		#else
-		expected_start = boost::chrono::process_cpu_clock::now();
+		expected_start = boost::chrono::high_resolution_clock::now();
 		#endif
 	}
 
@@ -49,7 +49,7 @@ struct p_counter {
 		#ifdef BOOST_CHRONO_IS_NOT_SUPPORTED
 		::QueryPerformanceCounter(&expected_stop);
 		#else
-		expected_stop = boost::chrono::process_cpu_clock::now();
+		expected_stop = boost::chrono::high_resolution_clock::now();
 		#endif
 	}
 
@@ -57,7 +57,7 @@ struct p_counter {
 		#ifdef BOOST_CHRONO_IS_NOT_SUPPORTED
 		::QueryPerformanceCounter(&actual_start);
 		#else
-		actual_start = boost::chrono::process_cpu_clock::now();
+		actual_start = boost::chrono::high_resolution_clock::now();
 		#endif
 	}
 
@@ -65,7 +65,7 @@ struct p_counter {
 		#ifdef BOOST_CHRONO_IS_NOT_SUPPORTED
 		::QueryPerformanceCounter(&actual_stop);
 		#else
-		actual_stop = boost::chrono::process_cpu_clock::now();
+		actual_stop = boost::chrono::high_resolution_clock::now();
 		#endif
 	}
 

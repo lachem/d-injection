@@ -13,7 +13,7 @@
 
 #include <di/inject.hpp>
 #include <di/injectable.hpp>
-#include <di/builder.hpp>
+#include <di/builder_imp.hpp>
 
 using namespace di;
 
@@ -22,11 +22,17 @@ struct D1:public D{};
 struct D2:public D{};
 struct D3:public D{};
 
-class Different3Types : public injectable<D1,D2,D3> {
+class AbstractDifferent3Types : public injectable<D1,D2,D3> {
+	virtual void compiler_would_kindly_generate_vtable() = 0;
+};
+
+class Different3Types : public AbstractDifferent3Types {
 public:
 	inject<D1> some_var;
 	inject<D2> some_var2;
 	inject<D3> some_var3;
+
+	virtual void compiler_would_kindly_generate_vtable() {};
 };
 
 class Same3Types : public injectable<D3,D3,D3> {
@@ -46,10 +52,15 @@ namespace {
 
 class BuilderShould : public ::testing::Test {
 protected:
+	builder<AbstractDifferent3Types>* abstractDiff3typesBuilder;
+	AbstractDifferent3Types* abstractDiff3types;
+
 	builder<Different3Types>* diff3typesBuilder;
 	Different3Types* diff3types;
+
 	builder<Same3Types>* same3typesBuilder;
 	Same3Types* same3types;
+
 	builder<Same2Types>* same2typesBuilder;
 	Same2Types* same2types;
 
@@ -74,22 +85,27 @@ protected:
 	}
 
 	void givenDifferent3TypesBuilder() {
-		diff3typesBuilder = new builder<Different3Types>;
+		diff3typesBuilder = new builder_imp<Different3Types>;
 		diff3typesBuilder->use(d1).use(d2).use(d3);
 	}
 
+	void givenAbstractDifferent3TypesBuilder() {
+		abstractDiff3typesBuilder = new builder_imp<Different3Types,AbstractDifferent3Types>;
+		abstractDiff3typesBuilder->use(d1).use(d2).use(d3);
+	}
+
 	void givenSame3TypesBuilder() {
-		same3typesBuilder = new builder<Same3Types>;
+		same3typesBuilder = new builder_imp<Same3Types>;
 		same3typesBuilder->use(d3).use(d3_2).use(d3_3);
 	}
 
 	void givenSame3TypesBuilderWithoutThirdElement() {
-		same3typesBuilder = new builder<Same3Types>;
+		same3typesBuilder = new builder_imp<Same3Types>;
 		same3typesBuilder->use(d3).use(d3_2);
 	}
 
 	void givenSame2TypesBuilder() {
-		same2typesBuilder = new builder<Same2Types>;
+		same2typesBuilder = new builder_imp<Same2Types>;
 		same2typesBuilder->use(d3).use(d3_2);
 	}
 };
@@ -98,6 +114,24 @@ TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
 	givenDifferent3TypesBuilder();
 
 	diff3types = diff3typesBuilder->build();
+
+	EXPECT_EQ(diff3types->some_var.operator ->(),  &d1);
+	EXPECT_EQ(diff3types->some_var2.operator ->(), &d2);
+	EXPECT_EQ(diff3types->some_var3.operator ->(), &d3);
+}
+
+TEST_F(BuilderShould, buildAbstractClasses) {
+	givenAbstractDifferent3TypesBuilder();
+
+	abstractDiff3types = abstractDiff3typesBuilder->build();
+	Different3Types* null = 0;
+	EXPECT_NE(dynamic_cast<Different3Types*>(abstractDiff3types), null);
+}
+
+TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
+	givenAbstractDifferent3TypesBuilder();
+
+	diff3types = dynamic_cast<Different3Types*>(abstractDiff3typesBuilder->build());
 
 	EXPECT_EQ(diff3types->some_var.operator ->(),  &d1);
 	EXPECT_EQ(diff3types->some_var2.operator ->(), &d2);
