@@ -17,13 +17,13 @@
 
 using namespace di;
 
-struct D {};
-struct D1:public D{};
-struct D2:public D{};
-struct D3:public D{};
+struct D {virtual void vtable() = 0;};
+struct D1:public D{virtual void vtable(){}};
+struct D2:public D{virtual void vtable(){}};
+struct D3:public D{virtual void vtable(){}};
 
 class AbstractDifferent3Types : public injectable<D1,D2,D3> {
-	virtual void compiler_would_kindly_generate_vtable() = 0;
+	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
 class Different3Types : public AbstractDifferent3Types {
@@ -32,7 +32,20 @@ public:
 	inject<D2> some_var2;
 	inject<D3> some_var3;
 
-	virtual void compiler_would_kindly_generate_vtable() {};
+	virtual void compilerShouldKindlyGenerateVtable() {};
+};
+
+class AbstractSame3AbstractTypes : public injectable<D,D,D> {
+	virtual void compilerShouldKindlyGenerateVtable() = 0;
+};
+
+class Same3AbstractTypes : public AbstractSame3AbstractTypes {
+public:
+	inject<D> some_var;
+	inject<D> some_var2;
+	inject<D> some_var3;
+
+	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
 class Same3Types : public injectable<D3,D3,D3> {
@@ -55,6 +68,9 @@ protected:
 	builder<AbstractDifferent3Types>* abstractDiff3typesBuilder;
 	AbstractDifferent3Types* abstractDiff3types;
 
+	builder<AbstractSame3AbstractTypes>* abstractSame3typesBuilder;
+	Same3AbstractTypes* same3AbstractTypes;
+
 	builder<Different3Types>* diff3typesBuilder;
 	Different3Types* diff3types;
 
@@ -73,6 +89,10 @@ protected:
 		same3types = 0;
 		diff3typesBuilder = 0;
 		diff3types = 0;
+		abstractSame3typesBuilder = 0;
+		same3AbstractTypes = 0;
+		abstractDiff3typesBuilder = 0;
+		abstractDiff3types = 0;
 	}
 
 	virtual void TearDown() {
@@ -82,6 +102,10 @@ protected:
 		delete same3types;
 		delete diff3typesBuilder;
 		delete diff3types;
+		delete abstractSame3typesBuilder;
+		delete same3AbstractTypes;
+		delete abstractDiff3typesBuilder;
+		delete abstractDiff3types;
 	}
 
 	void givenDifferent3TypesBuilder() {
@@ -92,6 +116,11 @@ protected:
 	void givenAbstractDifferent3TypesBuilder() {
 		abstractDiff3typesBuilder = new builder_imp<Different3Types,AbstractDifferent3Types>;
 		abstractDiff3typesBuilder->use(d1).use(d2).use(d3);
+	}
+
+	void givenAbstractSame3TypesBuilder() {
+		abstractSame3typesBuilder = new builder_imp<Same3AbstractTypes,AbstractSame3AbstractTypes>;
+		abstractSame3typesBuilder->use<D>(d1).use<D>(d2).use<D>(d3);
 	}
 
 	void givenSame3TypesBuilder() {
@@ -136,6 +165,20 @@ TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 	EXPECT_EQ(diff3types->some_var.operator ->(),  &d1);
 	EXPECT_EQ(diff3types->some_var2.operator ->(), &d2);
 	EXPECT_EQ(diff3types->some_var3.operator ->(), &d3);
+}
+
+TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
+	givenAbstractSame3TypesBuilder();
+
+	same3AbstractTypes = dynamic_cast<Same3AbstractTypes*>(abstractSame3typesBuilder->build());
+
+	D1* actual_some_var  = dynamic_cast<D1*>(same3AbstractTypes->some_var.operator ->());
+	D2* actual_some_var2 = dynamic_cast<D2*>(same3AbstractTypes->some_var2.operator ->());
+	D3* actual_some_var3 = dynamic_cast<D3*>(same3AbstractTypes->some_var3.operator ->());
+
+	EXPECT_EQ(actual_some_var,  &d1);
+	EXPECT_EQ(actual_some_var2, &d2);
+	EXPECT_EQ(actual_some_var3, &d3);
 }
 
 TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed) {
