@@ -6,10 +6,15 @@
 #ifndef DI_INJECTABLE_HPP
 #define DI_INJECTABLE_HPP
 
-#include <boost/preprocessor.hpp>
+#include <boost/preprocessor/repetition/enum_binary_params.hpp>
+#include <boost/preprocessor/facilities/intercept.hpp>
+#include <boost/preprocessor/iteration/local.hpp>
+#include <boost/preprocessor/cat.hpp>
+
 #include <boost/fusion/include/vector.hpp>
-#include <boost/mpl/eval_if.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/mpl/eval_if.hpp>
+
 #include <di/configuration.hpp>
 
 // Visual macro expansion CL /EP /C YourCodeFile.cpp 
@@ -23,6 +28,9 @@ template < BOOST_PP_ENUM_BINARY_PARAMS(N, typename T, BOOST_PP_INTERCEPT)> \
 struct injectable##N{ \
 	typedef boost::fusion::vector<BOOST_PP_ENUM_BINARY_PARAMS(N, T,*BOOST_PP_INTERCEPT) > type; \
 };
+
+#define BOOST_PP_LOCAL_LIMITS (1, DI_MAX_NUM_INJECTIONS)
+#include BOOST_PP_LOCAL_ITERATE()
 
 //GENERATE THE MAIN INJECTABLE WITH DEFAULT TEMPLATE PARAMETERS
 
@@ -48,9 +56,6 @@ struct injectable{ \
 	ERROR_AT_LEAST_ONE_INJECTION_TYPE_IS_REQUIRED
 
 #define TEMPLATE_END(z, n, data) >
-
-#define BOOST_PP_LOCAL_LIMITS (1, DI_MAX_NUM_INJECTIONS)
-#include BOOST_PP_LOCAL_ITERATE()
 
 GENERATE_INJECTABLE(DI_MAX_NUM_INJECTIONS)
 

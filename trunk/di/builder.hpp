@@ -20,12 +20,7 @@ public:
 		boost::fusion::for_each(injections,detail::set_null());
 	}
 
-	T* build() {
-		//TODO: static_assert for type compatibility
-		T* subject = new T;
-		boost::fusion::for_each(injections,detail::perform_injection<T>(subject));
-		return subject;
-	}
+	virtual T* build() = 0;
 
 	template<typename U>
 	builder<T>& use(U& object) {
@@ -37,7 +32,8 @@ public:
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
 		return *this;
 	}
-private:
+
+protected:
 	typename T::type injections;
 };
 

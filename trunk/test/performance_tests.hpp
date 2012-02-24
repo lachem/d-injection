@@ -12,7 +12,7 @@
 #include <string>
 #include <di/inject.hpp>
 #include <di/injectable.hpp>
-#include <di/builder.hpp>
+#include <di/builder_imp.hpp>
 
 #include "performance_counter.hpp"
 
@@ -102,7 +102,7 @@ protected:
 
 	void create10DifferentWithDiBuilder(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder<Injection10different> builder;
+			builder_imp<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
 			delete builder.build();
 		}
@@ -110,7 +110,7 @@ protected:
 
 	void create10MixedWithDiBuilder(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder<InjectionMixedTypes> builder;
+			builder_imp<InjectionMixedTypes> builder;
 			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
 			delete builder.build();
 		}
@@ -149,7 +149,7 @@ protected:
 
 };
 
-TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
+TEST_F(BuilderPerformanceShould, beHalfThatOfNormalCreation) {
 	p_counter counter;
 
 	counter.start_actual_timer();
@@ -165,7 +165,7 @@ TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation) {
 
 }
 
-TEST_F(BuilderPerformanceShould, beSimilarToThatOfNormalCreation2) {
+TEST_F(BuilderPerformanceShould, beHalfThatOfNormalCreation2) {
 	p_counter counter;
 
 	counter.start_actual_timer();

@@ -64,21 +64,21 @@ private:
 	mutable int counter;
 };
 
-template<typename T>
 struct perform_injection {
-	perform_injection(T* sub) : subject(sub) {}
+	perform_injection(char* an_address, size_t a_size) : address(an_address), size(a_size) {}
 
 	template<typename V>
 	void operator()(V& v) const {
 		typedef inject_container<typename boost::remove_pointer<V>::type> container;
-		V* injection = container::remove(reinterpret_cast<char*>(subject),sizeof(T));
+		V* injection = container::remove(address,size);
 		if(0 != injection) {
 			*injection = v;
 		}
 	}
 
 private:
-	mutable T* subject;
+	char* const address;
+	size_t const size;
 };
 
 } // namespace detail
