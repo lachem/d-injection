@@ -6,10 +6,8 @@
 #ifndef DI_INJECT_CONTAINER_HPP
 #define DI_INJECT_CONTAINER_HPP
 
-#include <list>
-
 #include <di/detail/memory_pool.hpp>
-#include <di/detail/spin_lock.hpp>
+#include <di/detail/spinlock.hpp>
 #include <di/detail/lock_guard.hpp>
 #include <di/configuration.hpp>
 
@@ -46,12 +44,12 @@ class inject_container {
 public:
 	inline static void insert(T** injection) {
 		#ifndef DI_NO_MULTITHREADING
-		detail::lock_guard<detail::spin_lock> guard(lock);
+		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
 
 		node* insert_node = new node();
 		if(empty()) {
-			tail = pre_head.next = insert_node;
+			tail = head_sentinel.next = insert_node;
 		}
 		else {
 			tail = tail->next = insert_node;
@@ -61,11 +59,11 @@ public:
 
 	inline static T** remove(char* address, size_t range) {
 		#ifndef DI_NO_MULTITHREADING
-		detail::lock_guard<detail::spin_lock> guard(lock);
+		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
 
-		node* prev = &pre_head;
-		node* curr = pre_head.next;
+		node* prev = &head_sentinel;
+		node* curr = head_sentinel.next;
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
 				T** injection = curr->injection;
@@ -88,23 +86,23 @@ public:
 
 private:
 	inline static bool empty() {
-		return pre_head.next == 0;
+		return head_sentinel.next == 0;
 	}
 
 private:
-	static node pre_head;
+	static node head_sentinel;
 	static node* tail;
-	static detail::spin_lock lock;
+	static detail::spinlock lock;
 };
 
 template<typename T>
-typename inject_container<T>::node inject_container<T>::pre_head;
+typename inject_container<T>::node inject_container<T>::head_sentinel;
 
 template<typename T>
 typename inject_container<T>::node* inject_container<T>::tail = 0;
 
 template<typename T>
-detail::spin_lock inject_container<T>::lock;
+detail::spinlock inject_container<T>::lock;
 
 template<typename T>
 detail::memory_pool<DI_MAX_INJECTIONS_PER_TYPE> inject_container<T>::node::mem_pool;
