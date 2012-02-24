@@ -11,11 +11,11 @@
 namespace di {
 namespace detail {
 
-class spin_lock {
+class spinlock {
 	boost::uint32_t lock_var;
 
 public:
-	spin_lock() : lock_var(0) {}
+	spinlock() : lock_var(0) {}
 
 	void lock() {
 		while(boost::interprocess::ipcdetail::atomic_cas32(&lock_var, 1, 0)) {}
