@@ -4,6 +4,6 @@
 - add support for parametrized constructors in factories
 - add error handling (exceptions) and static_asserts
 - [done] synchronization (the same factory producing at once on different threads)
-- replace template<T> use() with preprocessor generated use() methods, that wouldn't need to use for_each and allow polymorphic builders
+- [not applicable] replace template<T> use() with preprocessor generated use() methods, that wouldn't need to use for_each and allow polymorphic builders
 - [done] make it possible to use inject<Type> instead of inject<Type,Class> (will be probably less efficient in multi-threading env)
 - [not applicable] is builder possible?
