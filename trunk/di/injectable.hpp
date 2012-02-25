@@ -6,59 +6,71 @@
 #ifndef DI_INJECTABLE_HPP
 #define DI_INJECTABLE_HPP
 
+#include <di/configuration.hpp>
+
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
-#include <boost/preprocessor/iteration/local.hpp>
-#include <boost/preprocessor/cat.hpp>
 
-#include <boost/fusion/include/vector.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/mpl/eval_if.hpp>
+#if FUSION_MAX_VECTOR_SIZE < DI_MAX_NUM_INJECTIONS
+	#define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#endif
 
-#include <di/configuration.hpp>
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/adapted/mpl.hpp>
+#include <boost/fusion/include/mpl.hpp>
+
+#undef FUSION_MAX_VECTOR_SIZE
+
+#if BOOST_MPL_LIMIT_VECTOR_SIZE < DI_MAX_NUM_INJECTIONS
+	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+		#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+	#endif
+	#define BOOST_MPL_LIMIT_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#endif
+
+#if BOOST_MPL_LIMIT_SET_SIZE < DI_MAX_NUM_INJECTIONS
+	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+		#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+	#endif
+	#define BOOST_MPL_LIMIT_SET_SIZE DI_MAX_NUM_INJECTIONS
+#endif
+
+#include <boost/mpl/vector.hpp>
+#include <boost/mpl/remove.hpp>
+#include <boost/mpl/inserter.hpp>
+#include <boost/mpl/insert.hpp>
+#include <boost/mpl/copy.hpp>
+#include <boost/mpl/set.hpp>
+
+#undef BOOST_MPL_LIMIT_VECTOR_SIZE
+#undef BOOST_MPL_LIMIT_SET_SIZE
 
 // Visual macro expansion CL /EP /C YourCodeFile.cpp 
 
 namespace di {
+namespace detail {
 
-//GENERATE THE LIST OF INJECTABLES I.E. INJECTABLE1, INJECTABLE2 etc.
+struct void_ {};
 
-#define BOOST_PP_LOCAL_MACRO(N) \
-template < BOOST_PP_ENUM_BINARY_PARAMS(N, typename T, BOOST_PP_INTERCEPT)> \
-struct injectable##N{ \
-	typedef boost::fusion::vector<BOOST_PP_ENUM_BINARY_PARAMS(N, T,*BOOST_PP_INTERCEPT) > type; \
+template<typename Seq>
+struct unique_set {
+	typedef typename boost::mpl::copy<
+		Seq, boost::mpl::inserter< boost::mpl::set< >, boost::mpl::insert<boost::mpl::_1,boost::mpl::_2 > >
+	>::type type;
 };
 
-#define BOOST_PP_LOCAL_LIMITS (1, DI_MAX_NUM_INJECTIONS)
-#include BOOST_PP_LOCAL_ITERATE()
+} // namespace detail
 
-//GENERATE THE MAIN INJECTABLE WITH DEFAULT TEMPLATE PARAMETERS
+template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
+class injectable {
+	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,*BOOST_PP_INTERCEPT) > raw_mpl_vector;
+	typedef typename boost::mpl::remove<raw_mpl_vector, detail::void_*>::type mpl_vector;
 
-struct ERROR_AT_LEAST_ONE_INJECTION_TYPE_IS_REQUIRED{};
-
-#define GENERATE_INJECTABLE(N) \
-template <BOOST_PP_ENUM_BINARY_PARAMS(N, typename T, =void BOOST_PP_INTERCEPT)> \
-struct injectable{ \
-	typedef BOOST_PP_REPEAT(DI_MAX_NUM_INJECTIONS, EVAL_IF_IS_SAME,) \
-		BOOST_PP_CAT(injectable,N)<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, T)> \
-		BOOST_PP_REPEAT(DI_MAX_NUM_INJECTIONS, TEMPLATE_END,)\
-		::type type; \
+public:
+	typedef typename boost::fusion::result_of::as_vector<mpl_vector>::type type;
+	typedef typename detail::unique_set<type>::type unique;
 };
 
-#define EVAL_IF_IS_SAME(z, n, data) \
-	typename boost::mpl::eval_if_c<boost::is_same<T##n,void>::value,\
-		BOOST_PP_IF(n, DECLARE_INJECTABLE, DECLARE_ERROR)(n),
-
-#define DECLARE_INJECTABLE(n) \
-	injectable##n<BOOST_PP_ENUM_PARAMS(n, T)>
-
-#define DECLARE_ERROR(n) \
-	ERROR_AT_LEAST_ONE_INJECTION_TYPE_IS_REQUIRED
-
-#define TEMPLATE_END(z, n, data) >
-
-GENERATE_INJECTABLE(DI_MAX_NUM_INJECTIONS)
-
-} //namspace di
+} // namespace di
 
 #endif //DI_INJECTABLE_HPP
