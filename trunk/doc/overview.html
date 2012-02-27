@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <link rel="stylesheet" type="text/css" href="style/boost.css">
+
+  <title>Dependency Injection</title>
+<link rel="icon" href="http://www.boost.org/favicon.ico" type="image/ico"><link rel="stylesheet" type="text/css" href="style/section-basic.css"></head>
+
+<body link="#0000FF" vlink="#800080">  <div id="boost-common-heading-doc">
+
+  <div id="boost-common-heading-doc-spacer"></div>
+
+  
+        <h1 align="center">Dependency Injection</h1>
+
+        <h2 align="center">Overview</h2>
+      <dl class="index">
+    <dt><a href="#introduction">Introduction</a></dt>
+
+    <dt><a href="#di_subject">Injection subject</a></dt>
+
+    <dt><a href="#injections">Defining injections</a></dt>
+	
+	<dt><a href="#builder">Builder</a></dt>
+
+	<dt><a href="#abstract_builder">Abstract builder</a></dt>
+	
+    <!--dt><a href="#footnotes">Footnotes</a></dt-->
+  </dl>
+
+  <h2><a name="introduction" id="introduction"></a>Introduction</h2>
+
+  <p>Header only. Dependency injection will be referred throughout this documentation simply as DI. More content goes here...</p>
+
+  <h2><a name="di_subject" id="di_subject"></a>Injection subject</h2>
+
+  <p>Given a class that requires some objects to be injectected into it upon instantion. That class has to be declared an injection subject.
+     This is achieved by subclassing di::subject class (declared in di/subject.hpp) in the following manner:</p>
+	 
+  <code> 
+  struct MyClass: public di::subject&lt;T,U,V,...&gt;{};
+  </code>
+  
+  <p>Template paramaters of the subject class name the types of each particular injection. For the sake of clarity, let us consider some simple example. 
+	 Assuming that a Car class requires four wheels, one handbrake and two seats, it's declaration would look like this: </p>
+	 
+  <code> 
+  struct Car: public di::subject&lt;Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat&gt;{};
+  </code>
+  
+  <p> However the order of those types is not important. The only thing thing that matters is their
+	  quantity. Therefore the below declaration is equivalent to the one above. </p>
+  
+  <code> 
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;{};
+  </code>
+  
+  <h2><a name="injections" id="injections"></a>Declaring injections</h2>
+
+  <p>Having declared a class an injection subject it is possible to define it's injections. The types of injections have to match those defined
+	 in template parameters of di::subject, though as already mentioned there is no relation between their order. For our example from previous 
+	 injection definitions might look like: </p>
+	 
+  <code> 
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;{ <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel; <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel; <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel; <br>
+  &nbsp; di::inject&lt;Seat&gt; leftSeat; <br>
+  &nbsp; di::inject&lt;Seat&gt; rightSeat; <br>
+  &nbsp; di::inject&lt;HandBreak&gt; handBreak; <br>
+  &nbsp; Car() {<br>
+  &nbsp; &nbsp; //injections are not yet available <br>
+  &nbsp; }<br>
+  };
+  </code>
+  
+  <p><code>di::inject</code> class is defined in di/inject.hpp header. <code>di::inject</code> has pointer semantics and is convertible to pointer or reference 
+  of its template argument. The injection itself is performed right after leaving the constructor. Therefore using any of the inject objects inside
+  constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
+
+  <h2><a name="builder" id="builder"></a>Builder</h2>
+  <p> The most basic form of building an injection subject is by utilizing <code>builder_imp</code> defined in di/builder_imp.hpp. 
+  <code>di::builder_imp</code> is a class with two template paramters from which only one is obligatory. This topic will cover only 
+  the former, thus leaving the latter for the next chapter. Having a car class that derives from injectable with injections specified 
+  one can use <code>builder_imp</code> to create <code>Car</code> instance. First however what is necessary is to provide objects for 
+  injection, this is done by calling template method <code>use</code>.
+  </p>
+  
+  <code> 
+  di::builder_imp&lt;Car&gt; builder;<br>
+  <br>
+  Wheel w1,w2,w3,w4;<br>
+  builder.use(w1).use(w2).use(w3).use(w4);<br>
+  <br>
+  Seat s1,s2;<br>
+  HandBrake hb;<br>
+  builder.use(s1).use(s2).use(hb);<br>
+  <br>
+  Car* car = builder.build();<br>
+  <br>
+  assert(&w1 == car->frontLeftWheel);<br>
+  assert(&w2 == car->frontRightWheel);<br>
+  assert(&w3 == car->rearLeftWheel);<br>
+  assert(&w4 == car->rearRightWheel);<br>
+  assert(&s1 == car->leftSeat);<br>
+  assert(&s1 == car->rightSeat);<br>
+  assert(&hb == car->handBreak);<br>
+  </code>
+  
+  
+  
+  
+  <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
+
+  <dl>
+    <dt><a name="footnote1" class="footnote" id="footnote1">(1)</a>
+    {{text}}</dt>
+
+    <dt><a name="footnote2" class="footnote" id="footnote2">(2)</a>
+    {{text}}</dt>
+  </dl>
+  <hr-->
+
+  <p><a href="http://validator.w3.org/check?uri=referer"><img src="style/valid-html401.png" alt="Valid HTML 4.01 Transitional" border="0" height="31" width="88"></a></p>
+
+  <p>Revised 
+  <!--webbot bot="Timestamp" s-type="EDITED" s-format="%d %B, %Y" startspan -->26
+  February, 2012<!--webbot bot="Timestamp" endspan i-checksum="38514" --></p>
+
+  <p><i>Copyright &#169; 2012 <a href="salvage@o2.pl">Adam Lach</a></i></p>
+
+  <p><i>Distributed under the Boost Software License, Version 1.0. (See
+  accompanying file <a href="http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt">LICENSE_1_0.txt</a> or
+  copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>)</i></p>
+
+
+</body></html>

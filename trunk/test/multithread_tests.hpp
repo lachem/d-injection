@@ -11,7 +11,7 @@
 #include <boost/function.hpp>
 
 #include <di/inject.hpp>
-#include <di/injectable.hpp>
+#include <di/subject.hpp>
 #include <di/builder_imp.hpp>
 
 using namespace di;
@@ -23,14 +23,14 @@ struct T3{}; struct T4{}; struct T5{};
 struct T6{}; struct T7{}; struct T8{};
 struct T9{};
 
-struct Injection10different : public injectable<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9> {
+struct Injection10different : public subject<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9> {
 	inject<T0> var0; inject<T1> var1; inject<T2> var2;
 	inject<T3> var3; inject<T4> var4; inject<T5> var5;
 	inject<T6> var6; inject<T7> var7; inject<T8> var8;
 	inject<T9> var9;
 };
 
-struct InjectionMixedTypes : public injectable<T0,T0,T0,T0,T4,T4,T4,T7,T8,T9> {
+struct InjectionMixedTypes : public subject<T0,T0,T0,T0,T4,T4,T4,T7,T8,T9> {
 	inject<T0> var0; inject<T0> var1; inject<T0> var2;
 	inject<T0> var3; inject<T4> var4; inject<T4> var5;
 	inject<T4> var6; inject<T7> var7; inject<T8> var8;

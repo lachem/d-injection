@@ -12,7 +12,7 @@
 #include <string>
 
 #include <di/inject.hpp>
-#include <di/injectable.hpp>
+#include <di/subject.hpp>
 #include <di/builder_imp.hpp>
 
 using namespace di;
@@ -22,7 +22,7 @@ struct D1:public D{virtual void vtable(){}};
 struct D2:public D{virtual void vtable(){}};
 struct D3:public D{virtual void vtable(){}};
 
-class AbstractDifferent3Types : public injectable<D1,D2,D3> {
+class AbstractDifferent3Types : public subject<D1,D2,D3> {
 	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
@@ -35,7 +35,7 @@ public:
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
-class AbstractSame3AbstractTypes : public injectable<D,D,D> {
+class AbstractSame3AbstractTypes : public subject<D,D,D> {
 	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
@@ -48,14 +48,14 @@ public:
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
-class Same3Types : public injectable<D3,D3,D3> {
+class Same3Types : public subject<D3,D3,D3> {
 public:
 	inject<D3> some_var;
 	inject<D3> some_var2;
 	inject<D3> some_var3;
 };
 
-class Same2Types : public injectable<D3,D3> {
+class Same2Types : public subject<D3,D3> {
 public:
 	inject<D3> some_var;
 	inject<D3> some_var2;
