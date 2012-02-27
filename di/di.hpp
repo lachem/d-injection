@@ -6,7 +6,7 @@
 #ifndef DI_DI_HPP
 #define DI_DI_HPP
 
-#include <di/injectable.hpp>
+#include <di/subject.hpp>
 #include <di/inject.hpp>
 #include <di/builder.hpp>
 #include <di/builder_imp.hpp>

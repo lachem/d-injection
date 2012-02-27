@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_INJECTABLE_HPP
-#define DI_INJECTABLE_HPP
+#ifndef DI_SUBJECT_HPP
+#define DI_SUBJECT_HPP
 
 #include <di/configuration.hpp>
 
@@ -62,7 +62,7 @@ struct unique_set {
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
-class injectable {
+class subject {
 	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,*BOOST_PP_INTERCEPT) > raw_mpl_vector;
 	typedef typename boost::mpl::remove<raw_mpl_vector, detail::void_*>::type mpl_vector;
 
@@ -73,4 +73,4 @@ public:
 
 } // namespace di
 
-#endif //DI_INJECTABLE_HPP
+#endif //DI_SUBJECT_HPP
