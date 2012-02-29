@@ -21,6 +21,7 @@ public:
 	}
 
 	virtual T* build() = 0;
+	virtual void delegate(T&) = 0;
 
 	template<typename U>
 	builder<T>& use(U& object) {
