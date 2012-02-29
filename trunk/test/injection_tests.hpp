@@ -229,6 +229,41 @@ TEST_F(BuilderShould, injectNullWhenNoInjectionProvided) {
 	EXPECT_EQ(same3types->some_var3.operator ->(), null);
 }
 
+TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
+	givenSame2TypesBuilder();
+
+	same2types = new Same2Types;
+	same2typesBuilder->delegate(*same2types);
+
+	EXPECT_EQ(same2types->some_var.operator ->(),  &d3);
+	EXPECT_EQ(same2types->some_var2.operator ->(), &d3_2);
+}
+
+TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
+	builder_imp<Different3Types> diff3typesBuilder;
+	diff3typesBuilder.use(d1).use(d2);
+
+	Different3Types diff3_1;
+	diff3typesBuilder.use(d3_2).delegate(diff3_1);
+
+	Different3Types diff3_2;
+	diff3typesBuilder.replace(d3  ).delegate(diff3_2);
+
+	Different3Types diff3_3;
+	diff3typesBuilder.replace(d3_3).delegate(diff3_3);
+
+	Different3Types diff3_4;
+	diff3typesBuilder.replace(d3_2).delegate(diff3_4);	
+	
+	EXPECT_EQ(diff3_1.some_var.operator ->(),  &d1);
+	EXPECT_EQ(diff3_1.some_var2.operator ->(), &d2);
+	EXPECT_EQ(diff3_1.some_var3.operator ->(), &d3_2);
+
+	EXPECT_EQ(diff3_2.some_var3.operator ->(), &d3);
+	EXPECT_EQ(diff3_3.some_var3.operator ->(), &d3_3);
+	EXPECT_EQ(diff3_4.some_var3.operator ->(), &d3_2);
+}
+
 }  // namespace
 
 #endif //DI_INJECTION_TESTS_HPP_

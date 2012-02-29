@@ -20,7 +20,7 @@
 
     <dt><a href="#di_subject">Injection subject</a></dt>
 
-    <dt><a href="#injections">Defining injections</a></dt>
+    <dt><a href="#injections">Declaring injections</a></dt>
 	
 	<dt><a href="#builder">Builder</a></dt>
 
@@ -58,7 +58,7 @@
   
   <h2><a name="injections" id="injections"></a>Declaring injections</h2>
 
-  <p>Having declared a class an injection subject it is possible to define it's injections. The types of injections have to match those defined
+  <p>Having declared a class an injection subject it is possible to specify it's injections. The types of injections have to match those defined
 	 in template parameters of di::subject, though as already mentioned there is no relation between their order. For our example from previous 
 	 injection definitions might look like: </p>
 	 
@@ -84,9 +84,9 @@
   <h2><a name="builder" id="builder"></a>Builder</h2>
   <p> The most basic form of building an injection subject is by utilizing <code>builder_imp</code> defined in di/builder_imp.hpp. 
   <code>di::builder_imp</code> is a class with two template paramters from which only one is obligatory. This topic will cover only 
-  the former, thus leaving the latter for the next chapter. Having a car class that derives from injectable with injections specified 
-  one can use <code>builder_imp</code> to create <code>Car</code> instance. First however what is necessary is to provide objects for 
-  injection, this is done by calling template method <code>use</code>.
+  the former, thus leaving the latter for the next chapter. Having a car class that derives from <code>di::subject with</code> injections 
+  specified <code>builder_imp</code> can be used to create <code>Car</code> instance. First however what is necessary is to provide 
+  objects for injections by calling template method <code>use</code> on builder object.
   </p>
   
   <code> 
@@ -109,7 +109,7 @@
   assert(&s1 == car->rightSeat);<br>
   assert(&hb == car->handBreak);<br>
   </code>
-  
+  <p> In contradiction to <code>subject</code>
   
   
   

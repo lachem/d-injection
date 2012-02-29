@@ -6,6 +6,8 @@
 #ifndef DI_BUILDER_IMP_HPP
 #define DI_BUILDER_IMP_HPP
 
+#include <boost/type_traits/is_base_of.hpp>
+#include <boost/static_assert.hpp>
 #include <di/builder.hpp>
 
 namespace di {
@@ -17,6 +19,11 @@ public:
 		C* instance = new C;
 		inject(reinterpret_cast<char*>(instance),sizeof(C));
 		return instance;
+	}
+
+	virtual void delegate(I& instance) {
+		C* downcasted = static_cast<C*>(&instance);
+		inject(reinterpret_cast<char*>(downcasted),sizeof(C));
 	}
 
 private:
