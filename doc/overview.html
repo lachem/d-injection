@@ -26,6 +26,8 @@
 
 	<dt><a href="#abstract_builder">Abstract builder</a></dt>
 	
+	<dt><a href="#building_family">Building family of objects</a></dt>
+	
     <!--dt><a href="#footnotes">Footnotes</a></dt-->
   </dl>
 
@@ -35,7 +37,7 @@
 
   <h2><a name="di_subject" id="di_subject"></a>Injection subject</h2>
 
-  <p>Given a class that requires some objects to be injectected into it upon instantion. That class has to be declared an injection subject.
+  <p>Given a class that requires some objects to be injectected into it upon instantion or delegation. That class has to be declared an injection subject.
      This is achieved by subclassing di::subject class (declared in di/subject.hpp) in the following manner:</p>
 	 
   <code> 
@@ -63,7 +65,8 @@
 	 injection definitions might look like: </p>
 	 
   <code> 
-  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;{ <br>
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br>
+  { <br>
   &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel; <br>
   &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; <br>
   &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel; <br>
@@ -71,7 +74,8 @@
   &nbsp; di::inject&lt;Seat&gt; leftSeat; <br>
   &nbsp; di::inject&lt;Seat&gt; rightSeat; <br>
   &nbsp; di::inject&lt;HandBreak&gt; handBreak; <br>
-  &nbsp; Car() {<br>
+  &nbsp; Car() <br>
+  &nbsp; {<br>
   &nbsp; &nbsp; //injections are not yet available <br>
   &nbsp; }<br>
   };
@@ -109,10 +113,62 @@
   assert(&s1 == car->rightSeat);<br>
   assert(&hb == car->handBreak);<br>
   </code>
-  <p> In contradiction to <code>subject</code>
+  <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>inject</code>'s are
+	  declared. This relies to the order of <code>inject</code>'s of same types e.g. in the above example changing the order of use calls, such that 
+	  <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code> car->frontLeftWheel == &w4 </code> and <code> car->rearRightWheel == &w1 </code>
+  </p>
+  <code> 
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
+  { <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
+  &nbsp; di::inject&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
+  &nbsp; di::inject&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  };
+  </code>
   
+  <h2><a name="abstract_builder" id="abstract_builder"></a>Abstract builder</h2>
+  <p> In many cases it may be impractical to use raw <code> builder_imp&lt;typename T&gt; </code> due to coupling and testability issues. Prefferably one might
+	  want to be able to build an object of <code>class Car</code> but pass an object of <code>class Vehicle</code> (base of Car) to be able to change at
+	  any point of the develepment the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of 
+	  mocking <code>builder_imp::build</code> and <code>builder_imp::delegate</code> method to build/inject mocks/stubs instead of real objects. 
+	  To achieve all these benefits <code>di::builder</code> is provided. <code>di::builder</code> is the base class of <code>di::builder_imp</code>, hence the name.
+  </p>
+  <p> Considering: 
+  <code>
+  struct Vehicle <br>
+  { <br>
+  &nbsp; virtual void move(...) = 0;<br>
+  };<br>
+  <br>
+  struct Car: public Vehicle, public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
+  { <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
+  &nbsp; di::inject&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
+  &nbsp; di::inject&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
+  &nbsp; di::inject&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  &nbsp; virtual void move(...) {...};<br>
+  }; <br>
+  </code>
+  <p> one might write: </p>
+  <code>
+  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt();
+  </code>
+  <p> or: </p>
+  <code>
+  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt;() <br>
+  ... <br>
+  Car porshe(...); <br>
+  vehicle_builder.delegate(porshe); <br>
+  </code>
   
-  
+  <h2><a name="building_family" id="building_family"></a>Building family of objects</h2>
   <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
 
   <dl>
