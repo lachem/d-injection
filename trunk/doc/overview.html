@@ -146,13 +146,13 @@
   <br>
   struct Car: public Vehicle<br>
   { <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
-  &nbsp; di::inject&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
-  &nbsp; di::inject&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  <br>
+  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   <br>
+  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  <br>
+  &nbsp; di::inject&lt;Seat&gt; leftSeat;  <br>
+  &nbsp; di::inject&lt;Seat&gt; rightSeat; <br>
+  &nbsp; di::inject&lt;HandBreak&gt; handBreak; <br>
   &nbsp; virtual void move(...) {...};<br>
   }; <br>
   </code>
@@ -165,10 +165,62 @@
   di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt;() <br>
   ... <br>
   Car porshe(...); <br>
-  vehicle_builder.delegate(porshe); <br>
+  vehicle_builder->delegate(porshe); <br>
   </code>
   
+  <p> <b> Note!</b> It is the class which is the template parameter of <code> di::builder </code> needs to derive (publicly) from di::subject. 
+		  Unfortunately this a necessary limitation. </p>
+		  
   <h2><a name="building_family" id="building_family"></a>Building family of objects</h2>
+  <p> Afore mentioned <code>di::builder::delegate</code> method allows for building families of objects. I the provided example all the classes
+	  which are subclasses of <code>Construct</code> are considered to be of one family and can be build using the same builder. Additionaly this
+	  example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs
+	  Vehicle-subjects).
+  </p>
+  <code>
+  class Construct : public di::subject&lt;Logger,Database,ConversionTools&gt; {};<br>
+  <br>
+  class ConstructImp : public Construct <br>
+  { <br>
+	&nbsp; di::inject&lt;Logger&gt; log; <br>
+	&nbsp; di::inject&lt;Database&gt; db; <br>
+	&nbsp; di::inject&lt;ConversionTools&gt; conversion; <br>
+  }; <br>
+  <br>
+  class Truck : public Car, public ConstructImp {};<br>
+  <br>
+  class Road : public ConstructImp {};<br>
+  <br>
+  class Garage : public ConstructImp {}; <br>
+  <br>
+  <br>
+  Truck scania;<br>
+  Truck mercedes;<br>
+  Road highway;<br>
+  Garage garage1,garage2;<br>
+  <br>
+  ... <br>
+  <br>
+  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt;() <br>
+  di:builder&lt;Construct&gt;* construct_builder = new di::builder_imp&lt;Construct,ConstructImp&gt;() <br>
+  //setup both builders <br>
+  <br>
+  ... <br>
+  <br>
+  vehicle_builder->delegate(scania); <br>
+  construct_builder->delegate(scania); <br>
+  <br>
+  vehicle_builder->delegate(mercedes); <br>
+  construct_builder->delegate(mercedes); <br>
+  <br>
+  construct_builder->delegate(highway);<br>
+  construct_builder->delegate(garage1);<br>
+  construct_builder->delegate(garage2);<br>
+  
+  </code>
+  
+  
+  
   <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
 
   <dl>
