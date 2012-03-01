@@ -137,14 +137,14 @@
 	  mocking <code>builder_imp::build</code> and <code>builder_imp::delegate</code> method to build/inject mocks/stubs instead of real objects. 
 	  To achieve all these benefits <code>di::builder</code> is provided. <code>di::builder</code> is the base class of <code>di::builder_imp</code>, hence the name.
   </p>
-  <p> Considering: 
+  <p> Considering: </p>
   <code>
-  struct Vehicle <br>
+  struct Vehicle : public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br>
   { <br>
   &nbsp; virtual void move(...) = 0;<br>
   };<br>
   <br>
-  struct Car: public Vehicle, public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
+  struct Car: public Vehicle<br>
   { <br>
   &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
   &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
