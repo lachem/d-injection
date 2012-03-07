@@ -42,7 +42,7 @@
 
   <p>Inversion of Control (IoC) is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses
      on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the
-	 caller's shoulders. Example:
+	 caller's shoulders. The result of such an approach is reduced coupling. Example:
   </p>
   <code>
 	 struct Timer <br>
@@ -51,8 +51,8 @@
 	 };<br>
   </code>
   <p> Timer is a class that is meant to wait for specified amount of miliseconds and then execute a callback. There are however other parameters
-	  that are necessart for the Timer to work namely a thread pool and a clock. This of course might not be the best timer specification, but 
-	  for the sake of this example it is just fine.
+	  than time and callback that are necessary for the Timer to work those are thread pool and clock. This of course might not be the best timer 
+	  specification, but for the sake of this example it is just fine.
   </p>
   <code>
 	 struct Poller <br>
@@ -69,7 +69,7 @@
 	 }; <br>
   </code>
   <p> Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, neither it needs the clock
-	  to carry out it's task, but it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
+	  to carry out it's task, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
   </p>
   <code>
 	struct TimerFactory <br>
@@ -82,8 +82,8 @@
 	}; <br>
   </code>
   <p>
-  the Poller just needs to call createTimer from TimerFactory, instead of creating the Timer by itself, to get rid of the necessity of obtaining
-  clock and threadpool. New body of Poller::run:
+  the Poller needs only to call createTimer from TimerFactory, instead of creating the Timer by itself, to get rid of the necessity of obtaining
+  clock and threadpool. The body of Poller::run might be altered to:
   </p>
   <code>
 	while(state == working) <br>
@@ -95,7 +95,7 @@
   </code>	
   
   <h2><a name="injection" id="injection"></a>Dependency Injection</h2>
-  <p> IoC is simple yet it gives good benefits. But implementing a new factory every time when it is good to hide few parameters seems a bit discouraging.
+  <p> IoC is simple yet it gives good benefits. Of course implementing a new factory every time when there is a need to "invert control" seems a bit discouraging.
 	  Therefore Dependency Injection is a "generic" implementation of IoC. It provides all the benefits of IoC in a convient manner.
   </p>
   <p><a href="http://validator.w3.org/check?uri=referer"><img src="style/valid-html401.png" alt="Valid HTML 4.01 Transitional" border="0" height="31" width="88"></a></p>
