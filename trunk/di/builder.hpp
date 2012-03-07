@@ -26,15 +26,28 @@ public:
 	template<typename U>
 	builder<T>& use(U& object) {
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
+		assert(use_succeeded(object));
 		return *this;
 	}
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
+		assert(replace_succeeded(object));
 		return *this;
 	}
 
 protected:
+	template<typename U>
+	bool replace_succeeded(U& object) {
+		return use_succeeded(object);
+	}
+	template<typename U>
+	bool use_succeeded(U& object) {
+		bool result = false;
+		boost::fusion::for_each(injections,detail::contains<U>(&object,&result));
+		return result;
+	}
+
 	typename T::type injections;
 };
 
