@@ -52,13 +52,6 @@ namespace detail {
 
 struct void_ {};
 
-template<typename Seq>
-struct unique_set {
-	typedef typename boost::mpl::copy<
-		Seq, boost::mpl::inserter< boost::mpl::set< >, boost::mpl::insert<boost::mpl::_1,boost::mpl::_2 > >
-	>::type type;
-};
-
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
@@ -68,7 +61,6 @@ class subject {
 
 public:
 	typedef typename boost::fusion::result_of::as_vector<mpl_vector>::type type;
-	typedef typename detail::unique_set<type>::type unique;
 };
 
 } // namespace di
