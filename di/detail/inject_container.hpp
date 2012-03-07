@@ -43,6 +43,8 @@ class inject_container {
 
 public:
 	inline static void insert(T** injection) {
+		assert(injection);
+
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
@@ -58,10 +60,13 @@ public:
 	}
 
 	inline static T** remove(char* address, size_t range) {
+		assert(address);
+		assert(range);
+
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
-
+		
 		node* prev = &head_sentinel;
 		node* curr = head_sentinel.next;
 		while(curr != tail) {
