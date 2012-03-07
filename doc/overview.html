@@ -50,7 +50,7 @@
   </code>
   
   <p>Template paramaters of the subject class name the types of each particular injection. For the sake of clarity, let us consider some simple example. 
-	 Assuming that a Car class requires four wheels, one handbrake and two seats, it's declaration would look like this: </p>
+	 Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this: </p>
 	 
   <code> 
   struct Car: public di::subject&lt;Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat&gt;{};
@@ -65,7 +65,7 @@
   
   <h2><a name="injections" id="injections"></a>Declaring injections</h2>
 
-  <p>Having declared a class an injection subject it is possible to specify it's injections. The types of injections have to match those defined
+  <p>Having declared a class an injection subject it is possible to specify its injections. The types of injections have to match those defined
 	 in template parameters of di::subject, though as already mentioned there is no relation between their order. For our example from previous 
 	 injection definitions might look like: </p>
 	 
