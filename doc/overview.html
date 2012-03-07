@@ -33,7 +33,12 @@
 
   <h2><a name="introduction" id="introduction"></a>Introduction</h2>
 
-  <p>Header only. Include di/di.hpp. Dependency injection will be referred throughout this documentation simply as DI. More content goes here...</p>
+  <p>Header only. Include di/di.hpp. Dependency injection will be referred throughout this documentation simply as DI. </p>
+  <p>
+	 Dependency injection is an implementation of Inversion of Control (IoC) known from java frameworks such as Spring or Qi4j. The idea behind IoC is 
+	 to avoid annoying and error prone passing of objects through constructors or setters. Still C++ community lacks a Dependency Injection framework that would be portable and independent from such libraries
+	 like Qt. This is an attempt to create a simple yet powerful DI library build on boost. 
+  </p>
 
   <h2><a name="di_subject" id="di_subject"></a>Injection subject</h2>
 
@@ -172,7 +177,7 @@
 		  Unfortunately this a necessary limitation. </p>
 		  
   <h2><a name="building_family" id="building_family"></a>Building family of objects</h2>
-  <p> Afore mentioned <code>di::builder::delegate</code> method allows for building families of objects. I the provided example all the classes
+  <p> Aforementioned <code>di::builder::delegate</code> method allows for building families of objects. I the provided example all the classes
 	  which are subclasses of <code>Construct</code> are considered to be of one family and can be build using the same builder. Additionaly this
 	  example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs
 	  Vehicle-subjects).

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <link rel="stylesheet" type="text/css" href="../../../boost.css">
+
+  <title>Dependency Injection in C++ - Rationale</title>
+</head>
+
+<body link="#0000FF" vlink="#800080">
+  <table border="0" cellpadding="7" cellspacing="0" width="100%" summary=
+  "header">
+    <tr>
+      <td valign="top">
+        <h1 align="center">Dependency Injection in C++</h1>
+
+        <h2 align="center">Rationale</h2>
+      </td>
+    </tr>
+  </table>
+  <hr>
+
+  <dl class="index">
+    <dt><a href="#introduction">Introduction</a></dt>
+
+    <dt><a href="#ioc">Inversion of Control</a></dt>
+
+    <dt><a href="#injection">Dependency of Injection</a></dt>
+  </dl>
+
+  <h2><a name="introduction" id="introduction"></a>Introduction</h2>
+
+  <p>Vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor 
+	 which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database
+	 access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. 
+	 To often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the
+	 right approach as it imposes unwanted constraints and limitations.</p>
+
+  <h2><a name="ioc" id="ioc"></a>Inversion of Control</h2>
+
+  <p>Inversion of Control (IoC) is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses
+     on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the
+	 caller's shoulders. Example:
+  </p>
+  <code>
+	 struct Timer <br>
+	 {<br>
+	 &nbsp;	Timer(long long timeInMilis, boost::function&lt;void ()&gt; callback, Clock& clock, ThreadPool& pool);<br>
+	 };<br>
+  </code>
+  <p> Timer is a class that is meant to wait for specified amount of miliseconds and then execute a callback. There are however other parameters
+	  that are necessart for the Timer to work namely a thread pool and a clock. This of course might not be the best timer specification, but 
+	  for the sake of this example it is just fine.
+  </p>
+  <code>
+	 struct Poller <br>
+	 { <br>
+		&nbsp; void run() <br>
+		&nbsp; { <br>
+		&nbsp; &nbsp; while(state == working) <br>
+		&nbsp; &nbsp; { <br>
+		&nbsp; &nbsp; &nbsp; boost::function&lt;void ()&gt; callback = boost::bind(&Poller::indicateFailure,this); <br>
+		&nbsp; &nbsp; &nbsp; timer = new Timer(100,callback,clock,threadpool); <br>
+		&nbsp; &nbsp; &nbsp; //make a query, await response and delete timer <br>
+		&nbsp; &nbsp; } <br>
+		&nbsp; } <br>
+	 }; <br>
+  </code>
+  <p> Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, neither it needs the clock
+	  to carry out it's task, but it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
+  </p>
+  <code>
+	struct TimerFactory <br>
+	{ <br>
+	&nbsp; TimerFactory(Clock& clock, ThreadPool& threadPool);<br>
+	&nbsp; Timer* createTimer(long long timeInMilis, boost::function&lt;void ()&gt; callback) <br>
+	&nbsp; { <br>
+	&nbsp; &nbsp; return new Timer(long long timeInMilis, boost::function&lt;void ()&gt; callback, clock, threadpool); <br>
+	&nbsp; } <br>
+	}; <br>
+  </code>
+  <p>
+  the Poller just needs to call createTimer from TimerFactory, instead of creating the Timer by itself, to get rid of the necessity of obtaining
+  clock and threadpool. New body of Poller::run:
+  </p>
+  <code>
+	while(state == working) <br>
+	{ <br>
+	&nbsp; boost::function&lt;void ()&gt; callback = boost::bind(&Poller::indicateFailure,this); <br>
+	&nbsp; timer = new timerFactory->createTimer(100,callback); <br>
+	&nbsp; //make a query, await response and delete timer <br>
+	} <br>
+  </code>	
+  
+  <h2><a name="injection" id="injection"></a>Dependency Injection</h2>
+  <p> IoC is simple yet it gives good benefits. But implementing a new factory every time when it is good to hide few parameters seems a bit discouraging.
+	  Therefore Dependency Injection is a "generic" implementation of IoC. It provides all the benefits of IoC in a convient manner.
+  </p>
+  <p><a href="http://validator.w3.org/check?uri=referer"><img src="style/valid-html401.png" alt="Valid HTML 4.01 Transitional" border="0" height="31" width="88"></a></p>
+  
+  <p>Revised 
+  <!--webbot bot="Timestamp" s-type="EDITED" s-format="%d %B, %Y" startspan -->26
+  February, 2012<!--webbot bot="Timestamp" endspan i-checksum="38514" --></p>
+
+  <p><i>Copyright &#169; 2012 <a href="salvage@o2.pl">Adam Lach</a></i></p>
+
+
+  <p><i>Distributed under the Boost Software License, Version 1.0. (See
+  accompanying file <a href="../../../LICENSE_1_0.txt">LICENSE_1_0.txt</a> or
+  copy at <a href=
+  "http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>)</i></p>
+</body>
+</html>
