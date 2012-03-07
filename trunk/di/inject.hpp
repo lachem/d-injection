@@ -22,14 +22,7 @@ public:
 	}
 
 	T& operator*() {
-		return *object;
-	}
-
-	T const* operator->() const {
-		return object;
-	}
-
-	T const& operator*() const {
+		assert(object);
 		return *object;
 	}
 
@@ -37,18 +30,20 @@ public:
 		return object;
 	}
 
-	operator T const*() const {
+	T const* operator->() const {
+		assert(object);
 		return object;
 	}
 
-	operator T&() {
+	T const& operator*() const {
+		assert(object);
 		return *object;
 	}
 
-	operator T const&() const {
-		return *object;
+	operator T const*() const {
+		return object;
 	}
-
+	
 private:
 	T* object;
 };
