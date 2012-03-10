@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_INJECT_HPP
-#define DI_INJECT_HPP
+#ifndef DI_REQUIRED_HPP
+#define DI_REQUIRED_HPP
 
 #include <di/detail/inject_container.hpp>
 
 namespace di {
 
 template<typename T>
-class inject {
+class required {
 public:
-	inject() {
+	required() {
 		detail::inject_container<T>::insert(&object);
 	}
 
@@ -50,4 +50,4 @@ private:
 
 } //namspace di
 
-#endif //DI_INJECT_HPP
+#endif //DI_REQUIRED_HPP
