@@ -12,6 +12,7 @@
 #include <string>
 
 #include <di/required.hpp>
+#include <di/optional.hpp>
 #include <di/subject.hpp>
 #include <di/builder_imp.hpp>
 
@@ -32,7 +33,7 @@ class Different3Types : public AbstractDifferent3Types {
 public:
 	required<D1> some_var;
 	required<D2> some_var2;
-	required<D3> some_var3;
+	optional<D3> some_var3;
 
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
@@ -54,7 +55,7 @@ class Same3Types : public subject<D3,D3,D3> {
 public:
 	required<D3> some_var;
 	required<D3> some_var2;
-	required<D3> some_var3;
+	optional<D3> some_var3;
 };
 
 class Same2Types : public subject<D3,D3> {
@@ -153,8 +154,7 @@ TEST_F(BuilderShould, buildAbstractClasses) {
 	givenAbstractDifferent3TypesBuilder();
 
 	abstractDiff3types = abstractDiff3typesBuilder->build();
-	Different3Types* null = 0;
-	EXPECT_NE(dynamic_cast<Different3Types*>(abstractDiff3types), null);
+	EXPECT_NE(dynamic_cast<Different3Types*>(abstractDiff3types), NULL_PTR(Different3Types));
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
@@ -225,8 +225,7 @@ TEST_F(BuilderShould, injectNullWhenNoInjectionProvided) {
 
 	same3types = same3typesBuilder->build();
 
-	D3* null = 0;
-	EXPECT_EQ(same3types->some_var3.operator ->(), null);
+	EXPECT_EQ(same3types->some_var3.operator ->(), NULL_PTR(D3));
 }
 
 TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {

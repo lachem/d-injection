@@ -14,4 +14,7 @@
 #define DI_MAX_INJECTIONS_PER_TYPE DI_MAX_NUM_INJECTIONS
 #endif
 
+#define NULL 0
+#define NULL_PTR(Class) static_cast<Class*>(0)
+
 #endif //DI_CONFIGURATION_HPP
