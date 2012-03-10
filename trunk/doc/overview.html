@@ -72,13 +72,13 @@
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br>
   { <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel; <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel; <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel; <br>
-  &nbsp; di::inject&lt;Seat&gt; leftSeat; <br>
-  &nbsp; di::inject&lt;Seat&gt; rightSeat; <br>
-  &nbsp; di::inject&lt;HandBreak&gt; handBreak; <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel; <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel; <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel; <br>
+  &nbsp; di::requried&lt;Seat&gt; leftSeat; <br>
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br>
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br>
   &nbsp; Car() <br>
   &nbsp; {<br>
   &nbsp; &nbsp; //injections are not yet available <br>
@@ -86,8 +86,8 @@
   };
   </code>
   
-  <p><code>di::inject</code> class is defined in di/inject.hpp header. <code>di::inject</code> has pointer semantics and is convertible to pointer or reference 
-  of its template argument. The injection itself is performed right after leaving the constructor. Therefore using any of the inject objects inside
+  <p><code>di::requried</code> class is defined in di/requried.hpp header. <code>di::requried</code> has pointer semantics and is convertible to pointer or reference 
+  of its template argument. The injection itself is performed right after leaving the constructor. Therefore using any of the requried objects inside
   constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
 
   <h2><a name="builder" id="builder"></a>Builder</h2>
@@ -118,20 +118,20 @@
   assert(&s1 == car->rightSeat);<br>
   assert(&hb == car->handBreak);<br>
   </code>
-  <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>inject</code>'s are
-	  declared. This relies to the order of <code>inject</code>'s of same types e.g. in the above example changing the order of use calls, such that 
+  <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>requried</code>'s are
+	  declared. This relies to the order of <code>requried</code>'s of same types e.g. in the above example changing the order of use calls, such that 
 	  <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code> car->frontLeftWheel == &w4 </code> and <code> car->rearRightWheel == &w1 </code>
   </p>
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
   { <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
-  &nbsp; di::inject&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
-  &nbsp; di::inject&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
-  &nbsp; di::inject&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
   };
   </code>
   
@@ -151,13 +151,13 @@
   <br>
   struct Car: public Vehicle<br>
   { <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontLeftWheel;  <br>
-  &nbsp; di::inject&lt;Wheel&gt; frontRightWheel; <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearLeftWheel;   <br>
-  &nbsp; di::inject&lt;Wheel&gt; rearRightWheel;  <br>
-  &nbsp; di::inject&lt;Seat&gt; leftSeat;  <br>
-  &nbsp; di::inject&lt;Seat&gt; rightSeat; <br>
-  &nbsp; di::inject&lt;HandBreak&gt; handBreak; <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  <br>
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  <br>
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br>
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br>
   &nbsp; virtual void move(...) {...};<br>
   }; <br>
   </code>
@@ -187,9 +187,9 @@
   <br>
   class ConstructImp : public Construct <br>
   { <br>
-	&nbsp; di::inject&lt;Logger&gt; log; <br>
-	&nbsp; di::inject&lt;Database&gt; db; <br>
-	&nbsp; di::inject&lt;ConversionTools&gt; conversion; <br>
+	&nbsp; di::requried&lt;Logger&gt; log; <br>
+	&nbsp; di::requried&lt;Database&gt; db; <br>
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
   }; <br>
   <br>
   class Truck : public Car, public ConstructImp {};<br>

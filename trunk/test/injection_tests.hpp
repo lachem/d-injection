@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <di/inject.hpp>
+#include <di/required.hpp>
 #include <di/subject.hpp>
 #include <di/builder_imp.hpp>
 
@@ -28,9 +28,9 @@ class AbstractDifferent3Types : public subject<D1,D2,D3> {
 
 class Different3Types : public AbstractDifferent3Types {
 public:
-	inject<D1> some_var;
-	inject<D2> some_var2;
-	inject<D3> some_var3;
+	required<D1> some_var;
+	required<D2> some_var2;
+	required<D3> some_var3;
 
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
@@ -41,24 +41,24 @@ class AbstractSame3AbstractTypes : public subject<D,D,D> {
 
 class Same3AbstractTypes : public AbstractSame3AbstractTypes {
 public:
-	inject<D> some_var;
-	inject<D> some_var2;
-	inject<D> some_var3;
+	required<D> some_var;
+	required<D> some_var2;
+	required<D> some_var3;
 
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
 class Same3Types : public subject<D3,D3,D3> {
 public:
-	inject<D3> some_var;
-	inject<D3> some_var2;
-	inject<D3> some_var3;
+	required<D3> some_var;
+	required<D3> some_var2;
+	required<D3> some_var3;
 };
 
 class Same2Types : public subject<D3,D3> {
 public:
-	inject<D3> some_var;
-	inject<D3> some_var2;
+	required<D3> some_var;
+	required<D3> some_var2;
 };
 
 namespace {
