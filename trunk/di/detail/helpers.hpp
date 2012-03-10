@@ -36,19 +36,22 @@ struct contains {
 	}
 private:
 	mutable T* object;
-	mutable bool* result;
+	
 };
 
 template<typename T>
 struct set_next_same_type {
 
-	set_next_same_type(T* an_object) : object(an_object), set(false){};
+	set_next_same_type(T* an_object, bool* result) : 
+		object(an_object), set(result) {
+		assert(*set == false);
+	};
 
 	template<typename V>
 	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
-		if(!v && !set) {
+		if(!v && !*set) {
 			v = object;
-			set = true;
+			*set = true;
 		}
 	}
 	template<typename V>
@@ -56,24 +59,24 @@ struct set_next_same_type {
 		//empty
 	}
 
-	bool has_succeeded() {
-		return set;
-	}
-
 private:
 	mutable T* object;
-	mutable bool set;
+	mutable bool* set;
 };
 
 template<typename T>
 struct set_nth_same_type {
 
-	set_nth_same_type(T* an_object,int at) : object(an_object), counter(at){};
+	set_nth_same_type(T* an_object,int at, bool* a_result) : 
+		object(an_object), counter(at), result(a_result) {
+		assert(*a_result == false);
+	};
 
 	template<typename V>
 	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
 		if(0 == counter--) {
 			v = object;
+			*result = true;
 		}
 	}
 	template<typename V>
@@ -81,13 +84,10 @@ struct set_nth_same_type {
 		//empty
 	}
 
-	bool has_succeeded() {
-		return counter == -1;
-	}
-
 private:
 	mutable T* object;
 	mutable int counter;
+	mutable bool* result;
 };
 
 struct perform_injection {

@@ -25,29 +25,24 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
-		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object));
-		assert(use_succeeded(object));
+		bool use_result = false;
+		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_result));
+		handle_use_result(use_result);
 		return *this;
 	}
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at));
-		assert(replace_succeeded(object));
+		bool replace_result = false;
+		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_result));
+		handle_replace_result(replace_result);
 		return *this;
 	}
 
-protected:
-	template<typename U>
-	bool replace_succeeded(U& object) {
-		return use_succeeded(object);
-	}
-	template<typename U>
-	bool use_succeeded(U& object) {
-		bool result = false;
-		boost::fusion::for_each(injections,detail::contains<U>(&object,&result));
-		return result;
-	}
+private:
+	virtual void handle_use_result(bool success) = 0;
+	virtual void handle_replace_result(bool success) = 0;
 
+protected:
 	typename T::type injections;
 };
 

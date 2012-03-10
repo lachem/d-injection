@@ -17,6 +17,8 @@
 
 using namespace di;
 
+namespace injection {
+
 struct D {virtual void vtable() = 0;};
 struct D1:public D{virtual void vtable(){}};
 struct D2:public D{virtual void vtable(){}};
@@ -60,8 +62,6 @@ public:
 	required<D3> some_var;
 	required<D3> some_var2;
 };
-
-namespace {
 
 class BuilderShould : public ::testing::Test {
 protected:
@@ -264,6 +264,6 @@ TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
 	EXPECT_EQ(diff3_4.some_var3.operator ->(), &d3_2);
 }
 
-}  // namespace
+}  // namespace injection
 
 #endif //DI_INJECTION_TESTS_HPP_

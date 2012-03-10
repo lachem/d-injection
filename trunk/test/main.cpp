@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "injection_tests.hpp"
+#include "diagnostics_tests.hpp"
 #include "performance_tests.hpp"
 
 #ifdef LINUX  //gtest is thread safe only using pthreads on linux
@@ -11,7 +12,7 @@
 #endif
 
 int main(int argc, char **argv) {
-	::testing::InitGoogleTest(&argc, argv);
+	::testing::InitGoogleMock(&argc, argv);
 	int result = RUN_ALL_TESTS();
 	return result;
 }
