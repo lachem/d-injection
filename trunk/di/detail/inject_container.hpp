@@ -9,6 +9,7 @@
 #include <di/detail/memory_pool.hpp>
 #include <di/detail/spinlock.hpp>
 #include <di/detail/lock_guard.hpp>
+#include <di/detail/injection.hpp>
 #include <di/configuration.hpp>
 
 namespace di {
@@ -34,7 +35,7 @@ class inject_container {
 			mem_pool.free(block);
 		}
 	
-		T** injection;
+		detail::injection<T>* injection;
 		node* next;
 
 	private:
@@ -42,7 +43,7 @@ class inject_container {
 	};
 
 public:
-	inline static void insert(T** injection) {
+	inline static void insert(detail::injection<T>* injection) {
 		assert(injection);
 
 		#ifndef DI_NO_MULTITHREADING
@@ -59,19 +60,19 @@ public:
 		tail->injection = injection;
 	}
 
-	inline static T** remove(char* address, size_t range) {
+	inline static detail::injection<T>* remove(char* address, size_t range) {
 		assert(address);
 		assert(range);
 
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
-		
+ 
 		node* prev = &head_sentinel;
 		node* curr = head_sentinel.next;
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
-				T** injection = curr->injection;
+				detail::injection<T>* injection = curr->injection;
 				prev->next = curr->next;
 				delete curr;
 				return injection;
@@ -80,7 +81,7 @@ public:
 			curr = curr->next;
 		}
 		if(curr->is_in_range(address,range)) {
-			T** injection = curr->injection;
+			detail::injection<T>* injection = curr->injection;
 			tail = prev;
 			prev->next = 0;
 			delete curr;

@@ -17,12 +17,13 @@ private:
 	struct mem_block{void* p1; void* p2;};
 	
 private:
-	mem_block available_mem[size];
+	mem_block* available_mem;
 	mem_block* stack[size];
 	unsigned int head;
 
 public:
 	memory_pool() {
+		available_mem = new mem_block[size];
 		head = size;
 		for(int i=0; i<size; ++i) {
 			stack[i] = available_mem + i;
