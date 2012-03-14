@@ -27,8 +27,9 @@ class Mixed3Types : public subject<D1,D2,D3,D3> {
 public:
 	required<D1> some_var;
 	required<D2> some_var2;
-	required<D3> some_var3;
-	required<D3> some_var4;
+	optional<D2> some_var3;
+	optional<D3> some_var4;
+	required<D3> some_var5;
 };
 
 class BuilderDiagnosticsShould : public ::testing::Test {
@@ -109,6 +110,20 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDeleg
 	delete subject;
 }
 
+TEST_F(BuilderDiagnosticsShould, notIndicateErrorsWhenOptionalIsNotInjected) {
+	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+
+	bool exceptionHasNotBeenThrown = true;
+
+	mixed3typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
+	try {
+		delete mixed3typesBuilder->build();
+	}
+	catch (...) {
+		exceptionHasNotBeenThrown = false;
+	}
+	EXPECT_TRUE(exceptionHasNotBeenThrown);
+}
 
 }  // namespace diagnostics
 
