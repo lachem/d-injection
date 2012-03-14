@@ -8,6 +8,7 @@
 
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/value_at.hpp>
+#include <boost/mpl/contains.hpp>
 #include <boost/mpl/size.hpp>
 #include <di/detail/helpers.hpp>
 #include <di/configuration.hpp>
@@ -50,6 +51,8 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<T::type,U*>::type::value));
+
 		bool use_succeeded = false;
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_succeeded));
 		if(!use_succeeded) {
@@ -60,6 +63,8 @@ public:
 
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<T::type,U*>::type::value));
+
 		bool replace_succeeded = false;
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_succeeded));
 		if(!replace_succeeded) {
