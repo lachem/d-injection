@@ -7,7 +7,6 @@
 #define DI_DIAGNOSTICS_TESTS_HPP_
 
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 
 #include <iostream>
 #include <string>
@@ -32,17 +31,9 @@ public:
 	required<D3> some_var4;
 };
 
-struct PartialBuilderMock : public builder<Mixed3Types> {
-	MOCK_METHOD0(build,Mixed3Types*());
-	MOCK_METHOD1(delegate,void(Mixed3Types&));
-	MOCK_METHOD1(handle_use_result, void(bool success));
-	MOCK_METHOD1(handle_replace_result, void(bool success));
-};
-
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
 	builder<Mixed3Types>* mixed3typesBuilder;
-	PartialBuilderMock mockOfBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
@@ -53,36 +44,58 @@ protected:
 	}
 
 	void givenMixed3TypesBuilderWithDiagnosticHandlerMock() {
-		mixed3typesBuilder = &mockOfBuilder;
+		mixed3typesBuilder = new builder_imp<Mixed3Types,Mixed3Types,di::using_exceptions<Mixed3Types> >;
 	}
 };
 
-TEST_F(BuilderDiagnosticsShould, callHandleUseResultEveryTime) {
+TEST_F(BuilderDiagnosticsShould, indicateThatUseHasGoneOutOfRange) {
 	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
-
-	EXPECT_CALL(mockOfBuilder, handle_use_result(true)).Times(4);
 
 	mixed3typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
+	try {
+		mixed3typesBuilder->use(d3_3);
+	}
+	catch (di::out_of_range& oorException) {
+		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+	}
 }
 
-TEST_F(BuilderDiagnosticsShould, callHandleUseResultWithCorrectSuccessValues) {
+TEST_F(BuilderDiagnosticsShould, indicateThatReplaceHasGoneOutOfRange) {
 	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
 
-	EXPECT_CALL(mockOfBuilder, handle_use_result(true)).Times(4);
-	EXPECT_CALL(mockOfBuilder, handle_use_result(false)).Times(2);
-
-	mixed3typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
-	mixed3typesBuilder->use(d3_3).use(d2);
+	try {
+		mixed3typesBuilder->replace(d3_2,2);
+	}
+	catch (di::out_of_range& oorException) {
+		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+	}
 }
 
-TEST_F(BuilderDiagnosticsShould, callHandleReplaceResultWithCorrectSuccessValues) {
+TEST_F(BuilderDiagnosticsShould, indicateThatReplaceHasGoneOutOfRangeWithNegativeIndex) {
 	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
 
-	EXPECT_CALL(mockOfBuilder, handle_replace_result(true)).Times(1);
-	EXPECT_CALL(mockOfBuilder, handle_replace_result(false)).Times(2);
+	try {
+		mixed3typesBuilder->replace(d3_2,-1);
+	}
+	catch (di::out_of_range& oorException) {
+		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+	}
+}
 
-	mixed3typesBuilder->replace(d3_2,0);
-	mixed3typesBuilder->replace(d3_2,2).replace(d3,-1);
+TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMet) {
+	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+
+	mixed3typesBuilder->use(d1).use(d2).use(d3);
+	Mixed3Types * buildResult = NULL;
+
+	try {
+		buildResult = mixed3typesBuilder->build();
+	}
+	catch (di::requirement_not_satisfied& rnsException) {
+		std::string message(rnsException.what());
+		EXPECT_EQ(0,message.find("Builder has failed to satisfy all requirements of subject at"));
+	}
+	delete buildResult;
 }
 
 }  // namespace diagnostics

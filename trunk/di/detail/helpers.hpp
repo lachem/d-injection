@@ -93,9 +93,10 @@ private:
 };
 
 struct perform_injection {
-	perform_injection(char* an_address, size_t a_size, 
-		boost::function<void(char*,char*)> an_unsatisfied_req_handler) : 
-			address(an_address), size(a_size), unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
+	template<typename T>
+	perform_injection(T* subject, boost::function<void()>& an_unsatisfied_req_handler) : 
+		address(reinterpret_cast<char*>(subject)), size(sizeof(T)), 
+		unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
 
 	template<typename V>
 	void operator()(V& v) const {
@@ -108,14 +109,14 @@ struct perform_injection {
 		}
 		else 
 		if(NULL != injection && !injection->satisified()) {
-			unsatisfied_req_handler(address,reinterpret_cast<char*>(injection));
+			unsatisfied_req_handler();
 		}
 	}
 
 private:
 	char* const address;
 	size_t const size;
-	boost::function<void(char*,char*)> unsatisfied_req_handler;
+	boost::function<void()>& unsatisfied_req_handler;
 };
 
 } // namespace detail
