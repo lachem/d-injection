@@ -34,7 +34,6 @@ public:
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
 	builder<Mixed3Types>* mixed3typesBuilder;
-	builder<BlaBla> * bla;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
@@ -46,7 +45,6 @@ protected:
 
 	void givenMixed3TypesBuilderWithDiagnosticHandlerMock() {
 		mixed3typesBuilder = new builder_imp<Mixed3Types,Mixed3Types,di::using_exceptions<Mixed3Types> >;
-		bla = new builder_imp<Mixed3Types,BlaBla,di::using_exceptions<Mixed3Types> >;
 	}
 };
 
