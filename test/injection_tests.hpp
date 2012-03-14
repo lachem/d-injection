@@ -140,6 +140,14 @@ protected:
 	}
 };
 
+TEST_F(BuilderShould, injectObjectsSizeShouldBeOfOnePointer) {
+	givenDifferent3TypesBuilder();
+
+	diff3types = diff3typesBuilder->build();
+
+	EXPECT_EQ(sizeof(diff3types->some_var.operator ->()), sizeof(diff3types->some_var));
+}
+
 TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
 	givenDifferent3TypesBuilder();
 

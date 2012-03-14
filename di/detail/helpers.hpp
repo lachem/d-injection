@@ -108,8 +108,11 @@ struct perform_injection {
 			injection->object = v;
 		}
 		else 
-		if(NULL != injection && !injection->satisified()) {
+		if(NULL != injection && required<injected_type>::is_same(*injection)) {
 			unsatisfied_req_handler();
+		}
+		else {
+			injection->object = NULL;
 		}
 	}
 

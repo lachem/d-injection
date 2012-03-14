@@ -11,14 +11,14 @@
 namespace di {
 namespace detail {
 
-struct perform_injection;
-
 template<typename T>
-class injection {
-public:
-	injection() : object(NULL) {
+struct injection {
+protected:
+	explicit injection(T* an_object) : object(an_object) {
 		detail::inject_container<T>::insert(this);
 	}
+
+public:
 	T* operator->() {
 		return object;	
 	}
@@ -45,8 +45,6 @@ public:
 	operator T const*() const {
 		return object;
 	}
-	
-	virtual bool satisified() = 0;
 
 protected:
 	T* object;
