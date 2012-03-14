@@ -8,10 +8,35 @@
 
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/value_at.hpp>
+#include <boost/mpl/size.hpp>
 #include <di/detail/helpers.hpp>
 #include <di/configuration.hpp>
+#include <exception>
+#include <sstream>
+#include <string>
 
 namespace di {
+
+struct out_of_range : public std::exception {
+	virtual const char* what() const throw() {
+		return "Builder cannot handle any more injections of given type";
+	}
+};
+
+struct requirement_not_satisfied : public std::exception {
+	requirement_not_satisfied(void* subject_address) {
+		std::stringstream sstream;
+		sstream << "Builder has failed to satisfy all requirements of subject at " << subject_address;
+		message = sstream.str();
+	}
+
+	virtual const char* what() const throw() {
+		return message.c_str();
+	}
+
+private:
+	std::string message;
+};
 
 template<typename T>
 class builder {	
@@ -25,22 +50,26 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
-		bool use_result = false;
-		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_result));
-		handle_use_result(use_result);
+		bool use_succeeded = false;
+		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_succeeded));
+		if(!use_succeeded) {
+			out_of_bounds();
+		}
 		return *this;
 	}
+
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		bool replace_result = false;
-		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_result));
-		handle_replace_result(replace_result);
+		bool replace_succeeded = false;
+		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_succeeded));
+		if(!replace_succeeded) {
+			out_of_bounds();
+		}
 		return *this;
 	}
 
 private:
-	virtual void handle_use_result(bool success) = 0;
-	virtual void handle_replace_result(bool success) = 0;
+	virtual void out_of_bounds() = 0;
 
 protected:
 	typename T::type injections;

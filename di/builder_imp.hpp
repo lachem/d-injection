@@ -8,57 +8,47 @@
 
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/bind.hpp>
+#include <di/diagnostics.hpp>
 #include <di/builder.hpp>
-#include <exception> 
 
 namespace di {
 
-struct assert_on_error {
-	void handle_use_result(bool use_succeeded) {
-		assert(use_succeeded);
-	}
-
-	void handle_replace_result(bool replace_succeeded) {
-		assert(replace_succeeded);
-	}
-
-	void handle_unsatified_requirement(char* subject_address, char* injection_address) {
-		bool requirement_not_satisfied = false;
-		assert(requirement_not_satisfied);
-	}
-};
-
-template<typename C, typename I = C, typename D = assert_on_error>
+template<typename C, typename I = C, typename D = using_assertions<C> >
 class builder_imp : public builder<I>, private D {
 public:
+	//todo: add static cast whether I is parent of C
 	virtual I* build() {
 		C* instance = new C;
-		inject(reinterpret_cast<char*>(instance),sizeof(C));
+		boost::function<void()> unsatisfied_requirement_handler =
+			boost::bind(&builder_imp<C,I,D>::build_unsatisfied_requirement,this,instance);
+		inject(instance,unsatisfied_requirement_handler);
 		return instance;
 	}
 
 	virtual void delegate(I& instance) {
 		C* downcasted = static_cast<C*>(&instance);
-		inject(reinterpret_cast<char*>(downcasted),sizeof(C));
+		boost::function<void()> unsatisfied_requirement_handler =
+			boost::bind(&builder_imp<C,I,D>::delegate_unsatisfied_requirement,this,downcasted);
+		inject(downcasted,unsatisfied_requirement_handler);
 	}
 
 private:
-	virtual void handle_use_result(bool succeeded) {
-		D::handle_use_result(succeeded);
-	}
-	virtual void handle_replace_result(bool succeeded) {
-		D::handle_replace_result(succeeded);
-	}
-	
-	virtual void handle_unsatified_requirement(char* subject_address, char* injection_address) {
-		D::handle_unsatified_requirement(subject_address,injection_address);
+
+	virtual void out_of_bounds() {
+		D::out_of_bounds();
 	}
 
-	void inject(char* address,size_t size) {
-		boost::function<void(char*,char*)> unsatisfied_requirement_handler =
-			boost::bind(&builder_imp<C,I,D>::handle_unsatified_requirement,this,_1,_2);
+	virtual void build_unsatisfied_requirement(C* instance) {
+		D::build_unsatisfied_requirement(instance);
+	}
+	
+	virtual void delegate_unsatisfied_requirement(C* instance) {
+		D::delegate_unsatisfied_requirement(instance);
+	}
+
+	void inject(C* instance, boost::function<void()>& unsatisfied_requirement_handler) {
 		boost::fusion::for_each(builder<I>::injections,
-			detail::perform_injection(address,size,unsatisfied_requirement_handler));
+			detail::perform_injection(instance,unsatisfied_requirement_handler));
 	}
 };
 
