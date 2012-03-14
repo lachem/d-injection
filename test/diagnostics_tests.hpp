@@ -24,7 +24,6 @@ struct D2{};
 struct D3{};
 
 class Mixed3Types : public subject<D1,D2,D3,D3> {
-public:
 	required<D1> some_var;
 	required<D2> some_var2;
 	optional<D2> some_var3;
