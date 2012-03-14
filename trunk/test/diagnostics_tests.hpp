@@ -34,6 +34,7 @@ public:
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
 	builder<Mixed3Types>* mixed3typesBuilder;
+	builder<BlaBla> * bla;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
@@ -45,6 +46,7 @@ protected:
 
 	void givenMixed3TypesBuilderWithDiagnosticHandlerMock() {
 		mixed3typesBuilder = new builder_imp<Mixed3Types,Mixed3Types,di::using_exceptions<Mixed3Types> >;
+		bla = new builder_imp<Mixed3Types,BlaBla,di::using_exceptions<Mixed3Types> >;
 	}
 };
 
@@ -82,21 +84,33 @@ TEST_F(BuilderDiagnosticsShould, indicateThatReplaceHasGoneOutOfRangeWithNegativ
 	}
 }
 
-TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMet) {
+TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenBuilding) {
 	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
 
 	mixed3typesBuilder->use(d1).use(d2).use(d3);
-	Mixed3Types * buildResult = NULL;
-
 	try {
-		buildResult = mixed3typesBuilder->build();
+		mixed3typesBuilder->build();
 	}
 	catch (di::requirement_not_satisfied& rnsException) {
 		std::string message(rnsException.what());
 		EXPECT_EQ(0,message.find("Builder has failed to satisfy all requirements of subject at"));
 	}
-	delete buildResult;
 }
+
+TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDelegating) {
+	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+
+	Mixed3Types* subject = new Mixed3Types;
+	try {
+		mixed3typesBuilder->delegate(*subject);
+	}
+	catch (di::requirement_not_satisfied& rnsException) {
+		std::string message(rnsException.what());
+		EXPECT_EQ(0,message.find("Builder has failed to satisfy all requirements of subject at"));
+	}
+	delete subject;
+}
+
 
 }  // namespace diagnostics
 

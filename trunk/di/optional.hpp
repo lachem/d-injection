@@ -12,14 +12,27 @@
 namespace di {
 
 template<typename T>
-class optional : public detail::injection<T> {
-public:
+struct optional : public detail::injection<T> {
+	optional() : detail::injection<T>(default_ptr()) {
+	}
+
 	operator bool() {
 		return object != NULL;
 	}
-	virtual bool satisified() {
-		return true;
+	
+private:
+	enum {default_ptr_value = 2};
+
+	//Works only when injection is uninitialized
+	static bool is_same(detail::injection<T>& injection) {
+		return default_ptr() == injection.object;
 	}
+
+	static T* default_ptr() {
+		return reinterpret_cast<T*>(default_ptr_value);
+	}
+
+	friend struct detail::perform_injection;
 };
 
 } //namspace di

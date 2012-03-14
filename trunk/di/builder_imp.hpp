@@ -7,6 +7,7 @@
 #define DI_BUILDER_IMP_HPP
 
 #include <boost/type_traits/is_base_of.hpp>
+#include <boost/static_assert.hpp>
 #include <boost/bind.hpp>
 #include <di/diagnostics.hpp>
 #include <di/builder.hpp>
@@ -15,6 +16,7 @@ namespace di {
 
 template<typename C, typename I = C, typename D = using_assertions<C> >
 class builder_imp : public builder<I>, private D {
+	BOOST_STATIC_ASSERT((boost::is_base_of<I,C>::value));
 public:
 	//todo: add static cast whether I is parent of C
 	virtual I* build() {

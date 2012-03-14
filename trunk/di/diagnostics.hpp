@@ -38,13 +38,13 @@ struct using_exceptions {
 	}
 
 	void build_unsatisfied_requirement(T* instance) {
-		throw requirement_not_satisfied(instance);
-	}
-
-	void delegate_unsatisfied_requirement(T* instance) {
 		requirement_not_satisfied exception(instance);
 		delete instance;
 		throw exception;
+	}
+
+	void delegate_unsatisfied_requirement(T* instance) {
+		throw requirement_not_satisfied(instance);
 	}
 };
 
