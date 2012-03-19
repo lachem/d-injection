@@ -140,7 +140,7 @@ protected:
 	}
 };
 
-TEST_F(BuilderShould, injectObjectsSizeShouldBeOfOnePointer) {
+TEST_F(BuilderShould, injectObjectsToInjectionsBeingOfOnePointerSize) {
 	givenDifferent3TypesBuilder();
 
 	diff3types = diff3typesBuilder->build();

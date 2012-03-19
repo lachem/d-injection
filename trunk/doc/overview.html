@@ -26,7 +26,7 @@
 
 	<dt><a href="#abstract_builder">Abstract builder</a></dt>
 	
-	<dt><a href="#building_family">Building family of objects</a></dt>
+	<dt><a href="#building_families">Building families of objects</a></dt>
 	
     <!--dt><a href="#footnotes">Footnotes</a></dt-->
   </dl>
@@ -37,7 +37,7 @@
   <p>
 	 Dependency injection is an implementation of Inversion of Control (IoC) known from java frameworks such as Spring or Qi4j. 
 	 Still C++ community lacks a Dependency Injection framework that would be portable and independent from such libraries
-	 like Qt. This is an attempt to create a simple yet powerful DI library build on boost. 
+	 like Qt. This is an attempt to create a simple yet powerful DI library build on boost (in future in pure C++11).
   </p>
 
   <h2><a name="di_subject" id="di_subject"></a>Injection subject</h2>
@@ -78,6 +78,7 @@
   &nbsp; di::requried&lt;Wheel&gt; rearRightWheel; <br>
   &nbsp; di::requried&lt;Seat&gt; leftSeat; <br>
   &nbsp; di::requried&lt;Seat&gt; rightSeat; <br>
+  &nbsp; di::optional&lt;Seat&gt; backSeat; <br>
   &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br>
   &nbsp; Car() <br>
   &nbsp; {<br>
@@ -86,8 +87,9 @@
   };
   </code>
   
-  <p><code>di::requried</code> class is defined in di/requried.hpp header. <code>di::requried</code> has pointer semantics and is convertible to pointer or reference 
-  of its template argument. The injection itself is performed right after leaving the constructor. Therefore using any of the requried objects inside
+  <p><code>di::requried</code> class is defined in di/requried.hpp header and <p><code>di::optional</code> class is defined in di/optional.hpp header.
+  Both <code>di::requried</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of its template argument. 
+  The injection itself is performed right after leaving the constructor. Therefore using any of the requried/optional objects inside
   constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
 
   <h2><a name="builder" id="builder"></a>Builder</h2>
@@ -116,11 +118,16 @@
   assert(&w4 == car->rearRightWheel);<br>
   assert(&s1 == car->leftSeat);<br>
   assert(&s1 == car->rightSeat);<br>
+  assert( 0  == car->backSeat);<br>
   assert(&hb == car->handBreak);<br>
   </code>
-  <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>requried</code>'s are
-	  declared. This relies to the order of <code>requried</code>'s of same types e.g. in the above example changing the order of use calls, such that 
-	  <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code> car->frontLeftWheel == &w4 </code> and <code> car->rearRightWheel == &w1 </code>
+  <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>requried</code>'s 
+	  and <code>optional</code>'s are declared. This relies to the order of <code>requried</code>s and <code>optional</code>s of same types e.g. in the 
+	  above example changing the order of use calls, such that <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in 
+	  <code> car->frontLeftWheel == &w4 </code> and <code> car->rearRightWheel == &w1 </code>. From the same reason changing the order in which
+	  <code>optional</code>s and <code>required</code>s are declared would result in and error (assert, exception etc. depending on user's choice), because
+	  the third second seat passed to builder would be injected into <code>optional</code>, thus leaving the last <code>required&lt;Seat&gt;</code>
+	  unsatisfied.
   </p>
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
@@ -131,6 +138,21 @@
   &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
   &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
   &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
+  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- third use of use<Seat>(...) <br>
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  };
+  </code>
+  
+  <code> 
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
+  { <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
+  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- second use of use<Seat>(...) <br>
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- third use of use<Seat>(...), but builder knows only about two seats -> error <br>
   &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
   };
   </code>
@@ -176,7 +198,7 @@
   <p> <b> Note!</b> It is the class which is the template parameter of <code> di::builder </code> needs to derive (publicly) from di::subject. 
 		  Unfortunately this a necessary limitation. </p>
 		  
-  <h2><a name="building_family" id="building_family"></a>Building family of objects</h2>
+  <h2><a name="building_families" id="building_families"></a>Building families of objects</h2>
   <p> Aforementioned <code>di::builder::delegate</code> method allows for building families of objects. I the provided example all the classes
 	  which are subclasses of <code>Construct</code> are considered to be of one family and can be build using the same builder. Additionaly this
 	  example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs

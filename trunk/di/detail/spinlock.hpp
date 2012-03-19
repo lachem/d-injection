@@ -18,8 +18,9 @@
 namespace di {
 namespace detail {
 
-class spinlock {
-	boost::uint32_t lock_var;
+class spinlock {	
+	spinlock(const spinlock&);
+	spinlock& operator=(const spinlock&);
 
 public:
 	spinlock() : lock_var(0) {}
@@ -31,6 +32,9 @@ public:
 	void unlock() {
 		BOOST_ATOMIC_NAMESPACE::atomic_write32(&lock_var, 0);
 	}
+
+private:
+	boost::uint32_t lock_var;
 };
 
 } // namespace detail

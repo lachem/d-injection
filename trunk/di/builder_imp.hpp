@@ -18,7 +18,6 @@ template<typename C, typename I = C, typename D = using_assertions<C> >
 class builder_imp : public builder<I>, private D {
 	BOOST_STATIC_ASSERT((boost::is_base_of<I,C>::value));
 public:
-	//todo: add static cast whether I is parent of C
 	virtual I* build() {
 		C* instance = new C;
 		boost::function<void()> unsatisfied_requirement_handler =
