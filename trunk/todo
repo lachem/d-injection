@@ -10,5 +10,4 @@
 - create assembly object, from which builders could be created
 - make it possible to define layers, and determine access rights between them
 - create modules which could belong to layers and be parts of assembly
-
-module.use();
+- enable object lifetime control for di::required and di::optional (e.g. di::optional<Type, di::unique>, di::required<Type, di::shared>)

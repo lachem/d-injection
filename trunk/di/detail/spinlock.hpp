@@ -10,9 +10,9 @@
 #include <boost/version.hpp>
 
 #if BOOST_VERSION < 104800
-	#define BOOST_ATOMIC_NAMESPACE boost::interprocess::detail
+	namespace boost_atomics = boost::interprocess::detail;
 #else
-	#define BOOST_ATOMIC_NAMESPACE boost::interprocess::ipcdetail
+	namespace boost_atomics = boost::interprocess::ipcdetail;
 #endif
 
 namespace di {
@@ -26,11 +26,11 @@ public:
 	spinlock() : lock_var(0) {}
 
 	void lock() {
-		while(BOOST_ATOMIC_NAMESPACE::atomic_cas32(&lock_var, 1, 0)) {}
+		while(boost_atomics::atomic_cas32(&lock_var, 1, 0)) {}
 	}
 
 	void unlock() {
-		BOOST_ATOMIC_NAMESPACE::atomic_write32(&lock_var, 0);
+		boost_atomics::atomic_write32(&lock_var, 0);
 	}
 
 private:
