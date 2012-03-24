@@ -7,7 +7,8 @@
 #define DI_DI_HPP
 
 #include <di/subject.hpp>
-#include <di/inject.hpp>
+#include <di/required.hpp>
+#include <di/optional.hpp>
 #include <di/builder.hpp>
 #include <di/builder_imp.hpp>
 
