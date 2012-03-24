@@ -61,6 +61,7 @@ class subject {
 
 public:
 	typedef typename boost::fusion::result_of::as_vector<mpl_vector>::type type;
+	virtual void constructed(){};
 };
 
 } // namespace di

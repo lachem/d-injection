@@ -18,19 +18,21 @@ template<typename C, typename I = C, typename D = using_assertions<C> >
 class builder_imp : public builder<I>, private D {
 	BOOST_STATIC_ASSERT((boost::is_base_of<I,C>::value));
 public:
-	virtual I* build() {
+	virtual I* build() const {
 		C* instance = new C;
 		boost::function<void()> unsatisfied_requirement_handler =
 			boost::bind(&builder_imp<C,I,D>::build_unsatisfied_requirement,this,instance);
 		inject(instance,unsatisfied_requirement_handler);
+		instance->constructed();
 		return instance;
 	}
 
-	virtual void delegate(I& instance) {
+	virtual void delegate(I& instance) const {
 		C* downcasted = static_cast<C*>(&instance);
 		boost::function<void()> unsatisfied_requirement_handler =
 			boost::bind(&builder_imp<C,I,D>::delegate_unsatisfied_requirement,this,downcasted);
 		inject(downcasted,unsatisfied_requirement_handler);
+		instance.constructed();
 	}
 
 private:
@@ -39,15 +41,15 @@ private:
 		D::out_of_bounds();
 	}
 
-	virtual void build_unsatisfied_requirement(C* instance) {
+	virtual void build_unsatisfied_requirement(C* instance) const {
 		D::build_unsatisfied_requirement(instance);
 	}
 	
-	virtual void delegate_unsatisfied_requirement(C* instance) {
+	virtual void delegate_unsatisfied_requirement(C* instance) const {
 		D::delegate_unsatisfied_requirement(instance);
 	}
 
-	void inject(C* instance, boost::function<void()>& unsatisfied_requirement_handler) {
+	void inject(C* instance, boost::function<void()>& unsatisfied_requirement_handler) const {
 		boost::fusion::for_each(builder<I>::injections,
 			detail::perform_injection(instance,unsatisfied_requirement_handler));
 	}
