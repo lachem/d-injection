@@ -11,6 +11,8 @@
 namespace di {
 namespace detail {
 
+struct perform_injection;
+
 template<typename T>
 struct injection {
 protected:

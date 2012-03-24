@@ -24,24 +24,6 @@ struct set_null {
 };
 
 template<typename T>
-struct contains {
-	contains(T* an_object, bool* a_result) : object(an_object), result(a_result) {}
-	template<typename V>
-	void operator()(V& v, typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
-		if(v == object) {
-			*result = true;
-		}
-	}
-	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
-		//empty
-	}
-private:
-	mutable T* object;
-	
-};
-
-template<typename T>
 struct set_next_same_type {
 
 	set_next_same_type(T* an_object, bool* result) : 
