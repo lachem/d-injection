@@ -19,6 +19,8 @@
 namespace di {
 
 struct out_of_range : public std::exception {
+	~out_of_range() throw () {}
+	
 	virtual const char* what() const throw() {
 		return "Builder cannot handle any more injections of given type";
 	}
@@ -30,6 +32,8 @@ struct requirement_not_satisfied : public std::exception {
 		sstream << "Builder has failed to satisfy all requirements of subject at " << subject_address;
 		message = sstream.str();
 	}
+
+	~requirement_not_satisfied() throw() {}
 
 	virtual const char* what() const throw() {
 		return message.c_str();
@@ -51,7 +55,7 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<T::type,U*>::type::value));
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
 
 		bool use_succeeded = false;
 		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_succeeded));
@@ -63,7 +67,7 @@ public:
 
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<T::type,U*>::type::value));
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
 
 		bool replace_succeeded = false;
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_succeeded));

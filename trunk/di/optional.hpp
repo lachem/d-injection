@@ -17,7 +17,7 @@ struct optional : public detail::injection<T> {
 	}
 
 	operator bool() {
-		return object != NULL;
+		return detail::injection<T>::object != NULL;
 	}
 	
 private:
@@ -25,7 +25,7 @@ private:
 
 	//Works only when injection is uninitialized
 	static bool is_same(detail::injection<T>& injection) {
-		return default_ptr() == injection.object;
+		return default_ptr() == injection.operator->();
 	}
 
 	static T* default_ptr() {

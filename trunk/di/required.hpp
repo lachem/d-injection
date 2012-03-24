@@ -21,7 +21,7 @@ private:
 
 	//Works only when injection is uninitialized
 	static bool is_same(detail::injection<T>& injection) {
-		return default_ptr() == injection;
+		return default_ptr() == injection.operator->();
 	}
 
 	static T* default_ptr() {

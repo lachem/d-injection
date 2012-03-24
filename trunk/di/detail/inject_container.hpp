@@ -9,11 +9,13 @@
 #include <di/detail/memory_pool.hpp>
 #include <di/detail/spinlock.hpp>
 #include <di/detail/lock_guard.hpp>
-#include <di/detail/injection.hpp>
 #include <di/configuration.hpp>
 
 namespace di {
 namespace detail {
+
+template<typename T>
+class injection;
 
 template<typename T>
 class inject_container {
