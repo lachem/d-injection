@@ -15,7 +15,7 @@ namespace di {
 namespace detail {
 
 template<typename T>
-class injection;
+struct injection;
 
 template<typename T>
 class inject_container {
