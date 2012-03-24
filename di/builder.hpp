@@ -46,8 +46,8 @@ public:
 		boost::fusion::for_each(injections,detail::set_null());
 	}
 
-	virtual T* build() = 0;
-	virtual void delegate(T&) = 0;
+	virtual T* build() const = 0;
+	virtual void delegate(T&) const = 0;
 
 	template<typename U>
 	builder<T>& use(U& object) {

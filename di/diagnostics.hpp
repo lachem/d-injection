@@ -16,34 +16,34 @@ namespace di {
 
 template<typename T>
 struct using_assertions {
-	void out_of_bounds() {
+	void out_of_bounds() const {
 		bool out_of_range = true;
 		assert(out_of_range);
 	}
 
-	void build_unsatisfied_requirement(T* instance) {
+	void build_unsatisfied_requirement(T* instance) const {
 		bool requirement_not_satisfied = false;
 		assert(requirement_not_satisfied);
 	}
 
-	void delegate_unsatisfied_requirement(T* instance) {
+	void delegate_unsatisfied_requirement(T* instance) const {
 		build_unsatisfied_requirement(instance);
 	}
 };
 
 template<typename T>
 struct using_exceptions {
-	void out_of_bounds() {
+	void out_of_bounds() const {
 		throw di::out_of_range();
 	}
 
-	void build_unsatisfied_requirement(T* instance) {
+	void build_unsatisfied_requirement(T* instance) const {
 		requirement_not_satisfied exception(instance);
 		delete instance;
 		throw exception;
 	}
 
-	void delegate_unsatisfied_requirement(T* instance) {
+	void delegate_unsatisfied_requirement(T* instance) const {
 		throw requirement_not_satisfied(instance);
 	}
 };

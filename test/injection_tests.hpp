@@ -25,15 +25,15 @@ struct D1:public D{virtual void vtable(){}};
 struct D2:public D{virtual void vtable(){}};
 struct D3:public D{virtual void vtable(){}};
 
-class AbstractDifferent3Types : public subject<D1,D2,D3> {
+class AbstractDifferent3Types : public subject<const D1,D2,const D3> {
 	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
 class Different3Types : public AbstractDifferent3Types {
 public:
-	required<D1> some_var;
+	required<const D1> some_var;
 	required<D2> some_var2;
-	optional<D3> some_var3;
+	optional<const D3> some_var3;
 
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
@@ -111,12 +111,12 @@ protected:
 
 	void givenDifferent3TypesBuilder() {
 		diff3typesBuilder = new builder_imp<Different3Types>;
-		diff3typesBuilder->use(d1).use(d2).use(d3);
+		diff3typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3);
 	}
 
 	void givenAbstractDifferent3TypesBuilder() {
 		abstractDiff3typesBuilder = new builder_imp<Different3Types,AbstractDifferent3Types>;
-		abstractDiff3typesBuilder->use(d1).use(d2).use(d3);
+		abstractDiff3typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3);
 	}
 
 	void givenAbstractSame3TypesBuilder() {
@@ -192,7 +192,7 @@ TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
 TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed) {
 	givenDifferent3TypesBuilder();
 
-	diff3typesBuilder->replace(d3_2);
+	diff3typesBuilder->replace<const D3>(d3_2);
 	diff3types = diff3typesBuilder->build();
 
 	EXPECT_NE(diff3types->some_var3.operator ->(), &d3);
@@ -248,19 +248,19 @@ TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
 
 TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
 	builder_imp<Different3Types> diff3typesBuilder;
-	diff3typesBuilder.use(d1).use(d2);
+	diff3typesBuilder.use<const D1>(d1).use(d2);
 
 	Different3Types diff3_1;
-	diff3typesBuilder.use(d3_2).delegate(diff3_1);
+	diff3typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
 
 	Different3Types diff3_2;
-	diff3typesBuilder.replace(d3  ).delegate(diff3_2);
+	diff3typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
 
 	Different3Types diff3_3;
-	diff3typesBuilder.replace(d3_3).delegate(diff3_3);
+	diff3typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
 
 	Different3Types diff3_4;
-	diff3typesBuilder.replace(d3_2).delegate(diff3_4);	
+	diff3typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
 	
 	EXPECT_EQ(diff3_1.some_var.operator ->(),  &d1);
 	EXPECT_EQ(diff3_1.some_var2.operator ->(), &d2);

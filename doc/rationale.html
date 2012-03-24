@@ -32,10 +32,12 @@
 
   <h2><a name="introduction" id="introduction"></a>Introduction</h2>
 
-  <p>Vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor 
+  <p>Much of todays engineering work in big system is focused on managing dependencies between entities. Amongst it a great deal of work is being 
+	 put in a proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on. </p>
+  <p>Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor 
 	 which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database
 	 access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. 
-	 To often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the
+	 Too often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the
 	 right approach as it imposes unwanted constraints and limitations.</p>
 
   <h2><a name="ioc" id="ioc"></a>Inversion of Control</h2>
