@@ -20,34 +20,6 @@ protected:
 		detail::inject_container<T>::insert(this);
 	}
 
-public:
-	T* operator->() {
-		return object;	
-	}
-
-	T& operator*() {
-		assert(object);
-		return *object;
-	}
-
-	operator T*() {
-		return object;
-	}
-
-	T const* operator->() const {
-		assert(object);
-		return object;
-	}
-
-	T const& operator*() const {
-		assert(object);
-		return *object;
-	}
-
-	operator T const*() const {
-		return object;
-	}
-
 protected:
 	T* object;
 

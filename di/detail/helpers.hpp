@@ -18,8 +18,7 @@ namespace detail {
 struct set_null {
 	template<typename V>
 	void operator()(V& v) const {
-		V null = 0;
-		v = null;
+		v = NULL;
 	}
 };
 
@@ -86,15 +85,17 @@ struct perform_injection {
 		typedef inject_container<injected_type> container;
 		
 		detail::injection<injected_type>* injection = container::remove(address,size);
-		if(NULL != v && NULL != injection) {
-			injection->object = v;
-		}
-		else 
-		if(NULL != injection && required<injected_type>::is_same(*injection)) {
-			unsatisfied_req_handler();
-		}
-		else {
-			injection->object = NULL;
+		if(NULL != injection) {
+			if(NULL != v) {
+				injection->object = v;
+			}
+			else 
+			if(required<injected_type>::is_same(injection->object)) {
+				unsatisfied_req_handler();
+			}
+			else {
+				injection->object = NULL;
+			}
 		}
 	}
 

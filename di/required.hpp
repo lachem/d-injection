@@ -13,19 +13,53 @@ namespace di {
 
 template<typename T>
 struct required : public detail::injection<T> {
-	required() : detail::injection<T>(default_ptr()) {
+	required() : detail::injection<T>(default_ptr()) {}
+
+	T* operator->() {
+		assert(!empty());
+		return object;	
+	}
+
+	T& operator*() {
+		assert(!empty());
+		return *object;
+	}
+
+	operator T*() {
+		assert(is_initialized());
+		return object;
+	}
+
+	T const* operator->() const {
+		assert(!empty());
+		return object;
+	}
+
+	T const& operator*() const {
+		assert(!empty());
+		return *object;
+	}
+
+	operator T const*() const {
+		assert(!empty());
+		return object;
+	}
+
+	bool empty() {
+		return  detail::injection<T>::object == NULL || 
+				detail::injection<T>::object == default_ptr();
 	}
 
 private:
 	enum {default_ptr_value = 1};
 
-	//Works only when injection is uninitialized
-	static bool is_same(detail::injection<T>& injection) {
-		return default_ptr() == injection.operator->();
-	}
-
 	static T* default_ptr() {
 		return reinterpret_cast<T*>(default_ptr_value);
+	}
+
+	//TODO: that's ugly...
+	static bool is_same(T* object) {
+		return default_ptr() == object;
 	}
 
 	friend struct detail::perform_injection;
