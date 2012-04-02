@@ -58,17 +58,17 @@ protected:
 };
 
 TEST_F(RequiredShould, beEmptyBeforeInitialization) {
-	EXPECT_EQ(true,testClassInstance->var.empty());
+	ASSERT_TRUE(testClassInstance->var.empty());
 }
 
 TEST_F(RequiredShould, notBeEmptyAfterProperInitialization) {
 	givenProperlyBuiltTestClassInstance();
-	EXPECT_EQ(false,testClassInstance->var.empty());
+	ASSERT_FALSE(testClassInstance->var.empty());
 }
 
 TEST_F(RequiredShould, remainEmptyAfterInproperInitialization) {
 	givenInproperlyBuiltTestClassInstance();
-	EXPECT_EQ(true,testClassInstance->var.empty());
+	ASSERT_TRUE(testClassInstance->var.empty());
 }
 
 TEST_F(RequiredShould, containProperPointerAfterProperInitialization) {

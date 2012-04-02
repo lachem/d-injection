@@ -13,50 +13,53 @@ namespace detail {
 
 template<typename T, typename P, int type_id>
 struct specialized_injection : public injection<typename representation<T,P>::type> {
-	specialized_injection() : injection<typename representation<T,P>::type>(type_id_as_ptr()) {}
+private:
+	typedef injection<typename representation<T,P>::type> base;
+public:
+	specialized_injection() : base(type_id_as_ptr()) {}
 
 	T* operator->() {
 		assert(!empty());
-		return getObject();	
+		return base::getObject();	
 	}
 
 	T& operator*() {
 		assert(!empty());
-		return getObject();
+		return base::getObject();
 	}
 
 	operator T*() {
 		assert(!empty());
-		return getObject();
+		return base::getObject();
 	}
 
 	T const* operator->() const {
 		assert(!empty());
-		return getObject();
+		return base::getObject();
 	}
 
 	T const& operator*() const {
 		assert(!empty());
-		return getObject();
+		return base::getObject();
 	}
 
 	operator T const*() const {
 		assert(!empty());
-		return getObject();
+		return base::getObject();
 	}
 
 	T* get() {
 		assert(!empty());
-		return getObject();	
+		return base::getObject();	
 	}
 
 	T const* get() const {
 		assert(!empty());
-		return getObject();	
+		return base::getObject();	
 	}
 
 	bool empty() {
-		return  getObject() == NULL || getObject() == type_id_as_ptr();
+		return base::getObject() == NULL || base::getObject() == type_id_as_ptr();
 	}
 
 protected:
