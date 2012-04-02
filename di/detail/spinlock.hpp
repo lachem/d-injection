@@ -40,6 +40,4 @@ private:
 } // namespace detail
 } // namespace di
 
-#undef BOOST_ATOMIC_NAMESPACE
-
 #endif //DI_SPIN_LOCK_HPP

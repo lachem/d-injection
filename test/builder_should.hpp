@@ -145,7 +145,7 @@ TEST_F(BuilderShould, injectObjectsToInjectionsBeingOfOnePointerSize) {
 
 	diff3types = diff3typesBuilder->build();
 
-	EXPECT_EQ(sizeof(diff3types->some_var.operator ->()), sizeof(diff3types->some_var));
+	EXPECT_EQ(sizeof(diff3types->some_var.get()), sizeof(diff3types->some_var));
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
@@ -153,9 +153,9 @@ TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
 
 	diff3types = diff3typesBuilder->build();
 
-	EXPECT_EQ(diff3types->some_var.operator ->(),  &d1);
-	EXPECT_EQ(diff3types->some_var2.operator ->(), &d2);
-	EXPECT_EQ(diff3types->some_var3.operator ->(), &d3);
+	EXPECT_EQ(diff3types->some_var.get(),  &d1);
+	EXPECT_EQ(diff3types->some_var2.get(), &d2);
+	EXPECT_EQ(diff3types->some_var3.operator->(), &d3);
 }
 
 TEST_F(BuilderShould, buildAbstractClasses) {
@@ -170,9 +170,9 @@ TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 
 	diff3types = dynamic_cast<Different3Types*>(abstractDiff3typesBuilder->build());
 
-	EXPECT_EQ(diff3types->some_var.operator ->(),  &d1);
-	EXPECT_EQ(diff3types->some_var2.operator ->(), &d2);
-	EXPECT_EQ(diff3types->some_var3.operator ->(), &d3);
+	EXPECT_EQ(diff3types->some_var.get(),  &d1);
+	EXPECT_EQ(diff3types->some_var2.get(), &d2);
+	EXPECT_EQ(diff3types->some_var3.get(), &d3);
 }
 
 TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
@@ -180,9 +180,9 @@ TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
 
 	same3AbstractTypes = dynamic_cast<Same3AbstractTypes*>(abstractSame3typesBuilder->build());
 
-	D1* actual_some_var  = dynamic_cast<D1*>(same3AbstractTypes->some_var.operator ->());
-	D2* actual_some_var2 = dynamic_cast<D2*>(same3AbstractTypes->some_var2.operator ->());
-	D3* actual_some_var3 = dynamic_cast<D3*>(same3AbstractTypes->some_var3.operator ->());
+	D1* actual_some_var  = dynamic_cast<D1*>(same3AbstractTypes->some_var.get());
+	D2* actual_some_var2 = dynamic_cast<D2*>(same3AbstractTypes->some_var2.get());
+	D3* actual_some_var3 = dynamic_cast<D3*>(same3AbstractTypes->some_var3.get());
 
 	EXPECT_EQ(actual_some_var,  &d1);
 	EXPECT_EQ(actual_some_var2, &d2);
@@ -195,8 +195,8 @@ TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed) {
 	diff3typesBuilder->replace<const D3>(d3_2);
 	diff3types = diff3typesBuilder->build();
 
-	EXPECT_NE(diff3types->some_var3.operator ->(), &d3);
-	EXPECT_EQ(diff3types->some_var3.operator ->(), &d3_2);
+	EXPECT_NE(diff3types->some_var3.get(), &d3);
+	EXPECT_EQ(diff3types->some_var3.get(), &d3_2);
 }
 
 TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed2) {
@@ -205,8 +205,8 @@ TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed2) {
 	same3typesBuilder->replace(d3_3,2);
 	same3types = same3typesBuilder->build();
 
-	EXPECT_NE(same3types->some_var3.operator ->(), &d3_2);
-	EXPECT_EQ(same3types->some_var3.operator ->(), &d3_3);
+	EXPECT_NE(same3types->some_var3.get(), &d3_2);
+	EXPECT_EQ(same3types->some_var3.get(), &d3_3);
 }
 
 TEST_F(BuilderShould, injectObjectsOfSameTypes) {
@@ -224,8 +224,8 @@ TEST_F(BuilderShould, injectObjectsOfSame2Types) {
 
 	same2types = same2typesBuilder->build();
 
-	EXPECT_EQ(same2types->some_var.operator ->(),  &d3);
-	EXPECT_EQ(same2types->some_var2.operator ->(), &d3_2);
+	EXPECT_EQ(same2types->some_var.get(),  &d3);
+	EXPECT_EQ(same2types->some_var2.get(), &d3_2);
 }
 
 TEST_F(BuilderShould, injectNullWhenNoInjectionProvided) {
@@ -233,7 +233,7 @@ TEST_F(BuilderShould, injectNullWhenNoInjectionProvided) {
 
 	same3types = same3typesBuilder->build();
 
-	EXPECT_EQ(same3types->some_var3.operator ->(), NULL_PTR(D3));
+	EXPECT_EQ(same3types->some_var3.get(), NULL_PTR(D3));
 }
 
 TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
@@ -242,8 +242,8 @@ TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
 	same2types = new Same2Types;
 	same2typesBuilder->delegate(*same2types);
 
-	EXPECT_EQ(same2types->some_var.operator ->(),  &d3);
-	EXPECT_EQ(same2types->some_var2.operator ->(), &d3_2);
+	EXPECT_EQ(same2types->some_var.get(),  &d3);
+	EXPECT_EQ(same2types->some_var2.get(), &d3_2);
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
@@ -262,13 +262,13 @@ TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
 	Different3Types diff3_4;
 	diff3typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
 	
-	EXPECT_EQ(diff3_1.some_var.operator ->(),  &d1);
-	EXPECT_EQ(diff3_1.some_var2.operator ->(), &d2);
-	EXPECT_EQ(diff3_1.some_var3.operator ->(), &d3_2);
+	EXPECT_EQ(diff3_1.some_var.get(),  &d1);
+	EXPECT_EQ(diff3_1.some_var2.get(), &d2);
+	EXPECT_EQ(diff3_1.some_var3.get(), &d3_2);
 
-	EXPECT_EQ(diff3_2.some_var3.operator ->(), &d3);
-	EXPECT_EQ(diff3_3.some_var3.operator ->(), &d3_3);
-	EXPECT_EQ(diff3_4.some_var3.operator ->(), &d3_2);
+	EXPECT_EQ(diff3_2.some_var3.get(), &d3);
+	EXPECT_EQ(diff3_3.some_var3.get(), &d3_3);
+	EXPECT_EQ(diff3_4.some_var3.get(), &d3_2);
 }
 
 }  // namespace injection
