@@ -55,29 +55,43 @@ public:
 
 	template<typename U>
 	builder<T>& use(U& object) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
+		do_usage<U>(object);
+		return *this;
+	}
 
-		bool use_succeeded = false;
-		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_succeeded));
-		if(!use_succeeded) {
-			out_of_bounds();
-		}
+	template<template <typename> class PtrPolicy, typename U>
+	builder<T>& use(const PtrPolicy<U>& smart_ptr) {
+		do_usage<U>(*smart_ptr.object);
 		return *this;
 	}
 
 	template<typename U>
 	builder<T>& replace(U& object, int at=0) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
+		do_replacement<U>(object, at);
+		return *this;
+	}
 
+private:
+	template<typename U>
+	void do_usage(U& object) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
+		bool use_succeeded = false;
+		boost::fusion::for_each(injections,detail::set_next_same_type<U>(&object,&use_succeeded));
+		if(!use_succeeded) {
+			out_of_bounds();
+		}
+	}
+	
+	template<typename U>
+	void do_replacement(U& object, int at) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,U*>::type::value));
 		bool replace_succeeded = false;
 		boost::fusion::for_each(injections,detail::set_nth_same_type<U>(&object,at,&replace_succeeded));
 		if(!replace_succeeded) {
 			out_of_bounds();
 		}
-		return *this;
 	}
 
-private:
 	virtual void out_of_bounds() = 0;
 
 protected:

@@ -8,9 +8,17 @@
 
 namespace di {
 
-struct none{};
-struct unique{};
-struct shared{};
+template<typename T>
+struct unique{
+	explicit unique(T* an_object) : object(an_object) {}
+	T* object;
+};
+
+template<typename T>
+struct shared{
+	explicit shared(T* an_object) : object(an_object) {}
+	T* object;
+};
 
 } // namespace di
 

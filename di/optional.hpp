@@ -12,10 +12,16 @@
 
 namespace di {
 
-template<typename T,typename P = di::none>
-struct optional : public detail::specialized_injection<T,P,DI_OTPIONAL_TYPE_ID>{	
+template<typename T>
+struct optional : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{	
 	friend struct detail::perform_injection;
 };
+
+template<typename T>
+struct optional< di::shared<T> > : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{};
+
+template<typename T>
+struct optional< di::unique<T> > : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{};
 
 } //namspace di
 

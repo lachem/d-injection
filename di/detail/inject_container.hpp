@@ -21,8 +21,8 @@ template<typename T>
 class inject_container {
 
 	struct node {
-		node() : injection(0), next(0) {}
-		explicit node(node* a_next) : injection(0), next(a_next) {}
+		node() : injection(NULL), next(NULL) {}
+		explicit node(node* a_next) : injection(NULL), next(a_next) {}
 
 		inline bool is_in_range(char* address, size_t range) {
 			char* inject_address = reinterpret_cast<char*>(injection);
@@ -72,6 +72,9 @@ public:
  
 		node* prev = &head_sentinel;
 		node* curr = head_sentinel.next;
+		if (empty()) {
+			return NULL;
+		}
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
 				detail::injection<T>* injection = curr->injection;
@@ -85,16 +88,16 @@ public:
 		if(curr->is_in_range(address,range)) {
 			detail::injection<T>* injection = curr->injection;
 			tail = prev;
-			prev->next = 0;
+			prev->next = NULL;
 			delete curr;
 			return injection;
 		}
-		return 0;
+		return NULL;
 	}
 
 private:
 	inline static bool empty() {
-		return head_sentinel.next == 0;
+		return head_sentinel.next == NULL;
 	}
 
 private:
@@ -107,7 +110,7 @@ template<typename T>
 typename inject_container<T>::node inject_container<T>::head_sentinel;
 
 template<typename T>
-typename inject_container<T>::node* inject_container<T>::tail = 0;
+typename inject_container<T>::node* inject_container<T>::tail = NULL;
 
 template<typename T>
 detail::spinlock inject_container<T>::lock;

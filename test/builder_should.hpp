@@ -64,6 +64,8 @@ public:
 	required<D3> some_var2;
 };
 
+struct SpareInjections : public di::subject<D1,D2,D3> {};
+
 class BuilderShould : public ::testing::Test {
 protected:
 	builder<AbstractDifferent3Types>* abstractDiff3typesBuilder;
@@ -80,10 +82,13 @@ protected:
 
 	builder<Same2Types>* same2typesBuilder;
 	Same2Types* same2types;
+	
+	SpareInjections* spareInjectionsInstance;
 
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
+		spareInjectionsInstance = new SpareInjections();
 		same2typesBuilder = 0;
 		same2types = 0;
 		same3typesBuilder = 0;
@@ -97,6 +102,7 @@ protected:
 	}
 
 	virtual void TearDown() {
+		delete spareInjectionsInstance;
 		delete same2typesBuilder;
 		delete same2types;
 		delete same3typesBuilder;
@@ -137,6 +143,11 @@ protected:
 	void givenSame2TypesBuilder() {
 		same2typesBuilder = new builder_imp<Same2Types>;
 		same2typesBuilder->use(d3).use(d3_2);
+	}
+
+	void givenProperlyBuiltSpareInjectionsInstance() {
+		di::builder_imp<SpareInjections> builder;
+		builder.delegate(*spareInjectionsInstance);
 	}
 };
 
@@ -251,15 +262,13 @@ TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
 	diff3typesBuilder.use<const D1>(d1).use(d2);
 
 	Different3Types diff3_1;
-	diff3typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
-
 	Different3Types diff3_2;
-	diff3typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
-
 	Different3Types diff3_3;
-	diff3typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
-
 	Different3Types diff3_4;
+
+	diff3typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
+	diff3typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
+	diff3typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
 	diff3typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
 	
 	EXPECT_EQ(diff3_1.some_var.get(),  &d1);
@@ -269,6 +278,10 @@ TEST_F(BuilderShould, injectObjectsOfDifferent3TypesByDelegation) {
 	EXPECT_EQ(diff3_2.some_var3.get(), &d3);
 	EXPECT_EQ(diff3_3.some_var3.get(), &d3_3);
 	EXPECT_EQ(diff3_4.some_var3.get(), &d3_2);
+}
+
+TEST_F(BuilderShould, bareWithSpareSubjectTypes) {
+	givenProperlyBuiltSpareInjectionsInstance();
 }
 
 }  // namespace injection
