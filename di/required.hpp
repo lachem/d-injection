@@ -9,6 +9,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <di/detail/specialized_injection.hpp>
+#include <di/detail/utility.hpp>
 #include <di/detail/atomic.hpp>
 
 #define DI_REQUIRED_TYPE_ID 1
@@ -16,19 +17,25 @@
 namespace di {
 
 template<typename T>
-struct required : public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID> {
+struct required : 
+	public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID>, 
+	public detail::nonallocatable 
+{
 	friend struct detail::perform_injection;
 };
 
 template<typename T>
-struct required< shared<T> > : public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID> {
+struct required< shared<T> > : 
+	public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID>, 
+	public detail::nonallocatable 
+{
 private:
 	typedef detail::specialized_injection<T,DI_REQUIRED_TYPE_ID> base;
 public:
 	required() : instance_count(new detail::uint32_t(1)) {}
 	required(const required< shared<T> >& req) : base(req){
-		detail::atomic_inc32(req.instance_count);
 		instance_count = req.instance_count;
+		detail::atomic_inc32(req.instance_count);
 	}
 	required< shared<T> >& operator=(const required< shared<T> >& req) {
 		if(this != &req) {
@@ -54,16 +61,16 @@ private:
 };
 
 template<typename T>
-struct required< unique<T> > : public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID> {
+struct required< unique<T> > : 
+	public detail::specialized_injection<T,DI_REQUIRED_TYPE_ID>, 
+	public detail::nonallocatable, public detail::noncopyable
+{
 	required(){};
 	~required() {
 		if(!empty()) {
 			delete detail::injection<T>::get_object();
 		}
 	}
-private:
-	required(const required< unique<T> >&);
-	void operator=(const required< di::unique<T> >&);
 };
 
 } //namspace di
