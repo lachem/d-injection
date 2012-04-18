@@ -9,60 +9,58 @@
 #include <di/detail/memory_pool.hpp>
 #include <di/detail/spinlock.hpp>
 #include <di/detail/lock_guard.hpp>
-#include <di/configuration.hpp>
 
 namespace di {
 namespace detail {
 
 template<typename T>
-struct injection;
-
-template<typename T>
 class inject_container {
 
 	struct node {
-		node() : injection(NULL), next(NULL) {}
-		explicit node(node* a_next) : injection(NULL), next(a_next) {}
+		node() : item(NULL), next(NULL) {}
+		node(T* an_item) : item(an_item), next(NULL) {}
+		explicit node(node* a_next) : item(NULL), next(a_next) {}
 
 		inline bool is_in_range(char* address, size_t range) {
-			char* inject_address = reinterpret_cast<char*>(injection);
-			return (address <= inject_address && inject_address < address + range);
+			return item->is_in_range(address,range);
+		}
+
+		template<size_t size>
+		static memory_pool<size>& allocator() {
+			static memory_pool<size> mem_pool;
+			return mem_pool;
 		}
 
 		void* operator new(size_t size) {
-			return mem_pool.malloc();
+			return allocator<sizeof(node)>().malloc();
 		}
 
 		void operator delete(void* block) {
-			mem_pool.free(block);
+			allocator<sizeof(node)>().free(block);
 		}
 	
-		detail::injection<T>* injection;
+		T* item;
 		node* next;
-
-	private:
-		static detail::memory_pool<DI_MAX_INJECTIONS_PER_TYPE> mem_pool;
 	};
 
 public:
-	inline static void insert(detail::injection<T>* injection) {
-		assert(injection);
+	inline static void insert(T* item) {
+		assert(item);
 
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
 
-		node* insert_node = new node();
+		node* insert_node = new node(item);
 		if(empty()) {
 			tail = head_sentinel.next = insert_node;
 		}
 		else {
 			tail = tail->next = insert_node;
 		}
-		tail->injection = injection;
 	}
 
-	inline static detail::injection<T>* remove(char* address, size_t range) {
+	inline static T* remove(char* address, size_t range) {
 		assert(address);
 		assert(range);
 
@@ -73,24 +71,24 @@ public:
 		node* prev = &head_sentinel;
 		node* curr = head_sentinel.next;
 		if (empty()) {
-			return NULL;
+			return head_sentinel.item;
 		}
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
-				detail::injection<T>* injection = curr->injection;
+				T* item = curr->item;
 				prev->next = curr->next;
 				delete curr;
-				return injection;
+				return item;
 			}
 			prev = curr;
 			curr = curr->next;
 		}
 		if(curr->is_in_range(address,range)) {
-			detail::injection<T>* injection = curr->injection;
+			T* item = curr->item;
 			tail = prev;
 			prev->next = NULL;
 			delete curr;
-			return injection;
+			return item;
 		}
 		return NULL;
 	}
@@ -114,9 +112,6 @@ typename inject_container<T>::node* inject_container<T>::tail = NULL;
 
 template<typename T>
 detail::spinlock inject_container<T>::lock;
-
-template<typename T>
-detail::memory_pool<DI_MAX_INJECTIONS_PER_TYPE> inject_container<T>::node::mem_pool;
 
 } //namespace detail
 } //namespace di

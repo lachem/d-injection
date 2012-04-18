@@ -6,38 +6,41 @@
 #ifndef DI_ALLOCATOR_HPP
 #define DI_ALLOCATOR_HPP
 
+#include <di/configuration.hpp>
 #include <cassert>
 
 namespace di {
 namespace detail {
 
 template<size_t size>
+struct mem_block{
+	char bytes[size];
+};
+
+template<size_t size, size_t capacity = DI_MAX_INJECTIONS_PER_TYPE>
 class memory_pool {
 private:
-	struct mem_block{void* p1; void* p2;};
-	
-private:
-	mem_block* available_mem;
-	mem_block* stack[size];
+	mem_block<size>* available_mem;
+	mem_block<size>* stack[capacity];
 	unsigned int head;
 
 public:
 	memory_pool() {
-		available_mem = new mem_block[size];
-		head = size;
-		for(int i=0; i<size; ++i) {
+		available_mem = new mem_block<size>[capacity];
+		head = capacity;
+		for(int i=0; i<capacity; ++i) {
 			stack[i] = available_mem + i;
 		}
 	}
 
 	void* malloc() {
-		return empty() ? ::malloc(sizeof(mem_block)) : stack[--head];
+		return empty() ? ::malloc(sizeof(mem_block<size>)) : stack[--head];
 	}
 
 	void free(void* block) {
 		assert(0 != block);
 		if(owns(block)) {
-			stack[head++] = reinterpret_cast<mem_block*>(block);
+			stack[head++] = reinterpret_cast<mem_block<size>*>(block);
 		}
 		else {
 			::free(block);
@@ -51,7 +54,7 @@ private:
 	}
 
 	bool owns(void* block) {
-		return (available_mem <= block) && (block < available_mem + size);
+		return (available_mem <= block) && (block < available_mem + capacity);
 	}	
 };
 

@@ -6,25 +6,26 @@
 #ifndef DI_OPTIONAL_HPP
 #define DI_OPTIONAL_HPP
 
-#include <di/detail/specialized_injection.hpp>
-
-#define DI_OTPIONAL_TYPE_ID 2
+#include <di/detail/injection.hpp>
+#include <di/detail/utility.hpp>
 
 namespace di {
 
 template<typename T>
-struct optional : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{	
-	friend struct detail::perform_injection;
+struct optional : public detail::injection< T,ordinary<T> > {	
+	optional() : detail::injection< T,ordinary<T> >(false) {}
 };
 
 template<typename T>
-struct optional< di::shared<T> > : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{};
+struct optional< shared<T> > : public detail::injection< T,shared<T> > {
+	optional() : detail::injection< T,shared<T> >(false) {}
+};
 
 template<typename T>
-struct optional< di::unique<T> > : public detail::specialized_injection<T,DI_OTPIONAL_TYPE_ID>{};
+struct optional< unique<T> > : public detail::injection< T,unique<T> > {
+	optional() : detail::injection< T,unique<T> >(false) {}
+};
 
 } //namspace di
-
-#undef DI_OTPIONAL_TYPE_ID
 
 #endif //DI_OPTIONAL_HPP
