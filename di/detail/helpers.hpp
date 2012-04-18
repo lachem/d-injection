@@ -11,6 +11,7 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 #include <di/detail/inject_container.hpp>
+#include <di/detail/item.hpp>
 
 namespace di {
 namespace detail {
@@ -82,21 +83,13 @@ struct perform_injection {
 	template<typename V>
 	void operator()(V& v) const {
 		typedef typename boost::remove_pointer<V>::type injected_type;
-		typedef inject_container<injected_type> container;
+		typedef inject_container< item<injected_type> > container;
 		
-		detail::injection<injected_type>* injection = container::remove(address,size);
-		if(NULL != injection) {
-			if(NULL != v) {
-				injection->object = v;
-			}
-			else 
-			if(required<injected_type>::is_same(injection->object)) {
-				unsatisfied_req_handler();
-			}
-			else {
-				injection->object = NULL;
-			}
+		item<injected_type>* inj_item = container::remove(address,size);
+		if(inj_item && !inj_item->assign(v)) {
+			unsatisfied_req_handler();
 		}
+		delete inj_item;
 	}
 
 private:

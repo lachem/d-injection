@@ -6,6 +6,14 @@
 #ifndef DI_UTILITY_HPP
 #define DI_UTILITY_HPP
 
+#ifndef NULL
+#define NULL 0
+#endif
+
+#ifndef NULL_PTR
+#define NULL_PTR(Class) static_cast<Class*>(0)
+#endif
+
 namespace di {
 namespace detail {
 
