@@ -19,22 +19,11 @@ struct item {
 	item(void* an_address, bool required) :
 		address(an_address), is_required(required) {}
 
-	template<size_t size>
-	static memory_pool<size>& allocator() {
-		static memory_pool<size> mem_pool;
-		return mem_pool;
-	}
-
-	void* operator new(size_t size) {
-		return allocator<sizeof(item<T>)>().malloc();
-	}
-
-	void operator delete(void* block) {
-		allocator<sizeof(item<T>)>().free(block);
-	}
-
 	bool assign(T* object) {
-		do_assignement(object);
+		if(address == NULL) {
+			return false;
+		}
+		do_assignement(address,object);
 		return is_required ? (object != NULL) : true;
 	}
 
@@ -44,11 +33,9 @@ struct item {
 	}
 
 protected:
-	virtual void do_assignement(T*) = 0;
-
-protected:
 	void* address;
 	bool is_required;
+	void (*do_assignement)(void*, T*);
 };
 
 } // namespace detail

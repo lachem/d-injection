@@ -30,21 +30,37 @@ struct shared {
 
 namespace detail {
 
-template<typename R, typename T>
+//TODO: void* casting is dangerous, maybe there is other way to remove virtuality
+template<typename T>
 struct ordinary_item : public item<T> {
-	ordinary_item(R* rep, bool required) : item<T>(rep,required){}
+	ordinary_item(T** rep, bool required) : item<T>(rep,required){
+		do_assignement = assignement;
+	}
 private:
-	virtual void do_assignement(T* object) {
-		*reinterpret_cast< R* >(address) = object;
+	static void assignement(void* address, T* object) {
+		*reinterpret_cast< T** >(address) = object;
 	}
 };
 
-template<typename R, typename T>
-struct smart_ptr_item : public item<T> {
-	smart_ptr_item(R* rep, bool required) : item<T>(rep,required) {}
+template<typename T>
+struct shared_item : public item<T> {
+	shared_item(boost::shared_ptr<T>* rep, bool required) : item<T>(rep,required) {
+		do_assignement = assignement;
+	}
 private:
-	virtual void do_assignement(T* object) {
-		reinterpret_cast< R* >(address)->reset(object);
+	static void assignement(void* address, T* object) {
+		reinterpret_cast< boost::shared_ptr<T>* >(address)->reset(object);
+	}
+};
+
+template<typename T>
+struct unique_item : public item<T> {
+	unique_item(std::auto_ptr<T>* rep, bool required) : item<T>(rep,required) {
+		do_assignement = assignement;
+	}
+private:
+	static void assignement(void* address, T* object) {
+		reinterpret_cast< std::auto_ptr<T>* >(address)->reset(object);
 	}
 };
 
@@ -54,7 +70,7 @@ struct representation;
 template<typename T>
 struct representation< ordinary<T> > {
 	typedef T* type;
-	typedef ordinary_item<type,T> item;
+	typedef ordinary_item<T> item;
 
 	static T* get(type* rep) {
 		return *rep;
@@ -67,7 +83,7 @@ struct representation< ordinary<T> > {
 template<typename T>
 struct representation< unique<T> > {
 	typedef std::auto_ptr<T> type;
-	typedef smart_ptr_item<type,T> item;
+	typedef unique_item<T> item;
 
 	static T* get(type* rep) {
 		return rep->get();
@@ -80,7 +96,7 @@ struct representation< unique<T> > {
 template<typename T>
 struct representation< shared<T> > {
 	typedef boost::shared_ptr<T> type;
-	typedef smart_ptr_item<type,T> item;
+	typedef shared_item<T> item;
 
 	static T* get(type* rep) {
 		return rep->get();
