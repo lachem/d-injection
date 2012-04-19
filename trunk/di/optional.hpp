@@ -12,17 +12,26 @@
 namespace di {
 
 template<typename T>
-struct optional : public detail::injection< T,ordinary<T> > {	
+struct optional : 
+	public detail::injection< T,ordinary<T> >, 
+	public detail::nonallocatable  
+{	
 	optional() : detail::injection< T,ordinary<T> >(false) {}
 };
 
 template<typename T>
-struct optional< shared<T> > : public detail::injection< T,shared<T> > {
+struct optional< shared<T> >  : 
+	public detail::injection< T,shared<T> >, 
+	public detail::nonallocatable 
+{
 	optional() : detail::injection< T,shared<T> >(false) {}
 };
 
 template<typename T>
-struct optional< unique<T> > : public detail::injection< T,unique<T> > {
+struct optional< unique<T> > :
+	public detail::injection< T,unique<T> >, 
+	public detail::nonallocatable, public detail::noncopyable 
+{
 	optional() : detail::injection< T,unique<T> >(false) {}
 };
 

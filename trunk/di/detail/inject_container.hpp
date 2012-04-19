@@ -17,12 +17,11 @@ template<typename T>
 class inject_container {
 
 	struct node {
-		node() : item(NULL), next(NULL) {}
-		node(T* an_item) : item(an_item), next(NULL) {}
-		explicit node(node* a_next) : item(NULL), next(a_next) {}
+		node() : item(), next(NULL) {}
+		explicit node(const T& an_item) : item(an_item), next(NULL) {}
 
 		inline bool is_in_range(char* address, size_t range) {
-			return item->is_in_range(address,range);
+			return item.is_in_range(address,range);
 		}
 
 		template<size_t size>
@@ -39,12 +38,12 @@ class inject_container {
 			allocator<sizeof(node)>().free(block);
 		}
 	
-		T* item;
+		T item;
 		node* next;
 	};
 
 public:
-	inline static void insert(T* item) {
+	inline static void insert(const T& item) {
 		assert(item);
 
 		#ifndef DI_NO_MULTITHREADING
@@ -60,7 +59,7 @@ public:
 		}
 	}
 
-	inline static T* remove(char* address, size_t range) {
+	inline static T remove(char* address, size_t range) {
 		assert(address);
 		assert(range);
 
@@ -75,7 +74,7 @@ public:
 		}
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
-				T* item = curr->item;
+				T item = curr->item;
 				prev->next = curr->next;
 				delete curr;
 				return item;
@@ -84,13 +83,13 @@ public:
 			curr = curr->next;
 		}
 		if(curr->is_in_range(address,range)) {
-			T* item = curr->item;
+			T item = curr->item;
 			tail = prev;
 			prev->next = NULL;
 			delete curr;
 			return item;
 		}
-		return NULL;
+		return head_sentinel.item;
 	}
 
 private:

@@ -74,28 +74,25 @@ private:
 	mutable bool* result;
 };
 
+template<typename T>
 struct perform_injection {
-	template<typename T>
-	perform_injection(T* subject, boost::function<void()>& an_unsatisfied_req_handler) : 
-		address(reinterpret_cast<char*>(subject)), size(sizeof(T)), 
-		unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
+	perform_injection(T* subject, void (*an_unsatisfied_req_handler)(T*)) : 
+		subject(subject), unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
 
 	template<typename V>
 	void operator()(V& v) const {
 		typedef typename boost::remove_pointer<V>::type injected_type;
 		typedef inject_container< item<injected_type> > container;
 		
-		item<injected_type>* inj_item = container::remove(address,size);
-		if(inj_item && !inj_item->assign(v)) {
-			unsatisfied_req_handler();
+		item<injected_type> inj_item = container::remove(reinterpret_cast<char*>(subject),sizeof(T));
+		if(!inj_item.assign(v)) {
+			unsatisfied_req_handler(subject);
 		}
-		delete inj_item;
 	}
 
 private:
-	char* const address;
-	size_t const size;
-	boost::function<void()>& unsatisfied_req_handler;
+	T* subject;
+	void (*unsatisfied_req_handler)(T*);
 };
 
 } // namespace detail
