@@ -63,7 +63,7 @@ protected:
 	explicit injection(bool is_required) {
 		representation<P>::init(&rep_object);
 		inject_container< item<T> >::insert(
-			representation<P>::item(&rep_object,is_required));
+			typename representation<P>::item(&rep_object,is_required));
 	}
 
 	injection(const injection<T,P>& inj) {

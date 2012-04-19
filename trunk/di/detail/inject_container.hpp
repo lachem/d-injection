@@ -44,8 +44,6 @@ class inject_container {
 
 public:
 	inline static void insert(const T& item) {
-		assert(item);
-
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif

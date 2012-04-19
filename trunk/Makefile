@@ -1,10 +1,11 @@
 
-GTEST_INC = ../gtest-1.6.0
+GTEST_INC = ../gmock-1.6.0/gtest/
+GMOCK_INC = ../gmock-1.6.0
 BOOST_INC = ../boost_1_48_0
 BOOST_LIB = ../boost_1_48_0/stage/lib
 
-SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc
-INC = ./ $(BOOST_INC) ${GTEST_INC}/include ${GTEST_INC}
+SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc $(GMOCK_INC)/src/gmock-all.cc
+INC = ./ $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
 LIB = $(BOOST_LIB)/libboost_thread.a $(BOOST_LIB)/libboost_chrono.a $(BOOST_LIB)/libboost_system.a -lpthread -lrt
 
 all: debug release

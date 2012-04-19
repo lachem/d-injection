@@ -34,7 +34,7 @@ namespace detail {
 template<typename T>
 struct ordinary_item : public item<T> {
 	ordinary_item(T** rep, bool required) : item<T>(rep,required){
-		do_assignement = assignement;
+		item<T>::do_assignement = assignement;
 	}
 private:
 	static void assignement(void* address, T* object) {
@@ -45,7 +45,7 @@ private:
 template<typename T>
 struct shared_item : public item<T> {
 	shared_item(boost::shared_ptr<T>* rep, bool required) : item<T>(rep,required) {
-		do_assignement = assignement;
+		item<T>::do_assignement = assignement;
 	}
 private:
 	static void assignement(void* address, T* object) {
@@ -56,7 +56,7 @@ private:
 template<typename T>
 struct unique_item : public item<T> {
 	unique_item(std::auto_ptr<T>* rep, bool required) : item<T>(rep,required) {
-		do_assignement = assignement;
+		item<T>::do_assignement = assignement;
 	}
 private:
 	static void assignement(void* address, T* object) {
