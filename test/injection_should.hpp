@@ -118,99 +118,101 @@ typedef ::testing::Types<RequiredTrait, OptionalTrait> Traits;
 TYPED_TEST_CASE(InjectionShould, Traits);
 
 TYPED_TEST(InjectionShould, beEmptyBeforeInitialization) {
-	ASSERT_TRUE(testClassInstance->var.empty());
+	ASSERT_TRUE(InjectionShould<TypeParam>::testClassInstance->var.empty());
 }
 
 TYPED_TEST(InjectionShould, notBeEmptyAfterProperInitialization) {
-	givenProperlyBuiltTestClassInstance();
-	ASSERT_FALSE(testClassInstance->var.empty());
+	InjectionShould<TypeParam>::givenProperlyBuiltTestClassInstance();
+	ASSERT_FALSE(InjectionShould<TypeParam>::testClassInstance->var.empty());
 }
 
 TYPED_TEST(InjectionShould, remainEmptyAfterInproperInitialization) {
-	givenInproperlyBuiltTestClassInstance();
-	ASSERT_TRUE(testClassInstance->var.empty());
+	InjectionShould<TypeParam>::givenInproperlyBuiltTestClassInstance();
+	ASSERT_TRUE(InjectionShould<TypeParam>::testClassInstance->var.empty());
 }
 
 TYPED_TEST(InjectionShould, containProperPointerAfterProperInitialization) {
-	givenProperlyBuiltTestClassInstance();
-	EXPECT_EQ(&t1,testClassInstance->var.get());
+	InjectionShould<TypeParam>::givenProperlyBuiltTestClassInstance();
+	EXPECT_EQ(&this->t1,InjectionShould<TypeParam>::testClassInstance->var.get());
 }
 
 TYPED_TEST(InjectionShould, containRequiredUniquePointerAfterProperInitialization) {
 	TestType2* t2 = new TestType2;
-	givenProperlyBuiltTestClassInstance(t2);
-	EXPECT_EQ(t2,testClassInstance->var_unique.get());
+	InjectionShould<TypeParam>::givenProperlyBuiltTestClassInstance(t2);
+	EXPECT_EQ(t2,InjectionShould<TypeParam>::testClassInstance->var_unique.get());
 }
 
 TYPED_TEST(InjectionShould, destroyItsContentUponDestructionWhenDeclaredAsUnique) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die());
 
-	givenProperlyBuiltTestClassInstance(t2Mock);
+	InjectionShould<TypeParam>::givenProperlyBuiltTestClassInstance(t2Mock);
 }
 
 TYPED_TEST(InjectionShould, destroyItsContentUponDestructionWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die());
 
-	givenProperlyBuiltTestClassInstance(new TestType2,t2Mock);
+	InjectionShould<TypeParam>::givenProperlyBuiltTestClassInstance(new TestType2,t2Mock);
 }
 
 TYPED_TEST(InjectionShould, destroyItsContentOnceUponDestructionWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
-	givenProperlyBuiltCopyableInstance(t2Mock);
-	CopyableClass copyableClassCopy(*copyableClassInstance);
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(t2Mock);
+	typename TypeParam::CopyableClass copyableClassCopy(*InjectionShould<TypeParam>::copyableClassInstance);
 }
 
 TYPED_TEST(InjectionShould, sustainInjectedObjectUntilItsLastInstanceWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(0);
 
-	givenProperlyBuiltCopyableInstance(t2Mock);
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(t2Mock);
 
-	CopyableClass* copyableClassCopy = new CopyableClass(*copyableClassInstance);
-	CopyableClass* copyableClassCopy2 = new CopyableClass(*copyableClassInstance);
+	typename TypeParam::CopyableClass* copyableClassCopy = 
+		new typename TypeParam::CopyableClass(*InjectionShould<TypeParam>::copyableClassInstance);
+	typename TypeParam::CopyableClass* copyableClassCopy2 = 
+		new typename TypeParam::CopyableClass(*InjectionShould<TypeParam>::copyableClassInstance);
 	delete copyableClassCopy;
 	delete copyableClassCopy2;
 
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
-	EXPECT_EQ(t2Mock,copyableClassInstance->var_shared.get());
+	EXPECT_EQ(t2Mock,InjectionShould<TypeParam>::copyableClassInstance->var_shared.get());
 }
 
 TYPED_TEST(InjectionShould, beCopiedProperlyWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
-	givenProperlyBuiltCopyableInstance(t2Mock);
-	CopyableClass copyableClassCopy(*copyableClassInstance);
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(t2Mock);
+	typename TypeParam::CopyableClass copyableClassCopy(*InjectionShould<TypeParam>::copyableClassInstance);
 
-	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
+	EXPECT_EQ(InjectionShould<TypeParam>::copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
 }
 
 TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
-	givenProperlyBuiltCopyableInstance(t2Mock);
-	CopyableClass copyableClassCopy, copyableClassCopy2;
-	copyableClassCopy = *copyableClassInstance;
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(t2Mock);
+	typename TypeParam::CopyableClass copyableClassCopy, copyableClassCopy2;
+	copyableClassCopy = *InjectionShould<TypeParam>::copyableClassInstance;
 	copyableClassCopy2 = copyableClassCopy;
 
-	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
-	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy2.var_shared.get());
+	EXPECT_EQ(InjectionShould<TypeParam>::copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
+	EXPECT_EQ(InjectionShould<TypeParam>::copyableClassInstance->var_shared.get(),copyableClassCopy2.var_shared.get());
 }
 
 TYPED_TEST(InjectionShould, handleSelfAssignementProperlyWhenDeclaredAsShared) {
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
-	givenProperlyBuiltCopyableInstance(t2Mock);
-	(*copyableClassInstance) = (*copyableClassInstance);
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(t2Mock);
+	(*InjectionShould<TypeParam>::copyableClassInstance) = (*InjectionShould<TypeParam>::copyableClassInstance);
 
-	EXPECT_EQ(t2Mock,copyableClassInstance->var_shared.get());
+	EXPECT_EQ(t2Mock,InjectionShould<TypeParam>::copyableClassInstance->var_shared.get());
 }
 
 }  // namespace required
