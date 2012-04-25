@@ -30,6 +30,27 @@ struct shared {
 
 namespace detail {
 
+template<typename T>
+struct injectable {
+	inline static T& extract(T& object) {
+		return object;
+	}
+};
+
+template<typename T>
+struct injectable < unique<T> > {
+	inline static T& extract(const unique<T>& object) {
+		return *object.object;
+	}
+};
+
+template<typename T>
+struct injectable < shared<T> > {
+	inline static T& extract(const shared<T>& object) {
+		return *object.object;
+	}
+};
+
 //TODO: void* casting is dangerous, maybe there is other way to remove virtuality
 template<typename T>
 struct ordinary_item : public item<T> {

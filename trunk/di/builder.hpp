@@ -52,16 +52,25 @@ public:
 
 	virtual T* build() const = 0;
 	virtual void delegate(T&) const = 0;
-
+	
+	//TODO: allow building custom objects derived purely from subject<...>
+	template<typename S>
+	void delegate(S& subject) const {
+	}
+	
 	template<typename U>
 	builder<T>& use(U& object) {
-		do_usage<U>(object);
+		do_usage<U>(detail::injectable<U>::extract(object));
 		return *this;
 	}
 
-	template<template <typename> class PtrPolicy, typename U>
-	builder<T>& use(const PtrPolicy<U>& smart_ptr) {
-		do_usage<U>(*smart_ptr.object);
+	template<template <typename> class SPtr, typename U>
+	builder<T>& use(const SPtr<U>& object) {
+		BOOST_STATIC_ASSERT((
+			boost::is_same< SPtr<U>,unique<U> >::value || 
+			boost::is_same< SPtr<U>,shared<U> >::value));
+
+		do_usage<U>(detail::injectable< SPtr<U> >::extract(object));
 		return *this;
 	}
 

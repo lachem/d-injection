@@ -20,7 +20,7 @@ struct optional :
 };
 
 template<typename T>
-struct optional< shared<T> >  : 
+struct optional< shared<T> > : 
 	public detail::injection< T,shared<T> >, 
 	public detail::nonallocatable 
 {
