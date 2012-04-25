@@ -66,8 +66,11 @@ protected:
 			typename representation<P>::item(&rep_object,is_required));
 	}
 
-	injection(const injection<T,P>& inj) {
+	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
+
+	injection<T,P>& operator=(const injection<T,P>& inj) {
 		rep_object = inj.rep_object;
+		return *this;
 	}
 
 	T* get_object() {
