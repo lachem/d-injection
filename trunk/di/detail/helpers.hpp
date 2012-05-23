@@ -11,6 +11,7 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 #include <di/detail/inject_container.hpp>
+#include <di/detail/injection_source.hpp>
 #include <di/detail/item.hpp>
 
 namespace di {
@@ -25,6 +26,7 @@ struct set_null {
 
 template<typename T>
 struct set_next_same_type {
+	typedef injection_source<typename T::type> type;
 
 	set_next_same_type(T* an_object, bool* result) : 
 		object(an_object), set(result) {
@@ -32,14 +34,14 @@ struct set_next_same_type {
 	};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
-		if(!v && !*set) {
-			v = object;
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,type> >::type* dummy = 0) const {
+		if(v.empty() && !*set) {
+			v = *object;
 			*set = true;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,type> >::type* dummy = 0) const {
 		//empty
 	}
 
@@ -50,6 +52,7 @@ private:
 
 template<typename T>
 struct set_nth_same_type {
+	typedef injection_source<typename T::type> type;
 
 	set_nth_same_type(T* an_object,int at, bool* a_result) : 
 		object(an_object), counter(at), result(a_result) {
@@ -57,14 +60,14 @@ struct set_nth_same_type {
 	};
 
 	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::enable_if<boost::is_same<V,type> >::type* dummy = 0) const {
 		if(0 == counter--) {
-			v = object;
+			v = *object;
 			*result = true;
 		}
 	}
 	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T* > >::type* dummy = 0) const {
+	void operator()(V& v,typename boost::disable_if<boost::is_same<V,type> >::type* dummy = 0) const {
 		//empty
 	}
 
@@ -81,10 +84,9 @@ struct perform_injection {
 
 	template<typename V>
 	void operator()(V& v) const {
-		typedef typename boost::remove_pointer<V>::type injected_type;
-		typedef inject_container< item<injected_type> > container;
+		typedef inject_container< item<V::type> > container;
 		
-		item<injected_type> inj_item = container::remove(reinterpret_cast<char*>(subject),sizeof(T));
+		item<V::type> inj_item = container::remove(reinterpret_cast<char*>(subject),sizeof(T));
 		if(!inj_item.assign(v)) {
 			unsatisfied_req_handler(subject);
 		}

@@ -8,6 +8,7 @@
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <di/detail/injection_source.hpp>
 
 namespace di {
 namespace detail {
@@ -19,12 +20,12 @@ struct item {
 	item(void* an_address, bool required) :
 		address(an_address), is_required(required) {}
 
-	bool assign(T* object) {
+	bool assign(const injection_source<T>& inj) {
 		if(address == NULL) {
-			return false;
+			return !is_required;
 		}
-		do_assignement(address,object);
-		return is_required ? (object != NULL) : true;
+		bool assigned = do_assignement(address,const_cast<injection_source<T>&>(inj));
+		return is_required ? assigned : true;
 	}
 
 	bool is_in_range(char* address, size_t range) const {
@@ -35,7 +36,7 @@ struct item {
 protected:
 	void* address;
 	bool is_required;
-	void (*do_assignement)(void*, T*);
+	bool (*do_assignement)(void*, injection_source<T>&);
 };
 
 } // namespace detail

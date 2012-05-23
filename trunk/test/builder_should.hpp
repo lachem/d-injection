@@ -11,64 +11,13 @@
 #include <iostream>
 #include <string>
 
-#include <di/required.hpp>
-#include <di/optional.hpp>
 #include <di/subject.hpp>
 #include <di/builder_imp.hpp>
+#include <test/test_types.hpp>
 
 using namespace di;
 
 namespace injection {
-
-struct D {virtual void vtable() = 0;};
-struct D1:public D{virtual void vtable(){}};
-struct D2:public D{virtual void vtable(){}};
-struct D3:public D{virtual void vtable(){}};
-
-template<typename T>
-struct D4 {};
-
-class AbstractDifferent4Types : public subject<const D1,D2,const D3, D4<D3> > {
-	virtual void compilerShouldKindlyGenerateVtable() = 0;
-};
-
-class Different4Types : public AbstractDifferent4Types {
-public:
-	required<const D1> some_var;
-	required<D2> some_var2;
-	optional<const D3> some_var3;
-	optional< D4<D3> > some_var4;
-
-	virtual void compilerShouldKindlyGenerateVtable() {};
-};
-
-class AbstractSame3AbstractTypes : public subject<D,D,D> {
-	virtual void compilerShouldKindlyGenerateVtable() = 0;
-};
-
-class Same3AbstractTypes : public AbstractSame3AbstractTypes {
-public:
-	required<D> some_var;
-	required<D> some_var2;
-	required<D> some_var3;
-
-	virtual void compilerShouldKindlyGenerateVtable() {};
-};
-
-class Same3Types : public subject<D3,D3,D3> {
-public:
-	required<D3> some_var;
-	required<D3> some_var2;
-	optional<D3> some_var3;
-};
-
-class Same2Types : public subject<D3,D3> {
-public:
-	required<D3> some_var;
-	required<D3> some_var2;
-};
-
-struct SpareInjections : public di::subject<D1,D2,D3> {};
 
 class BuilderShould : public ::testing::Test {
 protected:
@@ -78,8 +27,8 @@ protected:
 	builder<AbstractSame3AbstractTypes>* abstractSame3typesBuilder;
 	Same3AbstractTypes* same3AbstractTypes;
 
-	builder<Different4Types>* diff3typesBuilder;
-	Different4Types* diff3types;
+	builder<Different4Types>* diff4typesBuilder;
+	Different4Types* diff4types;
 
 	builder<Same3Types>* same3typesBuilder;
 	Same3Types* same3types;
@@ -97,8 +46,8 @@ protected:
 		same2types = 0;
 		same3typesBuilder = 0;
 		same3types = 0;
-		diff3typesBuilder = 0;
-		diff3types = 0;
+		diff4typesBuilder = 0;
+		diff4types = 0;
 		abstractSame3typesBuilder = 0;
 		same3AbstractTypes = 0;
 		abstractDiff3typesBuilder = 0;
@@ -111,8 +60,8 @@ protected:
 		delete same2types;
 		delete same3typesBuilder;
 		delete same3types;
-		delete diff3typesBuilder;
-		delete diff3types;
+		delete diff4typesBuilder;
+		delete diff4types;
 		delete abstractSame3typesBuilder;
 		delete same3AbstractTypes;
 		delete abstractDiff3typesBuilder;
@@ -120,8 +69,9 @@ protected:
 	}
 
 	void givenDifferent4TypesBuilder() {
-		diff3typesBuilder = new builder_imp<Different4Types>;
-		diff3typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3).use(d4);
+		diff4typesBuilder = new builder_imp<Different4Types>;
+		diff4typesBuilder->use<const D1>(d1).use(d2);
+		diff4typesBuilder->use<const D3>(d3).use(d4);
 	}
 
 	void givenAbstractDifferent4TypesBuilder() {
@@ -158,19 +108,19 @@ protected:
 TEST_F(BuilderShould, injectObjectsToInjectionsBeingOfOnePointerSize) {
 	givenDifferent4TypesBuilder();
 
-	diff3types = diff3typesBuilder->build();
+	diff4types = diff4typesBuilder->build();
 
-	EXPECT_EQ(sizeof(diff3types->some_var.get()), sizeof(diff3types->some_var));
+	EXPECT_EQ(sizeof(diff4types->some_var.get()), sizeof(diff4types->some_var));
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
 	givenDifferent4TypesBuilder();
 
-	diff3types = diff3typesBuilder->build();
+	diff4types = diff4typesBuilder->build();
 
-	EXPECT_EQ(diff3types->some_var.get(),  &d1);
-	EXPECT_EQ(diff3types->some_var2.get(), &d2);
-	EXPECT_EQ(diff3types->some_var3.operator->(), &d3);
+	EXPECT_EQ(diff4types->some_var.get(),  &d1);
+	EXPECT_EQ(diff4types->some_var2.get(), &d2);
+	EXPECT_EQ(diff4types->some_var3.get(), &d3);
 }
 
 TEST_F(BuilderShould, buildAbstractClasses) {
@@ -183,11 +133,11 @@ TEST_F(BuilderShould, buildAbstractClasses) {
 TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 	givenAbstractDifferent4TypesBuilder();
 
-	diff3types = dynamic_cast<Different4Types*>(abstractDiff3typesBuilder->build());
+	diff4types = dynamic_cast<Different4Types*>(abstractDiff3typesBuilder->build());
 
-	EXPECT_EQ(diff3types->some_var.get(),  &d1);
-	EXPECT_EQ(diff3types->some_var2.get(), &d2);
-	EXPECT_EQ(diff3types->some_var3.get(), &d3);
+	EXPECT_EQ(diff4types->some_var.get(),  &d1);
+	EXPECT_EQ(diff4types->some_var2.get(), &d2);
+	EXPECT_EQ(diff4types->some_var3.get(), &d3);
 }
 
 TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
@@ -207,11 +157,11 @@ TEST_F(BuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
 TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed) {
 	givenDifferent4TypesBuilder();
 
-	diff3typesBuilder->replace<const D3>(d3_2);
-	diff3types = diff3typesBuilder->build();
+	diff4typesBuilder->replace<const D3>(d3_2);
+	diff4types = diff4typesBuilder->build();
 
-	EXPECT_NE(diff3types->some_var3.get(), &d3);
-	EXPECT_EQ(diff3types->some_var3.get(), &d3_2);
+	EXPECT_NE(diff4types->some_var3.get(), &d3);
+	EXPECT_EQ(diff4types->some_var3.get(), &d3_2);
 }
 
 TEST_F(BuilderShould, supportReplacementOfObjectsPreviouslyUsed2) {
@@ -243,12 +193,12 @@ TEST_F(BuilderShould, injectObjectsOfSame2Types) {
 	EXPECT_EQ(same2types->some_var2.get(), &d3_2);
 }
 
-TEST_F(BuilderShould, injectNullWhenNoInjectionProvided) {
+TEST_F(BuilderShould, beEmptyWhenNoInjectionProvided) {
 	givenSame3TypesBuilderWithoutThirdElement();
 
 	same3types = same3typesBuilder->build();
 
-	EXPECT_EQ(same3types->some_var3.get(), NULL_PTR(D3));
+	ASSERT_TRUE(same3types->some_var3.empty());
 }
 
 TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
@@ -262,18 +212,18 @@ TEST_F(BuilderShould, injectObjectsOfSame2TypesByDelegation) {
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferent4TypesByDelegation) {
-	builder_imp<Different4Types> diff3typesBuilder;
-	diff3typesBuilder.use<const D1>(d1).use(d2);
+	builder_imp<Different4Types> diff4typesBuilder;
+	diff4typesBuilder.use<const D1>(d1).use(d2);
 
 	Different4Types diff3_1;
 	Different4Types diff3_2;
 	Different4Types diff3_3;
 	Different4Types diff3_4;
 
-	diff3typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
-	diff3typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
-	diff3typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
-	diff3typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
+	diff4typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
+	diff4typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
+	diff4typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
+	diff4typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
 	
 	EXPECT_EQ(diff3_1.some_var.get(),  &d1);
 	EXPECT_EQ(diff3_1.some_var2.get(), &d2);
@@ -287,6 +237,29 @@ TEST_F(BuilderShould, injectObjectsOfDifferent4TypesByDelegation) {
 TEST_F(BuilderShould, bareWithSpareSubjectTypes) {
 	givenProperlyBuiltSpareInjectionsInstance();
 }
+
+TEST_F(BuilderShould, removeSharedInjectionsUponReplacement) {
+	builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	
+	TestType2Mock* t2Mock = new TestType2Mock;
+	EXPECT_CALL(*t2Mock, die()).Times(1);
+	builder->use(di::shared<TestType2>(t2Mock));
+	builder->replace(di::shared<TestType2>(NULL_PTR(TestType2)));
+
+	delete builder;
+}
+
+TEST_F(BuilderShould, removeSharedInjectionsUponDelete) {
+	builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	
+	TestType2Mock* t2Mock = new TestType2Mock;
+	EXPECT_CALL(*t2Mock, die()).Times(1);
+	builder->use(di::shared<TestType2>(t2Mock));
+
+	delete builder;
+}
+
+
 
 }  // namespace injection
 

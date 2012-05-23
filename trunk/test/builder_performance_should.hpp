@@ -79,6 +79,26 @@ struct NoInjectionMixedTypes {
 	inline void use(T9& var9) {this->var9 = &var9;}
 };
 
+struct NoInjection10DifferentBuilder : public NoInjection10different {
+	virtual NoInjection10different* build() {
+		NoInjection10different* instance = new NoInjection10different;
+		instance->use(*var0); instance->use(*var1); instance->use(*var2);
+		instance->use(*var3); instance->use(*var4); instance->use(*var5);
+		instance->use(*var6); instance->use(*var7); instance->use(*var8);
+		instance->use(*var9);
+		return instance;
+	}
+};
+
+struct NoInjectionMixedBuilder : public NoInjectionMixedTypes {
+	virtual NoInjectionMixedTypes* build() {
+		NoInjectionMixedTypes* instance = new NoInjectionMixedTypes;
+		instance->use(*var0,*var1,*var2,*var3); instance->use(*var4,*var5,*var6); 
+		instance->use(*var7); instance->use(*var8); instance->use(*var9);
+		return instance;
+	}
+};
+
 class BuilderPerformanceShould : public ::testing::Test {
 protected:
 	static const int repetitions = 10000000;
@@ -118,32 +138,32 @@ protected:
 
 	void create10DifferentNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			NoInjection10different* noInj10Different = new NoInjection10different;
-			noInj10Different->use(t0_0);
-			noInj10Different->use(t1);
-			noInj10Different->use(t2);
-			noInj10Different->use(t3);
-			noInj10Different->use(t4_0);
-			noInj10Different->use(t5);
-			noInj10Different->use(t6);
-			noInj10Different->use(t7);
-			noInj10Different->use(t8);
-			noInj10Different->use(t9);
+			NoInjection10DifferentBuilder builder;
+			builder.use(t0_0);
+			builder.use(t1);
+			builder.use(t2);
+			builder.use(t3);
+			builder.use(t4_0);
+			builder.use(t5);
+			builder.use(t6);
+			builder.use(t7);
+			builder.use(t8);
+			builder.use(t9);
 
-			delete noInj10Different;
+			delete builder.build();
 		}
 	}
 
 	void create10MixedNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			NoInjectionMixedTypes* noInj10Mixed = new NoInjectionMixedTypes;
-			noInj10Mixed->use(t0_0,t0_1,t0_2,t0_3);
-			noInj10Mixed->use(t4_0,t4_1,t4_2);
-			noInj10Mixed->use(t7);
-			noInj10Mixed->use(t8);
-			noInj10Mixed->use(t9);
+			NoInjectionMixedBuilder builder;
+			builder.use(t0_0,t0_1,t0_2,t0_3);
+			builder.use(t4_0,t4_1,t4_2);
+			builder.use(t7);
+			builder.use(t8);
+			builder.use(t9);
 			
-			delete noInj10Mixed;
+			delete builder.build();
 		}
 	}
 
@@ -181,6 +201,6 @@ TEST_F(BuilderPerformanceShould, beHalfThatOfNormalCreation2) {
 
 }
 
-}  // namespace
+}  // namespace performance
 
 #endif //DI_PERFORMANCE_TESTS_HPP_

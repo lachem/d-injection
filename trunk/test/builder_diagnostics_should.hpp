@@ -11,112 +11,124 @@
 #include <iostream>
 #include <string>
 
-#include <di/required.hpp>
-#include <di/subject.hpp>
 #include <di/builder_imp.hpp>
+#include <test/test_types.hpp>
 
 using namespace di;
 
 namespace diagnostics {
 
-struct D1{};
-struct D2{};
-struct D3{};
-
-class Mixed3Types : public subject<D1,D2,D3,D3> {
-	required<D1> some_var;
-	required<D2> some_var2;
-	optional<D2> some_var3;
-	optional<D3> some_var4;
-	required<D3> some_var5;
-};
-
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
-	builder<Mixed3Types>* mixed3typesBuilder;
+	builder<Mixed5Types>* mixed5typesBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
 	}
 
 	virtual void TearDown() {
-		mixed3typesBuilder = 0;
+		mixed5typesBuilder = 0;
 	}
 
-	void givenMixed3TypesBuilderWithDiagnosticHandlerMock() {
-		mixed3typesBuilder = new builder_imp<Mixed3Types,Mixed3Types,di::using_exceptions<Mixed3Types> >;
+	void givenMixed5TypesBuilderWithDiagnosticHandlerMock() {
+		mixed5typesBuilder = new builder_imp<Mixed5Types,Mixed5Types,di::using_exceptions<Mixed5Types> >;
 	}
 };
 
 TEST_F(BuilderDiagnosticsShould, indicateThatUseHasGoneOutOfRange) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
 
-	mixed3typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
+	bool exception_has_been_thrown = false;
+
+	mixed5typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
 	try {
-		mixed3typesBuilder->use(d3_3);
+		mixed5typesBuilder->use(d3_3);
 	}
 	catch (di::out_of_range& oorException) {
 		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+		exception_has_been_thrown = true;
 	}
+
+	EXPECT_TRUE(exception_has_been_thrown);
 }
 
 TEST_F(BuilderDiagnosticsShould, indicateThatReplaceHasGoneOutOfRange) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
+
+	bool exception_has_been_thrown = false;
 
 	try {
-		mixed3typesBuilder->replace(d3_2,2);
+		mixed5typesBuilder->replace(d3_2,2);
 	}
 	catch (di::out_of_range& oorException) {
 		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+		exception_has_been_thrown = true;
 	}
+
+	EXPECT_TRUE(exception_has_been_thrown);
 }
 
 TEST_F(BuilderDiagnosticsShould, indicateThatReplaceHasGoneOutOfRangeWithNegativeIndex) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
+
+	bool exception_has_been_thrown = false;
 
 	try {
-		mixed3typesBuilder->replace(d3_2,-1);
+		mixed5typesBuilder->replace(d3_2,-1);
 	}
 	catch (di::out_of_range& oorException) {
 		EXPECT_EQ(std::string("Builder cannot handle any more injections of given type"),  oorException.what());
+		exception_has_been_thrown = true;
 	}
+
+	EXPECT_TRUE(exception_has_been_thrown);
 }
 
 TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenBuilding) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
 
-	mixed3typesBuilder->use(d1).use(d2).use(d3);
+	bool exception_has_been_thrown = false;
+
+	mixed5typesBuilder->use(d1).use(d2).use(d3);
 	try {
-		mixed3typesBuilder->build();
+		mixed5typesBuilder->build();
 	}
 	catch (di::requirement_not_satisfied& rnsException) {
 		std::string message(rnsException.what());
 		EXPECT_EQ(0,message.find("Builder has failed to satisfy all requirements of subject at"));
+		exception_has_been_thrown = true;
 	}
+
+	EXPECT_TRUE(exception_has_been_thrown);
 }
 
 TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDelegating) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
 
-	Mixed3Types* subject = new Mixed3Types;
+	bool exception_has_been_thrown = false;
+
+	Mixed5Types* subject = new Mixed5Types;
 	try {
-		mixed3typesBuilder->delegate(*subject);
+		mixed5typesBuilder->delegate(*subject);
 	}
 	catch (di::requirement_not_satisfied& rnsException) {
 		std::string message(rnsException.what());
 		EXPECT_EQ(0,message.find("Builder has failed to satisfy all requirements of subject at"));
+		exception_has_been_thrown = true;
 	}
 	delete subject;
+
+	EXPECT_TRUE(exception_has_been_thrown);
 }
 
 TEST_F(BuilderDiagnosticsShould, notIndicateErrorsWhenOptionalIsNotInjected) {
-	givenMixed3TypesBuilderWithDiagnosticHandlerMock();
+	givenMixed5TypesBuilderWithDiagnosticHandlerMock();
 
 	bool exceptionHasNotBeenThrown = true;
 
-	mixed3typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
+	mixed5typesBuilder->use(d1).use(d2).use(d3).use(d3_2);
 	try {
-		delete mixed3typesBuilder->build();
+		delete mixed5typesBuilder->build();
 	}
 	catch (...) {
 		exceptionHasNotBeenThrown = false;
