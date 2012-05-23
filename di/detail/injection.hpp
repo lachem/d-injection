@@ -8,7 +8,7 @@
 
 #include <boost/bind.hpp>
 #include <di/detail/inject_container.hpp>
-#include <di/detail/delete_policy.hpp>
+#include <di/detail/representation.hpp>
 
 namespace di {
 namespace detail {
