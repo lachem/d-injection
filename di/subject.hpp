@@ -54,7 +54,7 @@ namespace detail {
 struct become_injection_source {
 	template<typename T>
 	struct apply {
-		typedef injection_source<T> type;
+		typedef injection_source<T>* type;
 	};
 };
 
