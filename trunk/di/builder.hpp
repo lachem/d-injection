@@ -47,7 +47,11 @@ template<typename T>
 class builder {	
 public:
 	builder() {
-		//boost::fusion::for_each(injections,detail::set_null());
+		boost::fusion::for_each(injections,detail::nullify());
+	}
+
+	virtual ~builder() {
+		boost::fusion::for_each(injections,detail::dispose());
 	}
 
 	virtual T* build() const = 0;
@@ -65,7 +69,8 @@ public:
 			boost::is_same< SPtr<U>,shared<U> >::value || 
 			boost::is_same< SPtr<U>,ordinary<U> >::value));
 		
-		do_usage<const SPtr<U> >(object);
+		detail::injection_source< U >* source = new detail::injection_source_imp< SPtr<U> >(object);
+		do_usage(source);
 		return *this;
 	}
 
@@ -81,30 +86,31 @@ public:
 			boost::is_same< SPtr<U>,shared<U> >::value || 
 			boost::is_same< SPtr<U>,ordinary<U> >::value));
 
-		do_replacement<const SPtr<U> >(object,at);
+		detail::injection_source< U >* source = new detail::injection_source_imp< SPtr<U> >(object);
+		do_replacement(source, at);
 		return *this;
 	}
 
 private:
 	template<typename U>
-	void do_usage(U& object) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,detail::injection_source<typename U::type> >::type::value));
+	void do_usage(U* object) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type, U*>::type::value));
 		bool use_succeeded = false;
-		boost::fusion::for_each(injections,
-			detail::set_next_same_type<U>(&object,&use_succeeded));
+		boost::fusion::for_each(injections, detail::set_next_same_type<U>(object,&use_succeeded));
 		if(!use_succeeded) {
 			out_of_bounds();
+			delete object;
 		}
 	}
 	
 	template<typename U>
-	void do_replacement(U& object, int at) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type,detail::injection_source<typename U::type> >::type::value));
+	void do_replacement(U* object, int at) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type, U*>::type::value));
 		bool replace_succeeded = false;
-		boost::fusion::for_each(injections,
-			detail::set_nth_same_type<U>(&object,at,&replace_succeeded));
+		boost::fusion::for_each(injections, detail::set_nth_same_type<U>(object,at,&replace_succeeded));
 		if(!replace_succeeded) {
 			out_of_bounds();
+			delete object;
 		}
 	}
 

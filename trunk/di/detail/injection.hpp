@@ -62,8 +62,8 @@ struct injection {
 protected:
 	explicit injection(bool is_required) {
 		representation<P>::init(&rep_object);
-		inject_container< item<T> >::insert(
-			typename representation<P>::item(&rep_object,is_required));
+		inject_container< injection_destination<T> >::insert(
+			injection_destination_imp<P>(&rep_object,is_required));
 	}
 
 	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}

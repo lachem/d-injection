@@ -10,7 +10,6 @@
 #include <boost/shared_ptr.hpp>
 #include <di/detail/utility.hpp>
 #include <di/detail/injection_types.hpp>
-#include <di/detail/item_types.hpp>
 
 namespace di {
 namespace detail {
@@ -20,8 +19,7 @@ struct representation;
 
 template<typename T>
 struct representation< ordinary<T> > {
-	typedef T* type;
-	typedef ordinary_item<T> item;
+	typedef typename ordinary<T>::representation type;
 
 	static T* get(type* rep) {
 		return *rep;
@@ -33,8 +31,7 @@ struct representation< ordinary<T> > {
 
 template<typename T>
 struct representation< unique<T> > {
-	typedef std::auto_ptr<T> type;
-	typedef unique_item<T> item;
+	typedef typename unique<T>::representation type;
 
 	static T* get(type* rep) {
 		return rep->get();
@@ -46,8 +43,7 @@ struct representation< unique<T> > {
 
 template<typename T>
 struct representation< shared<T> > {
-	typedef boost::shared_ptr<T> type;
-	typedef shared_item<T> item;
+	typedef typename shared<T>::representation type;
 
 	static T* get(type* rep) {
 		return rep->get();
