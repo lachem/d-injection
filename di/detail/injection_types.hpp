@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <boost/shared_ptr.hpp>
+#include <di/detail/utility.hpp>
 
 namespace di {
 namespace detail {
@@ -22,6 +23,17 @@ struct ordinary {
 	typedef T* representation;
 	
 	explicit ordinary(T* an_object) : object(an_object) {}
+
+	static T* extract(representation* rep) {
+		return *rep;
+	}
+	static const T* extract(const representation* rep) {
+		return *rep;
+	}
+	static void init(representation* rep) {
+		*rep = NULL;
+	}
+
 	T* object;
 };
 
@@ -33,6 +45,17 @@ struct unique {
 	typedef std::auto_ptr<T> representation;
 
 	explicit unique(T* an_object) : object(an_object) {}
+
+	static T* extract(representation* rep) {
+		return rep->get();
+	}
+	static const T* extract(const representation* rep) {
+		return rep->get();
+	}
+	static void init(representation* rep) {
+		rep->reset(NULL_PTR(T));
+	}
+
 	T* object;
 };
 
@@ -44,6 +67,17 @@ struct shared {
 	typedef boost::shared_ptr<T> representation;
 
 	explicit shared(T* an_object) : object(an_object) {}
+
+	static T* extract(representation* rep) {
+		return rep->get();
+	}
+	static const T* extract(const representation* rep) {
+		return rep->get();
+	}
+	static void init(representation* rep) {
+		rep->reset(NULL_PTR(T));
+	}
+
 	T* object;
 };
 

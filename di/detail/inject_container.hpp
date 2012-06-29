@@ -9,6 +9,7 @@
 #include <di/detail/memory_pool.hpp>
 #include <di/detail/spinlock.hpp>
 #include <di/detail/lock_guard.hpp>
+#include <di/detail/utility.hpp>
 
 namespace di {
 namespace detail {
@@ -43,6 +44,23 @@ class inject_container {
 	};
 
 public:
+	inline static size_t size() {
+		#ifndef DI_NO_MULTITHREADING
+		detail::lock_guard<detail::spinlock> guard(lock);
+		#endif
+
+		size_t num_nodes = 0;
+		node* curr = head_sentinel.next;
+		if (empty()) {
+			return num_nodes;
+		}
+		while(curr != tail) {
+			curr = curr->next;
+			++num_nodes;
+		}
+		return num_nodes+1;
+	}
+
 	inline static void insert(const T& item) {
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);

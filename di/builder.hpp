@@ -7,7 +7,7 @@
 #define DI_BUILDER_HPP
 
 #include <boost/fusion/include/for_each.hpp>
-#include <boost/fusion/include/value_at.hpp>
+#include <boost/fusion/include/at_key.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/size.hpp>
 #include <di/detail/helpers.hpp>
@@ -46,14 +46,6 @@ private:
 template<typename T>
 class builder {	
 public:
-	builder() {
-		boost::fusion::for_each(injections,detail::nullify());
-	}
-
-	virtual ~builder() {
-		boost::fusion::for_each(injections,detail::dispose());
-	}
-
 	virtual T* build() const = 0;
 	virtual void delegate(T&) const = 0;
 	
@@ -68,49 +60,68 @@ public:
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
 			boost::is_same< SPtr<U>,ordinary<U> >::value));
-		
-		detail::injection_source< U >* source = new detail::injection_source_imp< SPtr<U> >(object);
-		do_usage(source);
+		assert(object.object);
+
+		do_usage(object);
 		return *this;
 	}
 
 	template<typename U>
-	builder<T>& replace(U& object, int at=0) {
+	builder<T>& replace(U& object, size_t at=0) {
 		return this->replace(di::ordinary<U>(&object),at);
 	}
 
 	template<template <typename> class SPtr, typename U>
-	builder<T>& replace(const SPtr<U>& object, int at=0) {
+	builder<T>& replace(const SPtr<U>& object, size_t at=0) {
 		BOOST_STATIC_ASSERT((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
 			boost::is_same< SPtr<U>,ordinary<U> >::value));
+		
+		do_replacement(object, at);
+		return *this;
+	}
 
-		detail::injection_source< U >* source = new detail::injection_source_imp< SPtr<U> >(object);
-		do_replacement(source, at);
+	template<typename U>
+	builder<T>& remove(size_t at=0) {
+		do_removal<U>(at);
 		return *this;
 	}
 
 private:
 	template<typename U>
-	void do_usage(U* object) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type, U*>::type::value));
-		bool use_succeeded = false;
-		boost::fusion::for_each(injections, detail::set_next_same_type<U>(object,&use_succeeded));
-		if(!use_succeeded) {
+	void do_usage(U& object) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U::type>::type::value));
+
+		typedef detail::injection_source_container<typename U::type,
+			boost::mpl::count<typename T::raw_type, typename U::type>::type::value> holder;
+		holder& element = boost::fusion::at_key<holder>(injections);
+		if(!element.push(object)) {
 			out_of_bounds();
-			delete object;
 		}
 	}
 	
 	template<typename U>
-	void do_replacement(U* object, int at) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::type, U*>::type::value));
-		bool replace_succeeded = false;
-		boost::fusion::for_each(injections, detail::set_nth_same_type<U>(object,at,&replace_succeeded));
-		if(!replace_succeeded) {
+	void do_replacement(U& object, size_t at) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U::type>::type::value));
+		
+		typedef detail::injection_source_container<typename U::type,
+			boost::mpl::count<typename T::raw_type, typename U::type>::type::value> holder;
+		holder& element = boost::fusion::at_key<holder>(injections);
+		if(!element.replace(object,at)) {
 			out_of_bounds();
-			delete object;
+		}
+	}
+
+	template<typename U>
+	void do_removal(size_t at) {
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U>::type::value));
+		
+		typedef detail::injection_source_container<typename U,
+			boost::mpl::count<typename T::raw_type, typename U>::type::value> holder;
+		holder& element = boost::fusion::at_key<holder>(injections);
+		if(!element.remove(at)) {
+			out_of_bounds();
 		}
 	}
 

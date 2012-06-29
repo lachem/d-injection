@@ -8,7 +8,6 @@
 
 #include <boost/bind.hpp>
 #include <di/detail/inject_container.hpp>
-#include <di/detail/representation.hpp>
 
 namespace di {
 namespace detail {
@@ -61,12 +60,17 @@ struct injection {
 
 protected:
 	explicit injection(bool is_required) {
-		representation<P>::init(&rep_object);
+		P::init(&rep_object);
 		inject_container< injection_destination<T> >::insert(
 			injection_destination_imp<P>(&rep_object,is_required));
 	}
 
 	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
+
+	~injection() {
+		inject_container< injection_destination<T> >::remove(
+			reinterpret_cast<char*>(&rep_object),1);
+	}
 
 	injection<T,P>& operator=(const injection<T,P>& inj) {
 		rep_object = inj.rep_object;
@@ -74,15 +78,15 @@ protected:
 	}
 
 	T* get_object() {
-		return representation<P>::get(&rep_object);
+		return P::extract(&rep_object);
 	}
 
 	T const* get_object() const {
-		return representation<P>::get(&rep_object);
+		return P::extract(&rep_object);
 	}
 
 private:
-	typename representation<P>::type rep_object;
+	typename P::representation rep_object;
 };
 
 } //namspace detail

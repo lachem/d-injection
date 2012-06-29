@@ -12,11 +12,6 @@
 namespace di {
 namespace detail {
 
-template<size_t size>
-struct mem_block{
-	char bytes[size];
-};
-
 template<size_t size, size_t capacity = DI_MAX_INJECTIONS_PER_TYPE>
 class memory_pool {
 private:

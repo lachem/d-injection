@@ -29,6 +29,11 @@ class nonallocatable {
 	void operator delete(void*);
 };
 
+template<size_t size>
+struct mem_block{
+	char bytes[size];
+};
+
 } // namespace detail
 } // namespace di
 
