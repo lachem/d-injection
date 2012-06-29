@@ -21,8 +21,8 @@ namespace injection {
 
 class BuilderShould : public ::testing::Test {
 protected:
-	builder<AbstractDifferent4Types>* abstractDiff3typesBuilder;
-	AbstractDifferent4Types* abstractDiff3types;
+	builder<AbstractDifferent4Types>* abstractDiff4typesBuilder;
+	AbstractDifferent4Types* abstractDiff4types;
 
 	builder<AbstractSame3AbstractTypes>* abstractSame3typesBuilder;
 	Same3AbstractTypes* same3AbstractTypes;
@@ -50,8 +50,8 @@ protected:
 		diff4types = 0;
 		abstractSame3typesBuilder = 0;
 		same3AbstractTypes = 0;
-		abstractDiff3typesBuilder = 0;
-		abstractDiff3types = 0;
+		abstractDiff4typesBuilder = 0;
+		abstractDiff4types = 0;
 	}
 
 	virtual void TearDown() {
@@ -64,8 +64,8 @@ protected:
 		delete diff4types;
 		delete abstractSame3typesBuilder;
 		delete same3AbstractTypes;
-		delete abstractDiff3typesBuilder;
-		delete abstractDiff3types;
+		delete abstractDiff4typesBuilder;
+		delete abstractDiff4types;
 	}
 
 	void givenDifferent4TypesBuilder() {
@@ -75,8 +75,8 @@ protected:
 	}
 
 	void givenAbstractDifferent4TypesBuilder() {
-		abstractDiff3typesBuilder = new builder_imp<Different4Types,AbstractDifferent4Types>;
-		abstractDiff3typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3);
+		abstractDiff4typesBuilder = new builder_imp<Different4Types,AbstractDifferent4Types>;
+		abstractDiff4typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3);
 	}
 
 	void givenAbstractSame3TypesBuilder() {
@@ -126,14 +126,14 @@ TEST_F(BuilderShould, injectObjectsOfDifferentTypes) {
 TEST_F(BuilderShould, buildAbstractClasses) {
 	givenAbstractDifferent4TypesBuilder();
 
-	abstractDiff3types = abstractDiff3typesBuilder->build();
-	EXPECT_NE(dynamic_cast<Different4Types*>(abstractDiff3types), NULL_PTR(Different4Types));
+	abstractDiff4types = abstractDiff4typesBuilder->build();
+	EXPECT_NE(dynamic_cast<Different4Types*>(abstractDiff4types), NULL_PTR(Different4Types));
 }
 
 TEST_F(BuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 	givenAbstractDifferent4TypesBuilder();
 
-	diff4types = dynamic_cast<Different4Types*>(abstractDiff3typesBuilder->build());
+	diff4types = dynamic_cast<Different4Types*>(abstractDiff4typesBuilder->build());
 
 	EXPECT_EQ(diff4types->some_var.get(),  &d1);
 	EXPECT_EQ(diff4types->some_var2.get(), &d2);
@@ -238,13 +238,13 @@ TEST_F(BuilderShould, bareWithSpareSubjectTypes) {
 	givenProperlyBuiltSpareInjectionsInstance();
 }
 
-TEST_F(BuilderShould, removeSharedInjectionsUponReplacement) {
+TEST_F(BuilderShould, removeSharedInjectionsUponErasure) {
 	builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
 	
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 	builder->use(di::shared<TestType2>(t2Mock));
-	builder->replace(di::shared<TestType2>(NULL_PTR(TestType2)));
+	builder->remove<TestType2>();
 
 	delete builder;
 }

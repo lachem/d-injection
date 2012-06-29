@@ -17,70 +17,6 @@
 namespace di {
 namespace detail {
 
-struct nullify {
-	template<typename V>
-	void operator()(V& v) const {
-		v = NULL;
-	}
-};
-
-struct dispose {
-	template<typename V>
-	void operator()(V& v) const {
-		delete v;
-	}
-};
-
-template<typename T>
-struct set_next_same_type {
-	set_next_same_type(T* an_object, bool* result) : 
-		object(an_object), set(result) {
-		assert(*set == false);
-	};
-
-	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T*> >::type* dummy = 0) const {
-		if(v == NULL && !*set) {
-			v = object;
-			*set = true;
-		}
-	}
-	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T*> >::type* dummy = 0) const {
-		//empty
-	}
-
-private:
-	mutable T* object;
-	mutable bool* set;
-};
-
-template<typename T>
-struct set_nth_same_type {
-	set_nth_same_type(T* an_object,int at, bool* a_result) : 
-		object(an_object), counter(at), result(a_result) {
-		assert(*a_result == false);
-	};
-
-	template<typename V>
-	void operator()(V& v,typename boost::enable_if<boost::is_same<V,T*> >::type* dummy = 0) const {
-		if(0 == counter--) {
-			delete v;
-			v = object;
-			*result = true;
-		}
-	}
-	template<typename V>
-	void operator()(V& v,typename boost::disable_if<boost::is_same<V,T*> >::type* dummy = 0) const {
-		//empty
-	}
-
-private:
-	mutable T* object;
-	mutable int counter;
-	mutable bool* result;
-};
-
 template<typename T>
 struct perform_injection {
 	perform_injection(T* subject, void (*an_unsatisfied_req_handler)(T*)) : 
@@ -88,14 +24,19 @@ struct perform_injection {
 
 	template<typename V>
 	void operator()(V& v) const {
-		typedef typename boost::remove_pointer<V>::type::type bare;
+		typedef typename V::value_type::type bare;
 		typedef inject_container< injection_destination<bare> > container;
-		
-		injection_destination<bare> inj_dst = 
-			container::remove(reinterpret_cast<char*>(subject),sizeof(T));
 
-		if(!inj_dst.assign(v)) {
-			unsatisfied_req_handler(subject);
+		V::const_iterator it = v.begin();
+		const V::const_iterator itEnd = v.end();
+
+		for(; it != itEnd; ++it) {
+			injection_destination<bare> destination = 
+				container::remove(reinterpret_cast<char*>(subject),sizeof(T));
+
+			if(!destination.transfer_from(const_cast<injection_source<bare>*>(*it))) {
+				unsatisfied_req_handler(subject);
+			}
 		}
 	}
 

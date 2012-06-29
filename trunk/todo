@@ -7,7 +7,7 @@
 - [not applicable] replace template<T> use() with preprocessor generated use() methods, that wouldn't need to use for_each and allow polymorphic builders
 - [done] make it possible to use inject<Type> instead of inject<Type,Class> (will be probably less efficient in multi-threading env)
 - [done] add delegation
+- enable object lifetime control for di::required and di::optional (e.g. di::optional<Type, di::unique>, di::required<Type, di::shared>)
 - create assembly object, from which builders could be created
 - make it possible to define layers, and determine access rights between them
 - create modules which could belong to layers and be parts of assembly
-- enable object lifetime control for di::required and di::optional (e.g. di::optional<Type, di::unique>, di::required<Type, di::shared>)

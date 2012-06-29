@@ -18,7 +18,7 @@ struct injection_destination {
 	injection_destination(void* an_address, bool required) :
 		address(an_address), is_required(required) {}
 
-	bool assign(di::detail::injection_source<T>* inj) {
+	bool transfer_from(di::detail::injection_source<T>* inj) {
 		if(address == NULL || inj == NULL) {
 			return !is_required;
 		}
