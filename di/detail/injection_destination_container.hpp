@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_INJECT_CONTAINER_HPP
-#define DI_INJECT_CONTAINER_HPP
+#ifndef DI_INJECTION_DESTINATION_CONTAINER_HPP
+#define DI_INJECTION_DESTINATION_CONTAINER_HPP
 
 #include <di/detail/memory_pool.hpp>
 #include <di/detail/spinlock.hpp>
@@ -15,7 +15,7 @@ namespace di {
 namespace detail {
 
 template<typename T>
-class inject_container {
+class injection_destination_container {
 
 	struct node {
 		node() : item(), next(NULL) {}
@@ -120,15 +120,17 @@ private:
 };
 
 template<typename T>
-typename inject_container<T>::node inject_container<T>::head_sentinel;
+typename injection_destination_container<T>::node 
+	injection_destination_container<T>::head_sentinel;
 
 template<typename T>
-typename inject_container<T>::node* inject_container<T>::tail = NULL;
+typename injection_destination_container<T>::node* 
+	injection_destination_container<T>::tail = NULL;
 
 template<typename T>
-detail::spinlock inject_container<T>::lock;
+detail::spinlock injection_destination_container<T>::lock;
 
 } //namespace detail
 } //namespace di
 
-#endif //DI_INJECT_CONTAINER_HPP
+#endif //DI_INJECTION_DESTINATION_CONTAINER_HPP
