@@ -10,9 +10,10 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
-#include <di/detail/inject_container.hpp>
+
 #include <di/detail/injection_source.hpp>
 #include <di/detail/injection_destination.hpp>
+#include <di/detail/injection_destination_container.hpp>
 
 namespace di {
 namespace detail {
@@ -25,7 +26,7 @@ struct perform_injection {
 	template<typename V>
 	void operator()(V& v) const {
 		typedef typename V::value_type::type bare;
-		typedef inject_container< injection_destination<bare> > container;
+		typedef injection_destination_container< injection_destination<bare> > container;
 
 		V::const_iterator it = v.begin();
 		const V::const_iterator itEnd = v.end();

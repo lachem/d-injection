@@ -7,7 +7,7 @@
 #define DI_INJECTION_HPP
 
 #include <boost/bind.hpp>
-#include <di/detail/inject_container.hpp>
+#include <di/detail/injection_destination_container.hpp>
 
 namespace di {
 namespace detail {
@@ -61,14 +61,16 @@ struct injection {
 protected:
 	explicit injection(bool is_required) {
 		P::init(&rep_object);
-		inject_container< injection_destination<T> >::insert(
+		injection_destination_container< injection_destination<T> >::insert(
 			injection_destination_imp<P>(&rep_object,is_required));
 	}
 
-	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
+	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {
+		//TODO: shouldn't the copy be also inserted into injection_destination_container
+	}
 
 	~injection() {
-		inject_container< injection_destination<T> >::remove(
+		injection_destination_container< injection_destination<T> >::remove(
 			reinterpret_cast<char*>(&rep_object),1);
 	}
 
