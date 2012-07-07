@@ -25,17 +25,17 @@ struct perform_injection {
 
 	template<typename V>
 	void operator()(V& v) const {
-		typedef typename V::value_type::type bare;
-		typedef injection_destination_container< injection_destination<bare> > container;
+		typedef typename V::value_type::type bare_type;
+		typedef injection_destination_container<bare_type> container;
 
 		V::const_iterator it = v.begin();
 		const V::const_iterator itEnd = v.end();
 
 		for(; it != itEnd; ++it) {
-			injection_destination<bare> destination = 
+			injection_destination<bare_type> destination = 
 				container::remove(reinterpret_cast<char*>(subject),sizeof(T));
 
-			if(!destination.transfer_from(const_cast<injection_source<bare>*>(*it))) {
+			if(!destination.transfer_from(const_cast<injection_source<bare_type>*>(*it))) {
 				unsatisfied_req_handler(subject);
 			}
 		}

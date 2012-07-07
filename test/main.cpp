@@ -4,14 +4,14 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "builder_should.hpp"
-#include "injection_should.hpp"
-#include "builder_diagnostics_should.hpp"
-#include "builder_performance_should.hpp"
-#include "injection_destination_container_should.hpp"
-#include "injection_source_container_should.hpp"
+#include "diagnostics/builder_diagnostics_should.hpp"
+#include "performance/builder_performance_should.hpp"
+#include "detail/injection_should.hpp"
+#include "detail/injection_destination_container_should.hpp"
+#include "detail/injection_source_container_should.hpp"
 
 #ifdef LINUX  //gtest is thread safe only using pthreads on linux
-#include "thread_agnostic_injections_should.hpp"
+#include "multithread/thread_agnostic_injections_should.hpp"
 #endif
 
 int main(int argc, char **argv) {
