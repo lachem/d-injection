@@ -15,3 +15,9 @@ debug:
 	
 release: 
 	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) -DLINUX -DNDEBUG -O2 -o di_test_release
+
+run_debug: debug
+	./di_test_debug
+
+run_release: release
+	./di_test_release

@@ -115,10 +115,10 @@ private:
 
 	template<typename U>
 	void do_removal(size_t at) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U>::type::value));
+		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, U>::type::value));
 		
-		typedef detail::injection_source_container<typename U,
-			boost::mpl::count<typename T::raw_type, typename U>::type::value> holder;
+		typedef detail::injection_source_container<U,
+			boost::mpl::count<typename T::raw_type, U>::type::value> holder;
 		holder& element = boost::fusion::at_key<holder>(injections);
 		if(!element.remove(at)) {
 			out_of_bounds();
