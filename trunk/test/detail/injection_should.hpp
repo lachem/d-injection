@@ -149,7 +149,7 @@ TYPED_TEST(InjectionShould, beCopiedProperlyWhenDeclaredAsSharedAfterBuilding) {
 	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance, t2Mock);
 	typename TypeParam::CopyableClass copyableClassCopy(*this->copyableClassInstance);
 
-	TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
+	typename TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
 	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
 }
 
@@ -171,7 +171,7 @@ TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsSharedAfterBuilding)
 	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance, t2Mock);
 	copyableClassCopy = (*this->copyableClassInstance);
 
-	TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
+	typename TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
 	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
 }
 
@@ -196,7 +196,7 @@ TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsShared) {
 	copyableClassCopy = *this->copyableClassInstance;
 	copyableClassCopy2 = copyableClassCopy;
 
-	TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
+	typename TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
 	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
 	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy2.var_shared.get());
 }
@@ -208,7 +208,7 @@ TYPED_TEST(InjectionShould, handleSelfAssignementProperlyWhenDeclaredAsShared) {
 	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance, t2Mock);
 	(*this->copyableClassInstance) = (*this->copyableClassInstance);
 
-	TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
+	typename TypeParam::CopyableClass* copyableClassInstance = this->copyableClassInstance;
 	EXPECT_EQ(t2Mock,copyableClassInstance->var_shared.get());
 }
 
