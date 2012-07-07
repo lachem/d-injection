@@ -24,6 +24,14 @@ struct optional :
 			base::insert_self_into_container(false);
 		}
 	}
+	operator T*() {
+		assert(!base::empty());
+		return base::get_object();
+	}
+	operator T const*() const {
+		assert(!base::empty());
+		return base::get_object();
+	}
 };
 
 template<typename T>
@@ -38,6 +46,12 @@ struct optional< shared<T> > :
 		if(base::empty()) {
 			base::insert_self_into_container(false);
 		}
+	}
+	operator typename shared<T>::representation () {
+		return base::rep_object;
+	}
+	operator const typename shared<T>::representation () const {
+		return base::rep_object;
 	}
 };
 

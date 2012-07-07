@@ -212,6 +212,23 @@ TYPED_TEST(InjectionShould, handleSelfAssignementProperlyWhenDeclaredAsShared) {
 	EXPECT_EQ(t2Mock,copyableClassInstance->var_shared.get());
 }
 
-}  // namespace required
+TYPED_TEST(InjectionShould, castToSharedPointerWhenDeclaredAsShared) {
+	TestType2Mock* t2Mock = new TestType2Mock;
+	EXPECT_CALL(*t2Mock, die()).Times(1);
+
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance,t2Mock);
+	boost::shared_ptr<TestType2> casted_injection = copyableClassInstance->var_shared;
+
+	EXPECT_EQ(t2Mock,casted_injection.get());
+}
+
+TYPED_TEST(InjectionShould, castToBarePointerWhenDeclaredAsBarePointer) {
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance);
+	TestType1* casted_injection = copyableClassInstance->var;
+
+	EXPECT_EQ(&t1,casted_injection);
+}
+
+}  // namespace injection
 
 #endif //DI_INJECTION_TESTS_HPP_

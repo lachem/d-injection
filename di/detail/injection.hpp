@@ -24,11 +24,6 @@ struct injection {
 		return *get_object();
 	}
 
-	operator T*() {
-		assert(!empty());
-		return get_object();
-	}
-
 	T const* operator->() const {
 		assert(!empty());
 		return get_object();
@@ -38,12 +33,7 @@ struct injection {
 		assert(!empty());
 		return *get_object();
 	}
-
-	operator T const*() const {
-		assert(!empty());
-		return get_object();
-	}
-
+	
 	T* get() {
 		assert(!empty());
 		return get_object();	
@@ -63,21 +53,21 @@ protected:
 		P::init(&rep_object);
 		insert_self_into_container(is_required);
 	}
-
 	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
-
 	~injection() {
-		injection_destination_container<T>::remove(reinterpret_cast<char*>(&rep_object),1);
-	}
-
-	void insert_self_into_container(bool is_required) {
-		injection_destination_container<T>::insert(
-			injection_destination_imp<P>(&rep_object,is_required));
+		if(empty()) {
+			injection_destination_container<T>::remove(reinterpret_cast<char*>(&rep_object),1);
+		}
 	}
 
 	injection<T,P>& operator=(const injection<T,P>& inj) {
 		rep_object = inj.rep_object;
 		return *this;
+	}
+
+	void insert_self_into_container(bool is_required) {
+		injection_destination_container<T>::insert(
+			injection_destination_imp<P>(&rep_object,is_required));
 	}
 
 	T* get_object() {
@@ -88,7 +78,6 @@ protected:
 		return P::extract(&rep_object);
 	}
 
-private:
 	typename P::representation rep_object;
 };
 
