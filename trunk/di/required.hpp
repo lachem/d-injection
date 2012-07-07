@@ -16,7 +16,14 @@ struct required :
 	public detail::injection< T,ordinary<T> >, 
 	public detail::nonallocatable 
 {
-	required() : detail::injection< T,ordinary<T> >(true) {}
+	typedef detail::injection< T,ordinary<T> > base;
+
+	required() : base(true) {}
+	required(const required<T>& inj) : base(inj) {
+		if(base::empty()) {			
+			base::insert_self_into_container(true);
+		}
+	}
 };
 
 template<typename T>
@@ -24,7 +31,14 @@ struct required< shared<T> > :
 	public detail::injection< T,shared<T> >, 
 	public detail::nonallocatable 
 {
-	required() : detail::injection< T,shared<T> >(true) {}
+	typedef detail::injection< T,shared<T> > base;
+
+	required() : base(true) {}
+	required(const required< shared<T> >& inj) : base(inj) {
+		if(base::empty()) {
+			base::insert_self_into_container(true);
+		}
+	}
 };
 
 template<typename T>
@@ -32,7 +46,9 @@ struct required< unique<T> > :
 	public detail::injection< T,unique<T> >, 
 	public detail::nonallocatable, public detail::noncopyable 
 {
-	required() : detail::injection< T,unique<T> >(true) {}
+	typedef detail::injection< T,unique<T> > base;
+
+	required() : base(true) {}
 };
 
 } //namspace di

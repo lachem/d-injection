@@ -54,24 +54,25 @@ struct injection {
 		return get_object();	
 	}
 
-	bool empty() {
+	bool empty() const {
 		return get_object() == NULL;
 	}
 
 protected:
 	explicit injection(bool is_required) {
 		P::init(&rep_object);
-		injection_destination_container< injection_destination<T> >::insert(
-			injection_destination_imp<P>(&rep_object,is_required));
+		insert_self_into_container(is_required);
 	}
 
-	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {
-		//TODO: shouldn't the copy be also inserted into injection_destination_container
-	}
+	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
 
 	~injection() {
-		injection_destination_container< injection_destination<T> >::remove(
-			reinterpret_cast<char*>(&rep_object),1);
+		injection_destination_container<T>::remove(reinterpret_cast<char*>(&rep_object),1);
+	}
+
+	void insert_self_into_container(bool is_required) {
+		injection_destination_container<T>::insert(
+			injection_destination_imp<P>(&rep_object,is_required));
 	}
 
 	injection<T,P>& operator=(const injection<T,P>& inj) {

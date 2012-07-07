@@ -19,7 +19,7 @@ class injection_destination_container {
 
 	struct node {
 		node() : item(), next(NULL) {}
-		explicit node(const T& an_item) : item(an_item), next(NULL) {}
+		explicit node(const injection_destination<T>& an_item) : item(an_item), next(NULL) {}
 
 		inline bool is_in_range(char* address, size_t range) {
 			return item.is_in_range(address,range);
@@ -39,7 +39,7 @@ class injection_destination_container {
 			allocator<sizeof(node)>().free(block);
 		}
 	
-		T item;
+		injection_destination<T> item;
 		node* next;
 	};
 
@@ -61,7 +61,7 @@ public:
 		return num_nodes+1;
 	}
 
-	inline static void insert(const T& item) {
+	inline static void insert(const injection_destination<T>& item) {
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
@@ -75,7 +75,7 @@ public:
 		}
 	}
 
-	inline static T remove(char* address, size_t range) {
+	inline static injection_destination<T> remove(char* address, size_t range) {
 		assert(address);
 		assert(range);
 
@@ -90,7 +90,7 @@ public:
 		}
 		while(curr != tail) {
 			if(curr->is_in_range(address,range)) {
-				T item = curr->item;
+				injection_destination<T> item = curr->item;
 				prev->next = curr->next;
 				delete curr;
 				return item;
@@ -99,7 +99,7 @@ public:
 			curr = curr->next;
 		}
 		if(curr->is_in_range(address,range)) {
-			T item = curr->item;
+			injection_destination<T> item = curr->item;
 			tail = prev;
 			prev->next = NULL;
 			delete curr;

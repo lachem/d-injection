@@ -16,7 +16,14 @@ struct optional :
 	public detail::injection< T,ordinary<T> >, 
 	public detail::nonallocatable  
 {	
-	optional() : detail::injection< T,ordinary<T> >(false) {}
+	typedef detail::injection< T,ordinary<T> > base;
+
+	optional() : base(false) {}
+	optional(const optional<T>& inj) : base(inj) {
+		if(base::empty()) {
+			base::insert_self_into_container(false);
+		}
+	}
 };
 
 template<typename T>
@@ -24,7 +31,14 @@ struct optional< shared<T> > :
 	public detail::injection< T,shared<T> >, 
 	public detail::nonallocatable 
 {
-	optional() : detail::injection< T,shared<T> >(false) {}
+	typedef detail::injection< T,shared<T> > base;
+
+	optional() : base(false) {}
+	optional(const optional< shared<T> >& inj) : base(inj) {
+		if(base::empty()) {
+			base::insert_self_into_container(false);
+		}
+	}
 };
 
 template<typename T>
@@ -32,7 +46,9 @@ struct optional< unique<T> > :
 	public detail::injection< T,unique<T> >, 
 	public detail::nonallocatable, public detail::noncopyable 
 {
-	optional() : detail::injection< T,unique<T> >(false) {}
+	typedef detail::injection< T,unique<T> > base;
+
+	optional() : base(false) {}
 };
 
 } //namspace di

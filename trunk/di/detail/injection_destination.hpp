@@ -31,6 +31,10 @@ struct injection_destination {
 		return (address <= rep_address && rep_address < address + range);
 	}
 
+	bool contains(void* address) {
+		return this->address == address;
+	}
+
 protected:
 	void* address;
 	bool is_required;
