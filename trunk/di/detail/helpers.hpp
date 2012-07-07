@@ -28,8 +28,8 @@ struct perform_injection {
 		typedef typename V::value_type::type bare_type;
 		typedef injection_destination_container<bare_type> container;
 
-		V::const_iterator it = v.begin();
-		const V::const_iterator itEnd = v.end();
+		typename V::const_iterator it = v.begin();
+		const typename V::const_iterator itEnd = v.end();
 
 		for(; it != itEnd; ++it) {
 			injection_destination<bare_type> destination = 

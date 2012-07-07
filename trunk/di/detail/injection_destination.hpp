@@ -55,7 +55,7 @@ public:
 
 private:
 	static bool assignement(void* address, injection_source<type>* object) {
-		if(object->holds<T>()) {
+		if(object->template holds<T>()) {
 			injection_source_imp<T>* source = static_cast<injection_source_imp<T>* >(object);
 			*reinterpret_cast<representation*>(address) = source->object;
 			return true;

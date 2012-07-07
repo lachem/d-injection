@@ -36,13 +36,14 @@ protected:
 
 template<class U>
 struct injection_source_imp : public injection_source<typename U::type> {
-	injection_source_imp(const U& inj) : 
-		object(inj.object) , injection_source<typename U::type>(U::id) {
-		is_empty = (inj.object == NULL);
+	typedef injection_source<typename U::type> base;
+
+	injection_source_imp(const U& inj) : object(inj.object), base(U::id) {
+		base::is_empty = (inj.object == NULL);
 	}
 
-	injection_source_imp() : injection_source<typename U::type>(U::id) {
-		is_empty = true;
+	injection_source_imp() : base(U::id) {
+		base::is_empty = true;
 	}
 
 	virtual const typename U::type* get_object() const {

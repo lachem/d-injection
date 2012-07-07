@@ -25,13 +25,13 @@ class injection_destination_container {
 			return item.is_in_range(address,range);
 		}
 
-		template<size_t size>
-		static memory_pool<size>& allocator() {
-			static memory_pool<size> mem_pool;
+		template<size_t arity> 
+		static memory_pool<arity>& allocator() {
+			static memory_pool<arity> mem_pool;
 			return mem_pool;
 		}
 
-		void* operator new(size_t size) {
+		void* operator new(size_t) {
 			return allocator<sizeof(node)>().malloc();
 		}
 
