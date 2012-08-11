@@ -6,6 +6,7 @@
 #ifndef DI_BUILDER_IMP_HPP
 #define DI_BUILDER_IMP_HPP
 
+#include <boost/fusion/include/for_each.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/bind.hpp>
@@ -15,9 +16,12 @@
 namespace di {
 
 template<typename C, typename I = C, typename D = using_assertions<C> >
-class builder_imp : public builder<I>, private D {
+class builder_imp : public di::builder<I>, private D, di::detail::noncopyable {
 	BOOST_STATIC_ASSERT((boost::is_base_of<I,C>::value));
+
 public:
+	builder_imp() {}
+
 	virtual I* build() const {
 		C* instance = new C;
 		build_inject(instance);

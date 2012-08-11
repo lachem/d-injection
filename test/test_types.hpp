@@ -76,18 +76,24 @@ class Mixed5Types : public subject<D1,D2,D2,D3,D3> {
 };
 
 struct TestType1{};
-
 struct TestType2 {
 	TestType2(){}
 	virtual ~TestType2(){}
 private:
 	TestType2(const TestType2&);
 };
+struct TestType3{};
+struct TestType4{};
 
 struct TestClassReq : public di::subject<TestType1,TestType2,TestType2> {
 	di::required<TestType1> var;
 	di::required< di::unique<TestType2> > var_unique;
 	di::required< di::shared<TestType2> > var_shared;
+};
+
+struct BareClassReq : public di::subject<TestType1,TestType2> {
+	di::required<TestType1> var;
+	di::required<TestType2> var2;
 };
 
 struct CopyableClassReq : public di::subject<TestType1,TestType2> {

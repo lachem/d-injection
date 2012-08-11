@@ -9,6 +9,7 @@
 #include "detail/injection_should.hpp"
 #include "detail/injection_destination_container_should.hpp"
 #include "detail/injection_source_container_should.hpp"
+#include "assembler_should.hpp"
 
 #ifdef LINUX  //gtest is thread safe only using pthreads on linux
 #include "multithread/thread_agnostic_injections_should.hpp"
