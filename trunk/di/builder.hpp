@@ -45,6 +45,8 @@ private:
 template<typename T>
 class builder {	
 public:
+	typedef T subject;
+
 	virtual T* build() const = 0;
 	virtual void delegate(T&) const = 0;
 	
