@@ -6,7 +6,6 @@
 #ifndef DI_BUILDER_HPP
 #define DI_BUILDER_HPP
 
-#include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/at_key.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/size.hpp>
@@ -54,6 +53,13 @@ public:
 		return this->use(ordinary<U>(&object));
 	}
 
+	/**
+	 * @brief inserts object at first unoccupied position matching given type
+	 * @param injection reference to injection type
+	 * @pre injection's type is known
+	 * @pre injection contents are not null
+	 * @post injection has been saved inside the container
+	 */
 	template<template <typename> class SPtr, typename U>
 	builder<T>& use(const SPtr<U>& object) {
 		BOOST_STATIC_ASSERT((
@@ -71,6 +77,14 @@ public:
 		return this->replace(di::ordinary<U>(&object),at);
 	}
 
+	/**
+	 * @brief replaces nth injection of given type
+	 * @param injection reference to injection type
+	 * @param at position at which the replacement is to be performed in terms of given type
+	 * @pre injection's type is known
+	 * @pre injection contents are not null
+	 * @post injection has been saved inside the container
+	 */
 	template<template <typename> class SPtr, typename U>
 	builder<T>& replace(const SPtr<U>& object, size_t at=0) {
 		BOOST_STATIC_ASSERT((
@@ -82,6 +96,11 @@ public:
 		return *this;
 	}
 
+	/**
+	 * @brief removes nth injection of given type, where n == at
+	 * @param at position at which the removal is to be performed
+	 * @post injection of requested type has been removed
+	 */
 	template<typename U>
 	builder<T>& remove(size_t at=0) {
 		do_removal<U>(at);

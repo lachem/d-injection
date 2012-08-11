@@ -15,7 +15,7 @@ namespace di {
 namespace detail {
 
 template<typename T, size_t capacity>
-struct injection_source_container {
+struct injection_source_container : di::detail::noncopyable {
 private:
 	enum internal{max_elem_size = sizeof(injection_source_imp< di::shared<T> >)};
 
