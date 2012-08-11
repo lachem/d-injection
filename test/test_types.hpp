@@ -84,6 +84,7 @@ private:
 };
 struct TestType3{};
 struct TestType4{};
+struct TestType5{};
 
 struct TestClassReq : public di::subject<TestType1,TestType2,TestType2> {
 	di::required<TestType1> var;
