@@ -36,11 +36,13 @@ struct module {
 
 	template<typename T>
 	void use(T& element) {
+		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::provided::ref_type,T**>::type::value), TypeIsNotOnModulesProvidedServiceList,);
 		*boost::fusion::at_key<T**>(provided) = &element;
 	}
 
 	template<typename T>
 	T& get() {
+		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::needed::ref_type,T**>::type::value), TypeIsNotOnModulesNeededServiceList,);
 		return **boost::fusion::at_key<T**>(needed);
 	}
 	
@@ -67,28 +69,11 @@ private:
 			
 			detail::make_selective_use_call<builders_subject_contains_T::value>()(builder,**element);
 		}
+
 		mutable B& builder;
 	};
 
 protected:
-	template<typename Seq>
-	void configure_intermodule_connections(Seq& sequence) {
-		boost::fusion::for_each(provided,assign_provided<Seq>(sequence));
-		boost::fusion::for_each(needed,assign_provided<Seq>(sequence));
-	}
-
-	template<typename Seq>
-	struct assign_provided {
-		assign_provided(Seq& a_sequence) : sequence(a_sequence) {}
-		template<typename T>
-		void operator()(T*& element) const {
-			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq,T>::type::value), NoModuleProvidesTheNeededService,);
-			
-			element = &boost::fusion::at_key<T>(sequence);
-		}
-		Seq& sequence;
-	};
-
 	typename M::provided::ref_type provided;
 	typename M::needed::ref_type needed;
 };

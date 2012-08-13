@@ -21,6 +21,12 @@ class builder_imp : public di::builder<I>, private D, di::detail::noncopyable {
 public:
 	builder_imp() {}
 
+	/**
+	 * @brief creates the object of type C, performs the injection and calls constructed() on subject
+	 * @pre injections required by the object under construction were provided to the builder
+	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
+	 * @return new instance of subject type
+	 */
 	virtual I* build() const {
 		C* instance = new C;
 		build_inject(instance);
@@ -28,6 +34,12 @@ public:
 		return instance;
 	}
 
+	/**
+	 * @brief performs injections and calls constructed() on subject
+	 * @pre injections required by the instance object were provided to the builder
+	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
+	 * @param instance of builder's corresponding subject
+	 */
 	virtual void delegate(I& instance) const {
 		C* downcasted = static_cast<C*>(&instance);
 		delegate_inject(downcasted);

@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_SERVICES_HPP
-#define DI_SERVICES_HPP
+#ifndef DI_SERVICE_LIST_HPP
+#define DI_SERVICE_LIST_HPP
 
 #include <di/detail/variadics.hpp>
 
@@ -26,7 +26,7 @@ struct add_pointers {
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
-struct services {
+struct service_list {
 private:
 	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M,* BOOST_PP_INTERCEPT) > raw_types;
 	typedef typename boost::mpl::remove<raw_types, detail::void_*>::type trimmed_types;
@@ -38,4 +38,4 @@ public:
 
 } //namspace di
 
-#endif //DI_SERVICES_HPP
+#endif //DI_SERVICE_LIST_HPP
