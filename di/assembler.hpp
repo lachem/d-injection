@@ -8,6 +8,7 @@
 
 #include <boost/mpl/for_each.hpp>
 #include <di/module.hpp>
+#include <di/services.hpp>
 
 namespace di {
 namespace detail {
