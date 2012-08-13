@@ -6,12 +6,11 @@
 #ifndef DI_BUILDER_IMP_HPP
 #define DI_BUILDER_IMP_HPP
 
-#include <boost/fusion/include/for_each.hpp>
+#include <di/builder.hpp>
+#include <di/diagnostics.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/bind.hpp>
-#include <di/diagnostics.hpp>
-#include <di/builder.hpp>
 
 namespace di {
 

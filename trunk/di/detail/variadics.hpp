@@ -14,12 +14,9 @@
 	#define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
-#include <boost/fusion/include/as_vector.hpp>
-#include <boost/fusion/include/as_set.hpp>
-#include <boost/fusion/adapted/mpl.hpp>
-#include <boost/fusion/include/mpl.hpp>
-
-#undef FUSION_MAX_VECTOR_SIZE
+#if FUSION_MAX_SET_SIZE < DI_MAX_NUM_INJECTIONS
+	#define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#endif
 
 #if BOOST_MPL_LIMIT_VECTOR_SIZE < DI_MAX_NUM_INJECTIONS
 	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
@@ -35,6 +32,20 @@
 	#define BOOST_MPL_LIMIT_SET_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
+#if BOOST_MPL_LIMIT_METAFUNCTION_ARITY < DI_MAX_NUM_INJECTIONS
+	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+		#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+	#endif
+	#define BOOST_MPL_LIMIT_METAFUNCTION_ARITY DI_MAX_NUM_INJECTIONS
+#endif
+
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/include/as_set.hpp>
+#include <boost/fusion/adapted/mpl.hpp>
+#include <boost/fusion/include/mpl.hpp>
+#include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/include/at_key.hpp>
+
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/remove.hpp>
 #include <boost/mpl/inserter.hpp>
@@ -43,9 +54,16 @@
 #include <boost/mpl/count.hpp>
 #include <boost/mpl/copy.hpp>
 #include <boost/mpl/set.hpp>
+#include <boost/mpl/inherit.hpp>
+#include <boost/mpl/joint_view.hpp>
+#include <boost/mpl/contains.hpp>
+#include <boost/mpl/size.hpp>
 
+#undef FUSION_MAX_VECTOR_SIZE
 #undef BOOST_MPL_LIMIT_VECTOR_SIZE
 #undef BOOST_MPL_LIMIT_SET_SIZE
+#undef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+//#undef BOOST_MPL_LIMIT_METAFUNCTION_ARITY
 
 namespace di {
 namespace detail {

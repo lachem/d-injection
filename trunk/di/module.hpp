@@ -6,9 +6,8 @@
 #ifndef DI_MODULE_HPP
 #define DI_MODULE_HPP
 
-#include <boost/fusion/include/for_each.hpp>
-#include <di/detail/variadics.hpp>
 #include <di/builder_imp.hpp>
+#include <di/detail/variadics.hpp>
 
 namespace di {
 namespace detail {
@@ -18,22 +17,22 @@ struct make_selective_use_call;
 
 template<>
 struct make_selective_use_call<false> {
-	template<typename B, typename T> void operator()(B& b, T& t) {}
+	template<typename B, typename T> void operator()(B&,T&) {}
 };
 
 template<>
 struct make_selective_use_call<true> {
 	template<typename B, typename T>
-	void operator()(B& b, T& t) {
-		b.use(t);
+	void operator()(B& builder, T& t) {
+		builder.use(t);
 	}
 };
 
 } // namespace detail
 
-template<typename S>
+template<typename M>
 struct module {
-	typedef S type;
+	typedef M type;
 
 	template<typename T>
 	void use(T& element) {
@@ -73,11 +72,6 @@ private:
 
 protected:
 	template<typename Seq>
-	module(Seq& sequence) {
-		configure_intermodule_connections(sequence);
-	}
-
-	template<typename Seq>
 	void configure_intermodule_connections(Seq& sequence) {
 		boost::fusion::for_each(provided,assign_provided<Seq>(sequence));
 		boost::fusion::for_each(needed,assign_provided<Seq>(sequence));
@@ -88,14 +82,15 @@ protected:
 		assign_provided(Seq& a_sequence) : sequence(a_sequence) {}
 		template<typename T>
 		void operator()(T*& element) const {
+			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq,T>::type::value), NoModuleProvidesTheNeededService,);
+			
 			element = &boost::fusion::at_key<T>(sequence);
 		}
-	private:
 		Seq& sequence;
 	};
 
-	typename S::provided::ref_type provided;
-	typename S::needed::ref_type needed;
+	typename M::provided::ref_type provided;
+	typename M::needed::ref_type needed;
 };
 
 } //namspace di
