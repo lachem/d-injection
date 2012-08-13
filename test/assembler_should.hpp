@@ -15,33 +15,33 @@ using namespace di;
 namespace assembly {
 
 struct Module1 {
-	typedef di::services<TestType1,TestType2,TestType3> provided;
-	typedef di::services<TestType4,TestType5> needed;
+	typedef di::service_list<TestType1,TestType2,TestType3> provided;
+	typedef di::service_list<TestType4,TestType5> needed;
 };
 	
 struct Module2 {
-	typedef di::services<TestType4,TestType5> provided;
-	typedef di::services<TestType1,TestType2,TestType3> needed;
+	typedef di::service_list<TestType4,TestType5> provided;
+	typedef di::service_list<TestType1,TestType2,TestType3> needed;
 };
 
 struct Module3 {
-	typedef di::services<TestType6> provided;
-	typedef di::services<TestType2,TestType4,TestType5> needed;
+	typedef di::service_list<TestType6> provided;
+	typedef di::service_list<TestType2,TestType4,TestType5> needed;
 };
 
 struct Module4 {
-	typedef di::services<TestType7> provided;
-	typedef di::services<TestType1,TestType2,TestType6> needed;
+	typedef di::service_list<TestType7> provided;
+	typedef di::service_list<TestType1,TestType2,TestType6> needed;
 };
 
 struct Module5 {
-	typedef di::services<TestType8> provided;
-	typedef di::services<TestType5,TestType6> needed;
+	typedef di::service_list<TestType8> provided;
+	typedef di::service_list<TestType5,TestType6> needed;
 };
 
 struct Module6 {
-	typedef di::services<TestType9> provided;
-	typedef di::services<TestType7,TestType8> needed;
+	typedef di::service_list<TestType9> provided;
+	typedef di::service_list<TestType7,TestType8> needed;
 };
 
 class AssemblerShould : public testing::Test {

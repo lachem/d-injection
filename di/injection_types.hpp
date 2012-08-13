@@ -45,6 +45,7 @@ struct unique {
 	typedef std::auto_ptr<T> representation;
 
 	explicit unique(T* an_object) : object(an_object) {}
+	explicit unique(representation an_object) : object(an_object) {}
 
 	static T* extract(representation* rep) {
 		return rep->get();
@@ -67,6 +68,7 @@ struct shared {
 	typedef boost::shared_ptr<T> representation;
 
 	explicit shared(T* an_object) : object(an_object) {}
+	explicit shared(representation an_object) : object(an_object) {}
 
 	static T* extract(representation* rep) {
 		return rep->get();
@@ -78,7 +80,7 @@ struct shared {
 		rep->reset(NULL_PTR(T));
 	}
 
-	T* object;
+	representation object;
 };
 
 } // namespace di

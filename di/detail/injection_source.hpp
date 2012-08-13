@@ -6,7 +6,7 @@
 #ifndef DI_INJECTION_SOURCE_HPP
 #define DI_INJECTION_SOURCE_HPP
 
-#include <di/detail/injection_types.hpp>
+#include <di/injection_types.hpp>
 
 namespace di {
 namespace detail {
@@ -15,7 +15,7 @@ template<typename T>
 struct injection_source {
 	typedef T type;
 
-	injection_source(int an_id) : id(an_id) {}
+	explicit injection_source(int an_id) : id(an_id) {}
 	virtual ~injection_source() {}
 
 	template<typename Y>
@@ -38,7 +38,7 @@ template<class U>
 struct injection_source_imp : public injection_source<typename U::type> {
 	typedef injection_source<typename U::type> base;
 
-	injection_source_imp(const U& inj) : object(inj.object), base(U::id) {
+	explicit injection_source_imp(const U& inj) : object(inj.object), base(U::id) {
 		base::is_empty = (inj.object == NULL);
 	}
 

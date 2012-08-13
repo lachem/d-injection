@@ -259,7 +259,22 @@ TEST_F(BuilderShould, removeSharedInjectionsUponDelete) {
 	delete builder;
 }
 
+TEST_F(BuilderShould, notRemoveSharedInjectionsWhileProvidedSharedPtrExists) {
+	builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	
+	TestType1 t1;
+	TestType2* t2 = new TestType2;
+	boost::shared_ptr<TestType2> shared_mock(t2);
 
+	builder->use(t1);
+	builder->use(di::shared<TestType2>(shared_mock));
+	CopyableClassReq* instance = builder->build();
+	delete builder;
+
+	EXPECT_EQ(shared_mock.get(),instance->var_shared.get());
+	delete instance;
+	EXPECT_EQ(shared_mock.get(),t2);
+}
 
 }  // namespace injection
 

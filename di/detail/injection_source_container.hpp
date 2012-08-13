@@ -7,8 +7,8 @@
 #define DI_INJECTION_SOURCE_CONTAINER_HPP
 
 #include <di/detail/injection_source.hpp>
-#include <di/detail/injection_types.hpp>
 #include <di/detail/utility.hpp>
+#include <di/injection_types.hpp>
 #include <vector>
 
 namespace di {

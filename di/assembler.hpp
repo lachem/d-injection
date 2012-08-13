@@ -7,8 +7,8 @@
 #define DI_ASSEMBLER_HPP
 
 #include <boost/mpl/for_each.hpp>
+#include <di/service_list.hpp>
 #include <di/module.hpp>
-#include <di/services.hpp>
 
 namespace di {
 namespace detail {
@@ -57,15 +57,28 @@ private:
 		explicit configure_modules(this_type& an_assembler) : configurator(an_assembler) {}
 		template<typename M>
 		void operator() (const M& param) {
-			configurator.configure_module<M>();
+			configurator.configure_intermodule_connections<M>(configurator.provided_by_modules);
 		}
 		this_type& configurator;
 	};
 
-	template<typename M>
-	void configure_module() {
-		di::module<M>::configure_intermodule_connections(provided_by_modules);
+	template<typename M, typename Seq>
+	void configure_intermodule_connections(Seq& sequence) {
+		boost::fusion::for_each(di::module<M>::provided,connect_provided<Seq>(sequence));
+		boost::fusion::for_each(di::module<M>::needed,connect_provided<Seq>(sequence));
 	}
+
+	template<typename Seq>
+	struct connect_provided {
+		connect_provided(Seq& a_sequence) : sequence(a_sequence) {}
+		template<typename T>
+		void operator()(T*& element) const {
+			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq,T>::type::value), NoModuleProvidesTheNeededService,);
+			element = &boost::fusion::at_key<T>(sequence);
+		}
+		Seq& sequence;
+	};
+
 
 	typedef boost::mpl::vector<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> raw_module_prototypes;
 	typedef typename detail::vector_without_voids<raw_module_prototypes>::type module_prototypes;
