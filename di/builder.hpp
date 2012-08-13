@@ -6,9 +6,7 @@
 #ifndef DI_BUILDER_HPP
 #define DI_BUILDER_HPP
 
-#include <boost/fusion/include/at_key.hpp>
-#include <boost/mpl/contains.hpp>
-#include <boost/mpl/size.hpp>
+#include <di/detail/variadics.hpp>
 #include <di/detail/helpers.hpp>
 #include <di/configuration.hpp>
 #include <exception>
@@ -64,10 +62,11 @@ public:
 	 */
 	template<template <typename> class SPtr, typename U>
 	builder<T>& use(const SPtr<U>& object) {
-		BOOST_STATIC_ASSERT((
+		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
-			boost::is_same< SPtr<U>,ordinary<U> >::value));
+			boost::is_same< SPtr<U>,ordinary<U> >::value),
+			ProvidedTypeIsUnsupported,);
 		assert(object.object);
 
 		do_usage(object);
@@ -89,10 +88,11 @@ public:
 	 */
 	template<template <typename> class SPtr, typename U>
 	builder<T>& replace(const SPtr<U>& object, size_t at=0) {
-		BOOST_STATIC_ASSERT((
+		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
-			boost::is_same< SPtr<U>,ordinary<U> >::value));
+			boost::is_same< SPtr<U>,ordinary<U> >::value),
+			ProvidedTypeIsUnsupported,);
 		
 		do_replacement(object, at);
 		return *this;
@@ -112,7 +112,8 @@ public:
 private:
 	template<typename U>
 	void do_usage(U& object) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U::type>::type::value));
+		BOOST_MPL_ASSERT_MSG((
+			boost::mpl::contains<typename T::raw_type, typename U::type>::type::value),WrongTypeProvided,);
 
 		typedef detail::injection_source_container<typename U::type,
 			boost::mpl::count<typename T::raw_type, typename U::type>::type::value> holder;
@@ -124,7 +125,8 @@ private:
 	
 	template<typename U>
 	void do_replacement(U& object, size_t at) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, typename U::type>::type::value));
+		BOOST_MPL_ASSERT_MSG((
+			boost::mpl::contains<typename T::raw_type, typename U::type>::type::value),WrongTypeProvided,);
 		
 		typedef detail::injection_source_container<typename U::type,
 			boost::mpl::count<typename T::raw_type, typename U::type>::type::value> holder;
@@ -136,7 +138,8 @@ private:
 
 	template<typename U>
 	void do_removal(size_t at) {
-		BOOST_STATIC_ASSERT((boost::mpl::contains<typename T::raw_type, U>::type::value));
+		BOOST_MPL_ASSERT_MSG((
+			boost::mpl::contains<typename T::raw_type, U>::type::value),WrongTypeProvided,);
 		
 		typedef detail::injection_source_container<U,
 			boost::mpl::count<typename T::raw_type, U>::type::value> holder;

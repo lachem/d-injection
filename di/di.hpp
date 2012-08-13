@@ -11,5 +11,8 @@
 #include <di/optional.hpp>
 #include <di/builder.hpp>
 #include <di/builder_imp.hpp>
+#include <di/assembler.hpp>
+#include <di/services.hpp>
+#include <di/module.hpp>
 
 #endif // DI_DI_HPP
