@@ -12,12 +12,16 @@
 
 namespace di {
 namespace detail {
-	enum injection_id {ordinary_id,unique_id,shared_id};
+namespace injection_id {
+
+enum injection_id {invalid,ordinary,unique,shared,service,any};
+
+} // injection_id
 } // namespace detail
 
 template<typename T>
 struct ordinary {
-	enum{id=detail::ordinary_id};
+	enum{id=detail::injection_id::ordinary};
 
 	typedef T type;
 	typedef T* representation;
@@ -39,7 +43,7 @@ struct ordinary {
 
 template<typename T>
 struct unique {
-	enum{id=detail::unique_id};
+	enum{id=detail::injection_id::unique};
 
 	typedef T type;
 	typedef std::auto_ptr<T> representation;
@@ -62,13 +66,41 @@ struct unique {
 
 template<typename T>
 struct shared {
-	enum{id=detail::shared_id};
+	enum{id=detail::injection_id::shared};
 
 	typedef T type;
 	typedef boost::shared_ptr<T> representation;
 
 	explicit shared(T* an_object) : object(an_object) {}
-	explicit shared(representation an_object) : object(an_object) {}
+	explicit shared(const representation& an_object) : object(an_object) {}
+
+	static T* extract(representation* rep) {
+		return rep->get();
+	}
+	static const T* extract(const representation* rep) {
+		return rep->get();
+	}
+	static void init(representation* rep) {
+		rep->reset(NULL_PTR(T));
+	}
+
+	representation object;
+};
+
+template<typename T>
+struct service {
+	enum{id=detail::injection_id::service};
+
+	typedef T type;
+	typedef boost::shared_ptr<T> representation;
+
+	service() : object(NULL_PTR(T)) {}
+	explicit service(T* an_object) : object(an_object) {}
+	explicit service(const representation& an_object) : object(an_object) {}
+
+	operator representation() {
+		return object;
+	}
 
 	static T* extract(representation* rep) {
 		return rep->get();

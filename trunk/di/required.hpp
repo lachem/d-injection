@@ -19,10 +19,12 @@ struct required :
 	typedef detail::injection< T,ordinary<T> > base;
 
 	required() : base(true) {}
-	required(const required<T>& inj) : base(inj) {
-		if(base::empty()) {			
-			base::insert_self_into_container(true);
-		}
+	required(const required<T>& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	required<T>& operator=(const required<T>& source) {
+		base::do_assignement(source,true);
+		return *this;
 	}
 	operator T*() {
 		assert(!base::empty());
@@ -42,10 +44,12 @@ struct required< shared<T> > :
 	typedef detail::injection< T,shared<T> > base;
 
 	required() : base(true) {}
-	required(const required< shared<T> >& inj) : base(inj) {
-		if(base::empty()) {
-			base::insert_self_into_container(true);
-		}
+	required(const required< shared<T> >& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	required< shared<T> >& operator=(const required< shared<T> >& source) {
+		base::do_assignement(source,true);
+		return *this;
 	}
 	operator typename shared<T>::representation () {
 		return base::rep_object;
@@ -63,6 +67,29 @@ struct required< unique<T> > :
 	typedef detail::injection< T,unique<T> > base;
 
 	required() : base(true) {}
+};
+
+template<typename T>
+struct required< service<T> > : 
+	public detail::injection< T,service<T> >, 
+	public detail::nonallocatable 
+{
+	typedef detail::injection< T,service<T> > base;
+
+	required() : base(true) {}
+	required(const required< service<T> >& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	required< service<T> >& operator=(const required< service<T> >& source) {
+		base::do_assignement(source,true);
+		return *this;
+	}
+	operator typename service<T>::representation () {
+		return base::rep_object;
+	}
+	operator const typename service<T>::representation () const {
+		return base::rep_object;
+	}
 };
 
 } //namspace di

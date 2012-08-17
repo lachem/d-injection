@@ -47,7 +47,6 @@ public:
 	}
 
 private:
-
 	virtual void out_of_bounds() {
 		D::out_of_bounds();
 	}

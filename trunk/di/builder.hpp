@@ -65,7 +65,8 @@ public:
 		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
-			boost::is_same< SPtr<U>,ordinary<U> >::value),
+			boost::is_same< SPtr<U>,ordinary<U> >::value ||
+			boost::is_same< SPtr<U>,service<U> >::value),
 			ProvidedTypeIsUnsupported,);
 		assert(object.object);
 
@@ -91,7 +92,8 @@ public:
 		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
-			boost::is_same< SPtr<U>,ordinary<U> >::value),
+			boost::is_same< SPtr<U>,ordinary<U> >::value ||
+			boost::is_same< SPtr<U>,service<U> >::value),
 			ProvidedTypeIsUnsupported,);
 		
 		do_replacement(object, at);

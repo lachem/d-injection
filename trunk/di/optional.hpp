@@ -19,10 +19,12 @@ struct optional :
 	typedef detail::injection< T,ordinary<T> > base;
 
 	optional() : base(false) {}
-	optional(const optional<T>& inj) : base(inj) {
-		if(base::empty()) {
-			base::insert_self_into_container(false);
-		}
+	optional(const optional<T>& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	optional<T>& operator=(const optional<T>& source) {
+		base::do_assignement(source,true);
+		return *this;
 	}
 	operator T*() {
 		assert(!base::empty());
@@ -42,10 +44,12 @@ struct optional< shared<T> > :
 	typedef detail::injection< T,shared<T> > base;
 
 	optional() : base(false) {}
-	optional(const optional< shared<T> >& inj) : base(inj) {
-		if(base::empty()) {
-			base::insert_self_into_container(false);
-		}
+	optional(const optional< shared<T> >& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	optional< shared<T> >& operator=(const optional< shared<T> >& source) {
+		base::do_assignement(source,true);
+		return *this;
 	}
 	operator typename shared<T>::representation () {
 		return base::rep_object;
@@ -63,6 +67,30 @@ struct optional< unique<T> > :
 	typedef detail::injection< T,unique<T> > base;
 
 	optional() : base(false) {}
+};
+
+
+template<typename T>
+struct optional< service<T> > : 
+	public detail::injection< T,service<T> >, 
+	public detail::nonallocatable 
+{
+	typedef detail::injection< T,service<T> > base;
+
+	optional() : base(false) {}
+	optional(const optional< service<T> >& source) : base(source) {
+		base::do_copy(source,true);
+	}
+	optional< service<T> >& operator=(const optional< service<T> >& source) {
+		base::do_assignement(source,true);
+		return *this;
+	}
+	operator typename service<T>::representation () {
+		return base::rep_object;
+	}
+	operator const typename service<T>::representation () const {
+		return base::rep_object;
+	}
 };
 
 } //namspace di
