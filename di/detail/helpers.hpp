@@ -6,11 +6,6 @@
 #ifndef DI_HELPERS_HPP
 #define DI_HELPERS_HPP
 
-#include <boost/function.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-
 #include <di/detail/injection_source.hpp>
 #include <di/detail/injection_destination.hpp>
 #include <di/detail/injection_destination_container.hpp>
@@ -32,11 +27,32 @@ struct perform_injection {
 		const typename V::const_iterator itEnd = v.end();
 
 		for(; it != itEnd; ++it) {
-			injection_destination<bare_type> destination = 
-				container::remove(reinterpret_cast<char*>(subject),sizeof(T));
+			if(*it) {
+				injection_destination<bare_type> destination = 
+					container::remove(injection_destination_key(subject,it->get_injection_type_id()));
 
-			if(!destination.transfer_from(const_cast<injection_source<bare_type>*>(*it))) {
+				destination.transfer_from(const_cast<injection_source<bare_type>*>(*it));
+			}
+		}
+		diagnose<V>();
+	}
+
+	template<typename V>
+	void diagnose() const {
+		typedef typename V::value_type::type bare_type;
+		typedef injection_destination_container<bare_type> container;
+
+		//check whether all required injections have been satisified
+		while(true) {
+			injection_destination<bare_type> destination = 
+				container::remove(injection_destination_key(subject,injection_id::any));
+			if(destination.is_empty()) {
+				break;
+			}
+			else 
+			if(destination.is_required()) {
 				unsatisfied_req_handler(subject);
+				break;
 			}
 		}
 	}

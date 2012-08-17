@@ -53,21 +53,43 @@ protected:
 		P::init(&rep_object);
 		insert_self_into_container(is_required);
 	}
-	injection(const injection<T,P>& inj) : rep_object(inj.rep_object) {}
+	injection(const injection<T,P>& source) : rep_object(source.rep_object) {}
 	~injection() {
 		if(empty()) {
-			injection_destination_container<T>::remove(reinterpret_cast<char*>(&rep_object),1);
+			remove_self_from_container();
 		}
 	}
 
-	injection<T,P>& operator=(const injection<T,P>& inj) {
-		rep_object = inj.rep_object;
+	injection<T,P>& operator=(const injection<T,P>& source) {
+		rep_object = source.rep_object;
 		return *this;
+	}
+
+	void do_copy(const injection<T,P>& source, bool is_required) {
+		if(source.empty()) {			
+			insert_self_into_container(is_required);
+		}
+	}
+
+	void do_assignement(const injection<T,P>& source, bool is_required) {
+		if(!source.empty() && this->empty()) {
+			remove_self_from_container();
+		}
+		else
+		if(source.empty() && !this->empty()) {
+			insert_self_into_container(is_required);
+		}
+		this->operator=(source);
 	}
 
 	void insert_self_into_container(bool is_required) {
 		injection_destination_container<T>::insert(
 			injection_destination_imp<P>(&rep_object,is_required));
+	}
+
+	void remove_self_from_container() {
+		injection_destination_container<T>::remove(
+			injection_destination_key(&rep_object,P::id));
 	}
 
 	T* get_object() {

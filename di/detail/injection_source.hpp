@@ -15,22 +15,23 @@ template<typename T>
 struct injection_source {
 	typedef T type;
 
-	explicit injection_source(int an_id) : id(an_id) {}
+	explicit injection_source(short an_id) : id(an_id) {}
 	virtual ~injection_source() {}
 
 	template<typename Y>
-	bool holds() {
+	bool holds() const {
 		return this->id == Y::id;
 	}
-
-	bool empty() {
+	bool empty() const {
 		return is_empty;
 	}
-
+	short get_injection_type_id() const {
+		return id;
+	}
 	virtual const T* get_object() const = 0; 
 
 protected:
-	const int id;
+	const short id;
 	bool is_empty;
 };
 

@@ -28,8 +28,8 @@ struct add_pointers {
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 struct service_list {
 private:
-	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M,* BOOST_PP_INTERCEPT) > raw_types;
-	typedef typename boost::mpl::remove<raw_types, detail::void_*>::type trimmed_types;
+	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, di::service<M,> BOOST_PP_INTERCEPT) > raw_types;
+	typedef typename boost::mpl::remove<raw_types, di::service<detail::void_> >::type trimmed_types;
 	typedef typename detail::add_pointers<trimmed_types>::type trimmed_types_with_pointers;
 public:
 	typedef typename boost::fusion::result_of::as_set<trimmed_types>::type type;

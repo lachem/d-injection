@@ -21,8 +21,8 @@ class injection_destination_container {
 		node() : item(), next(NULL) {}
 		explicit node(const injection_destination<T>& an_item) : item(an_item), next(NULL) {}
 
-		inline bool is_in_range(char* address, size_t range) {
-			return item.is_in_range(address,range);
+		inline bool matches(const injection_destination_key& key) {
+			return item.matches(key);
 		}
 
 		template<size_t arity> 
@@ -75,10 +75,7 @@ public:
 		}
 	}
 
-	inline static injection_destination<T> remove(char* address, size_t range) {
-		assert(address);
-		assert(range);
-
+	inline static injection_destination<T> remove(const injection_destination_key& key) {
 		#ifndef DI_NO_MULTITHREADING
 		detail::lock_guard<detail::spinlock> guard(lock);
 		#endif
@@ -89,7 +86,7 @@ public:
 			return head_sentinel.item;
 		}
 		while(curr != tail) {
-			if(curr->is_in_range(address,range)) {
+			if(curr->matches(key)) {
 				injection_destination<T> item = curr->item;
 				prev->next = curr->next;
 				delete curr;
@@ -98,7 +95,7 @@ public:
 			prev = curr;
 			curr = curr->next;
 		}
-		if(curr->is_in_range(address,range)) {
+		if(curr->matches(key)) {
 			injection_destination<T> item = curr->item;
 			tail = prev;
 			prev->next = NULL;

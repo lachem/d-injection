@@ -50,8 +50,8 @@ protected:
 	void givenProperlyBuiltTestClassInstance(TestClass* testClassInstance, TestType2* t2First = new TestType2, TestType2* t2Second = new TestType2) {
 		di::builder_imp<TestClass,TestClass,di::using_exceptions<TestClass> > builder;
 		builder.use(t1);
-		builder.use(di::unique<TestType2>(t2First));
 		builder.use(di::shared<TestType2>(t2Second));
+		builder.use(di::unique<TestType2>(t2First));
 		builder.delegate(*testClassInstance);
 	}
 
@@ -163,7 +163,7 @@ TYPED_TEST(InjectionShould, beCopiedProperlyWhenDeclaredAsSharedBeforeBuilding) 
 	EXPECT_EQ(copyableClassCopy.var_shared.get(),t2Mock);
 }
 
-TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsSharedAfterBuilding) {
+TYPED_TEST(InjectionShould, beAssignedProperlyAfterBuildingWhenDeclaredAsShared) {
 	typename TypeParam::CopyableClass copyableClassCopy;
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
@@ -175,7 +175,21 @@ TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsSharedAfterBuilding)
 	EXPECT_EQ(copyableClassInstance->var_shared.get(),copyableClassCopy.var_shared.get());
 }
 
-TYPED_TEST(InjectionShould, beAssignedProperlyWhenDeclaredAsSharedBeforeBuilding) {
+TYPED_TEST(InjectionShould, beAssignedProperlyWithNotBuiltInjectionAfterBuildingWhenDeclaredAsShared) {
+	typename TypeParam::CopyableClass copyableClassCopy;
+	TestType2Mock* t2Mock1 = new TestType2Mock;
+	EXPECT_CALL(*t2Mock1, die()).Times(1);
+	TestType2Mock* t2Mock2 = new TestType2Mock;
+	EXPECT_CALL(*t2Mock2, die()).Times(1);
+
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(&copyableClassCopy, t2Mock1);
+	copyableClassCopy = (*this->copyableClassInstance);
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(&copyableClassCopy, t2Mock2);
+
+	EXPECT_EQ(t2Mock2,copyableClassCopy.var_shared.get());
+}
+
+TYPED_TEST(InjectionShould, beAssignedProperlyBeforeBuildingWhenDeclaredAsShared) {
 	typename TypeParam::CopyableClass copyableClassCopy;
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);

@@ -6,6 +6,7 @@
 #ifndef DI_MODULE_HPP
 #define DI_MODULE_HPP
 
+#include <boost/type_traits/remove_pointer.hpp>
 #include <di/builder_imp.hpp>
 #include <di/detail/variadics.hpp>
 
@@ -17,13 +18,13 @@ struct make_selective_use_call;
 
 template<>
 struct make_selective_use_call<false> {
-	template<typename B, typename T> void operator()(B&,T&) {}
+	template<typename B, typename T> void operator()(B&,const di::service<T>&) {}
 };
 
 template<>
 struct make_selective_use_call<true> {
 	template<typename B, typename T>
-	void operator()(B& builder, T& t) {
+	void operator()(B& builder, const di::service<T>& t) {
 		builder.use(t);
 	}
 };
@@ -35,15 +36,15 @@ struct module {
 	typedef M type;
 
 	template<typename T>
-	void use(T& element) {
-		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::provided::ref_type,T**>::type::value), TypeIsNotOnModulesProvidedServiceList,);
-		*boost::fusion::at_key<T**>(provided) = &element;
+	void use(const di::service<T>& element) {
+		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::provided::ref_type,di::service<T>*>::type::value), TypeIsNotOnModulesProvidedServiceList,);
+		*boost::fusion::at_key<di::service<T>*>(provided) = element;
 	}
 
 	template<typename T>
-	T& get() {
-		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::needed::ref_type,T**>::type::value), TypeIsNotOnModulesNeededServiceList,);
-		return **boost::fusion::at_key<T**>(needed);
+	boost::shared_ptr<T> get() {
+		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::needed::ref_type,di::service<T>*>::type::value), TypeIsNotOnModulesNeededServiceList,);
+		return *boost::fusion::at_key<di::service<T>*>(needed);
 	}
 	
 	template<typename C>
@@ -64,10 +65,10 @@ private:
 		builder_feeder(B& a_builder) : builder(a_builder) {}
 		template<typename T>
 		void operator()(T& element) const {
-			typedef typename boost::remove_pointer<typename boost::remove_pointer<T>::type>::type raw_T;
+			typedef typename boost::remove_pointer<T>::type::type raw_T;
 			typedef typename boost::mpl::contains<typename B::subject::raw_type, raw_T>::type builders_subject_contains_T;
 			
-			detail::make_selective_use_call<builders_subject_contains_T::value>()(builder,**element);
+			detail::make_selective_use_call<builders_subject_contains_T::value>()(builder,*element);
 		}
 
 		mutable B& builder;

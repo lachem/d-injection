@@ -96,14 +96,21 @@ struct TestClassReq : public di::subject<TestType1,TestType2,TestType2> {
 	di::required< di::shared<TestType2> > var_shared;
 };
 
-struct BareClassReq : public di::subject<TestType1,TestType2> {
-	di::required<TestType1> var;
-	di::required<TestType2> var2;
+struct ServiceClassReq : public di::subject<TestType1,TestType2> {
+	di::optional< di::service<TestType1> > var;
+	di::required< di::service<TestType2> > var2;
 };
 
 struct CopyableClassReq : public di::subject<TestType1,TestType2> {
 	di::required<TestType1> var;
 	di::required< di::shared<TestType2> > var_shared;
+};
+
+struct CopyableClassWithServicesReq : public di::subject<TestType1,TestType2,TestType1,TestType2> {
+	di::required< di::shared<TestType1> > var;
+	di::required< di::shared<TestType2> > var_shared;
+	di::optional< di::service<TestType1> > var_service;
+	di::required< di::service<TestType2> > var_service2;
 };
 
 struct TestClassOpt : public di::subject<TestType1,TestType2,TestType2> {
