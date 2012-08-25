@@ -20,7 +20,7 @@ namespace diagnostics {
 
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
-	builder<Mixed5Types>* mixed5typesBuilder;
+	abstract_builder<Mixed5Types>* mixed5typesBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {

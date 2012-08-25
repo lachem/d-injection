@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include "builder_should.hpp"
+#include "abstract_builder_should.hpp"
 #include "diagnostics/builder_diagnostics_should.hpp"
 #include "performance/builder_performance_should.hpp"
 #include "detail/injection_should.hpp"
