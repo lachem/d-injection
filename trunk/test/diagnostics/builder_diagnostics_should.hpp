@@ -31,7 +31,7 @@ protected:
 	}
 
 	void givenMixed5TypesBuilderWithDiagnosticHandlerMock() {
-		mixed5typesBuilder = new builder_imp<Mixed5Types,Mixed5Types,di::using_exceptions<Mixed5Types> >;
+		mixed5typesBuilder = new builder_imp<Mixed5Types,Mixed5Types>;
 	}
 };
 
