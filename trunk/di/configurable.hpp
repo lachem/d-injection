@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_BUILDER_HPP
-#define DI_BUILDER_HPP
+#ifndef DI_CONFIGURABLE_HPP
+#define DI_CONFIGURABLE_HPP
 
 #include <di/detail/variadics.hpp>
 #include <di/detail/helpers.hpp>
@@ -41,15 +41,10 @@ private:
 };
 
 template<typename T>
-class builder {	
+class configurable {	
 public:
-	typedef T subject;
-
-	virtual T* build() const = 0;
-	virtual void delegate(T&) const = 0;
-	
 	template<typename U>
-	builder<T>& use(U& object) {
+	configurable<T>& use(U& object) {
 		return this->use(ordinary<U>(&object));
 	}
 
@@ -61,7 +56,7 @@ public:
 	 * @post injection has been saved inside the container
 	 */
 	template<template <typename> class SPtr, typename U>
-	builder<T>& use(const SPtr<U>& object) {
+	configurable<T>& use(const SPtr<U>& object) {
 		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
@@ -75,7 +70,7 @@ public:
 	}
 
 	template<typename U>
-	builder<T>& replace(U& object, size_t at=0) {
+	configurable<T>& replace(U& object, size_t at=0) {
 		return this->replace(di::ordinary<U>(&object),at);
 	}
 
@@ -88,7 +83,7 @@ public:
 	 * @post injection has been saved inside the container
 	 */
 	template<template <typename> class SPtr, typename U>
-	builder<T>& replace(const SPtr<U>& object, size_t at=0) {
+	configurable<T>& replace(const SPtr<U>& object, size_t at=0) {
 		BOOST_MPL_ASSERT_MSG((
 			boost::is_same< SPtr<U>,unique<U> >::value || 
 			boost::is_same< SPtr<U>,shared<U> >::value || 
@@ -106,7 +101,7 @@ public:
 	 * @post injection of requested type has been removed
 	 */
 	template<typename U>
-	builder<T>& remove(size_t at=0) {
+	configurable<T>& remove(size_t at=0) {
 		do_removal<U>(at);
 		return *this;
 	}
@@ -159,5 +154,5 @@ protected:
 
 } //namspace di
 
-#endif //DI_BUILDER_HPP
+#endif //DI_CONFIGURABLE_HPP
 

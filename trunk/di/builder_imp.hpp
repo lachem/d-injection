@@ -6,7 +6,7 @@
 #ifndef DI_BUILDER_IMP_HPP
 #define DI_BUILDER_IMP_HPP
 
-#include <di/builder.hpp>
+#include <di/abstract_builder.hpp>
 #include <di/diagnostics.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/static_assert.hpp>
@@ -14,19 +14,13 @@
 
 namespace di {
 
-template<typename C, typename I = C, typename D = using_assertions<C> >
-class builder_imp : public di::builder<I>, private D, di::detail::noncopyable {
-	BOOST_STATIC_ASSERT((boost::is_base_of<I,C>::value));
+template<typename C, typename I = C, typename D = di::using_assertions<C> >
+class builder_imp : public di::abstract_builder<I>, private D, di::detail::noncopyable {
+	BOOST_MPL_ASSERT_MSG((boost::is_base_of<I,C>::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
 
 public:
 	builder_imp() {}
 
-	/**
-	 * @brief creates the object of type C, performs the injection and calls constructed() on subject
-	 * @pre injections required by the object under construction were provided to the builder
-	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
-	 * @return new instance of subject type
-	 */
 	virtual I* build() const {
 		C* instance = new C;
 		build_inject(instance);
@@ -34,12 +28,6 @@ public:
 		return instance;
 	}
 
-	/**
-	 * @brief performs injections and calls constructed() on subject
-	 * @pre injections required by the instance object were provided to the builder
-	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
-	 * @param instance of builder's corresponding subject
-	 */
 	virtual void delegate(I& instance) const {
 		C* downcasted = static_cast<C*>(&instance);
 		delegate_inject(downcasted);
@@ -52,13 +40,13 @@ private:
 	}
 
 	void build_inject(C* instance) const {
-		boost::fusion::for_each(builder<I>::injections,
-			detail::perform_injection<C>(instance,D::build_unsatisfied_requirement));
+		boost::fusion::for_each(di::configurable<I>::injections,
+			di::detail::perform_injection<C>(instance,D::build_unsatisfied_requirement));
 	}
 
 	void delegate_inject(C* instance) const {
-		boost::fusion::for_each(builder<I>::injections,
-			detail::perform_injection<C>(instance,D::delegate_unsatisfied_requirement));
+		boost::fusion::for_each(di::configurable<I>::injections,
+			di::detail::perform_injection<C>(instance,D::delegate_unsatisfied_requirement));
 	}
 };
 

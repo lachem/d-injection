@@ -6,11 +6,8 @@
 #ifndef DI_DIAGNOSTICS_HPP
 #define DI_DIAGNOSTICS_HPP
 
-#include <di/builder.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/bind.hpp>
+#include <di/abstract_builder.hpp>
 #include <stdexcept>
-#include <sstream>
 
 namespace di {
 
@@ -51,4 +48,3 @@ struct using_exceptions {
 } //namspace di
 
 #endif //DI_DIAGNOSTICS_HPP
-

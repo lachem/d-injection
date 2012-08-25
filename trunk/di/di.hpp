@@ -9,7 +9,7 @@
 #include <di/subject.hpp>
 #include <di/required.hpp>
 #include <di/optional.hpp>
-#include <di/builder.hpp>
+#include <di/abstract_builder.hpp>
 #include <di/builder_imp.hpp>
 #include <di/assembler.hpp>
 #include <di/service_list.hpp>

@@ -7,8 +7,8 @@
 #define DI_MODULE_HPP
 
 #include <boost/type_traits/remove_pointer.hpp>
-#include <di/builder_imp.hpp>
 #include <di/detail/variadics.hpp>
+#include <di/builder_imp.hpp>
 
 namespace di {
 namespace detail {
@@ -18,7 +18,10 @@ struct make_selective_use_call;
 
 template<>
 struct make_selective_use_call<false> {
-	template<typename B, typename T> void operator()(B&,const di::service<T>&) {}
+	template<typename B, typename T> 
+	void operator()(B&,const di::service<T>&) {
+		//empty
+	}
 };
 
 template<>
@@ -48,15 +51,15 @@ struct module {
 	}
 	
 	template<typename C>
-	std::auto_ptr< di::builder<C> > abstract_builder() {
-		return abstract_builder<C,C>();
+	std::auto_ptr< di::abstract_builder<C> > abstract_builder() {
+		return this->abstract_builder<C,C>();
 	}
 
 	template<typename I,typename C>
-	std::auto_ptr< di::builder<I> > abstract_builder() {
-		di::builder<I>* builder = new di::builder_imp<C,I>();
-		boost::fusion::for_each(needed,builder_feeder< di::builder<I> >(*builder));
-		return std::auto_ptr< di::builder<I> >(builder);
+	std::auto_ptr< di::abstract_builder<I> > abstract_builder() {
+		di::abstract_builder<I>* builder = new di::builder_imp<C,I>();
+		boost::fusion::for_each(needed,builder_feeder< di::abstract_builder<I> >(*builder));
+		return std::auto_ptr< di::abstract_builder<I> >(builder);
 	}
 
 private:
