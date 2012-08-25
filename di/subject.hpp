@@ -9,6 +9,7 @@
 #include <vector>
 #include <di/detail/variadics.hpp>
 #include <di/detail/injection_source_container.hpp>
+#include <di/diagnostics.hpp>
 
 // Visual macro expansion CL /EP /C YourCodeFile.cpp 
 
@@ -43,17 +44,31 @@ struct set_of_unique_types {
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
-class subject {
+class subject {	
 	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,BOOST_PP_INTERCEPT) > raw_mpl_vector;
 	typedef typename detail::vector_without_voids<raw_mpl_vector>::type trimmed_vector;
 	typedef typename detail::vector_of_injection_sources<trimmed_vector>::type source_vector;
 	typedef typename detail::set_of_unique_types<source_vector>::type unique_set;
+protected:
+	typedef subject<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,BOOST_PP_INTERCEPT)> subject_type;
 public:
 	typedef trimmed_vector raw_type;
 	typedef typename boost::fusion::result_of::as_set<unique_set>::type type;
-	virtual void constructed(){};
+	typedef di::using_assertions<subject_type> diagnostics;
+	
+	virtual ~subject() {}
+	virtual void constructed() {}
 };
 
 } // namespace di
 
 #endif //DI_SUBJECT_HPP
+
+
+
+
+
+
+
+
+

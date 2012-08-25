@@ -48,7 +48,7 @@ protected:
 	}
 
 	void givenProperlyBuiltTestClassInstance(TestClass* testClassInstance, TestType2* t2First = new TestType2, TestType2* t2Second = new TestType2) {
-		di::builder_imp<TestClass,TestClass,di::using_exceptions<TestClass> > builder;
+		di::builder_imp<TestClass> builder;
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2Second));
 		builder.use(di::unique<TestType2>(t2First));
@@ -56,19 +56,18 @@ protected:
 	}
 
 	void givenProperlyBuiltCopyableInstance(CopyableClass* copyableClassInstance, TestType2* t2 = new TestType2) {
-		di::builder_imp<CopyableClass,CopyableClass,di::using_exceptions<CopyableClass> > builder;
+		di::builder_imp<CopyableClass> builder;
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2));
 		builder.delegate(*copyableClassInstance);
 	}
 
 	void givenInproperlyBuiltTestClassInstance(TestClass* testClassInstance) {
-		di::builder_imp<TestClass,TestClass,di::using_exceptions<TestClass> > builder;
+		di::builder_imp<TestClass> builder;
 		try {
 			builder.delegate(*testClassInstance);
 		}
-		catch(...) {
-		}
+		catch(...) {}
 	}
 
 };

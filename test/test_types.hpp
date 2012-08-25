@@ -25,12 +25,12 @@ struct D3:public D{virtual void vtable(){}};
 template<typename T>
 struct D4 {};
 
-class AbstractDifferent4Types : public subject<const D1,D2,const D3, D4<D3> > {
+struct AbstractDifferent4Types : public subject<const D1,D2,const D3, D4<D3> > {
+private:
 	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
-class Different4Types : public AbstractDifferent4Types {
-public:
+struct Different4Types : public AbstractDifferent4Types {
 	required<const D1> some_var;
 	required<D2> some_var2;
 	optional<const D3> some_var3;
@@ -39,12 +39,12 @@ public:
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
-class AbstractSame3AbstractTypes : public subject<D,D,D> {
+struct AbstractSame3AbstractTypes : public subject<D,D,D> {
+private:
 	virtual void compilerShouldKindlyGenerateVtable() = 0;
 };
 
-class Same3AbstractTypes : public AbstractSame3AbstractTypes {
-public:
+struct Same3AbstractTypes : public AbstractSame3AbstractTypes {
 	required<D> some_var;
 	required<D> some_var2;
 	required<D> some_var3;
@@ -52,22 +52,23 @@ public:
 	virtual void compilerShouldKindlyGenerateVtable() {};
 };
 
-class Same3Types : public subject<D3,D3,D3> {
-public:
+struct Same3Types : public subject<D3,D3,D3> {
 	required<D3> some_var;
 	required<D3> some_var2;
 	optional<D3> some_var3;
 };
 
-class Same2Types : public subject<D3,D3> {
-public:
+struct Same2Types : public subject<D3,D3> {
 	required<D3> some_var;
 	required<D3> some_var2;
 };
 
 struct SpareInjections : public di::subject<D1,D2,D3> {};
 
-class Mixed5Types : public subject<D1,D2,D2,D3,D3> {
+struct Mixed5Types : public subject<D1,D2,D2,D3,D3> {
+	typedef di::using_exceptions<subject_type> diagnostics;
+
+private:
 	required<D1> some_var;
 	required<D2> some_var2;
 	optional<D2> some_var3;
@@ -91,6 +92,8 @@ struct TestType8{};
 struct TestType9{};
 
 struct TestClassReq : public di::subject<TestType1,TestType2,TestType2> {
+	typedef di::using_exceptions<subject_type> diagnostics;
+
 	di::required<TestType1> var;
 	di::required< di::unique<TestType2> > var_unique;
 	di::required< di::shared<TestType2> > var_shared;

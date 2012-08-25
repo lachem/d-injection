@@ -15,7 +15,7 @@ namespace detail {
 
 template<typename T>
 struct perform_injection {
-	perform_injection(T* subject, void (*an_unsatisfied_req_handler)(T*)) : 
+	perform_injection(T* subject, void (*an_unsatisfied_req_handler)(typename T::subject_type*)) : 
 		subject(subject), unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
 
 	template<typename V>
@@ -59,7 +59,7 @@ struct perform_injection {
 
 private:
 	T* subject;
-	void (*unsatisfied_req_handler)(T*);
+	void (*unsatisfied_req_handler)(typename T::subject_type*);
 };
 
 } // namespace detail

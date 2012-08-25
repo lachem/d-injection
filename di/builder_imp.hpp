@@ -14,8 +14,8 @@
 
 namespace di {
 
-template<typename C, typename I = C, typename D = di::using_assertions<C> >
-class builder_imp : public di::abstract_builder<I>, private D, di::detail::noncopyable {
+template<typename C, typename I = C>
+class builder_imp : public di::abstract_builder<I>, di::detail::noncopyable {
 	BOOST_MPL_ASSERT_MSG((boost::is_base_of<I,C>::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
 
 public:
@@ -36,17 +36,17 @@ public:
 
 private:
 	virtual void out_of_bounds() {
-		D::out_of_bounds();
+		C::diagnostics::out_of_bounds();
 	}
 
 	void build_inject(C* instance) const {
 		boost::fusion::for_each(di::configurable<I>::injections,
-			di::detail::perform_injection<C>(instance,D::build_unsatisfied_requirement));
+			di::detail::perform_injection<C>(instance,C::diagnostics::build_unsatisfied_requirement));
 	}
 
 	void delegate_inject(C* instance) const {
 		boost::fusion::for_each(di::configurable<I>::injections,
-			di::detail::perform_injection<C>(instance,D::delegate_unsatisfied_requirement));
+			di::detail::perform_injection<C>(instance,C::diagnostics::delegate_unsatisfied_requirement));
 	}
 };
 
