@@ -12,9 +12,9 @@ namespace di {
 	
 /**
  * @brief abstract_builder provides convinient abstraction for building objects of abstract or concrete types.
- * The main advantage of using abstract_builder is the possibility to mock build and delegate methods. If the
- * user does not need mocking or can test building using other means (checking injections directly) then using
- * more convinient generic_builder is advised.
+ * The main advantage of using abstract_builder is the possibility to mock build methods. If the user does not 
+ * need mocking or can test building using other means (checking injections directly) then using more convinient 
+ * generic_builder is advised.
  */
 template<typename T>
 class abstract_builder : public di::configurable<T> {	
@@ -22,20 +22,20 @@ public:
 	typedef T subject;
 
 	/**
-	 * @brief creates the object of type C, performs injections and calls constructed() on subject
-	 * @pre injections required by the object under construction were provided to the builder
-	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
-	 * @return new instance of subject type
+	 * @brief Creates the object of type C, performs injections and calls constructed() on subject.
+	 * @pre Injections required by the object under construction were provided to the builder.
+	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
+	 * @return New instance of subject type.
 	 */
-	virtual T* build() const = 0;
+	virtual T* build() = 0;
 
 	/**
-	 * @brief performs injections and calls constructed() on subject
-	 * @pre injections required by the instance object were provided to the builder
-	 * @post all provided injections have been injected, subject<T...>::constucted() has been called
-	 * @param instance of builder's corresponding subject
+	 * @brief Performs injections and calls constructed() on subject.
+	 * @pre Injections required by the instance object were provided to the builder.
+	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
+	 * @param Instance of builder's corresponding subject.
 	 */
-	virtual void delegate(T&) const = 0;
+	virtual void build(T&) = 0;
 
 	template<typename U>
 	abstract_builder<T>& use(U& object) {

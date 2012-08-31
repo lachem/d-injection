@@ -43,8 +43,7 @@ struct join_all {
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
-struct assembler : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
-private:
+class assembler : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
 	typedef di::assembler<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> this_type;
 
 public:

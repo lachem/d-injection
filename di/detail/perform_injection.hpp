@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_HELPERS_HPP
-#define DI_HELPERS_HPP
+#ifndef DI_PERFORM_INJECTION_HPP
+#define DI_PERFORM_INJECTION_HPP
 
 #include <di/detail/injection_source.hpp>
 #include <di/detail/injection_destination.hpp>
@@ -15,8 +15,9 @@ namespace detail {
 
 template<typename T>
 struct perform_injection {
-	perform_injection(T* subject, void (*an_unsatisfied_req_handler)(typename T::subject_type*)) : 
-		subject(subject), unsatisfied_req_handler(an_unsatisfied_req_handler)  {}
+	perform_injection(T* a_subject, bool* a_succeeded) : 
+		subject(a_subject), succeeded(a_succeeded)  
+	{*succeeded = true;}
 
 	template<typename V>
 	void operator()(V& v) const {
@@ -51,7 +52,7 @@ struct perform_injection {
 			}
 			else 
 			if(destination.is_required()) {
-				unsatisfied_req_handler(subject);
+				*succeeded = false;
 				break;
 			}
 		}
@@ -59,10 +60,10 @@ struct perform_injection {
 
 private:
 	T* subject;
-	void (*unsatisfied_req_handler)(typename T::subject_type*);
+	bool* succeeded;
 };
 
 } // namespace detail
 } // namspace di
 
-#endif //DI_HELPERS_HPP
+#endif //DI_PERFORM_INJECTION_HPP

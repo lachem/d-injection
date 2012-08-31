@@ -7,7 +7,6 @@
 #define DI_CONFIGURABLE_HPP
 
 #include <di/detail/variadics.hpp>
-#include <di/detail/helpers.hpp>
 #include <di/configuration.hpp>
 #include <exception>
 #include <sstream>
@@ -49,11 +48,11 @@ public:
 	}
 
 	/**
-	 * @brief inserts object at first unoccupied position matching given type
-	 * @param injection reference to injection type
-	 * @pre injection's type is known
-	 * @pre injection contents are not null
-	 * @post injection has been saved inside the container
+	 * @brief Inserts object at first unoccupied position matching given type.
+	 * @param injection Reference to injection type.
+	 * @pre Injection's type is known.
+	 * @pre Injection contents are not null.
+	 * @post Injection has been saved inside the container.
 	 */
 	template<template <typename> class SPtr, typename U>
 	configurable<T>& use(const SPtr<U>& object) {
@@ -75,12 +74,12 @@ public:
 	}
 
 	/**
-	 * @brief replaces nth injection of given type
-	 * @param injection reference to injection type
-	 * @param at position at which the replacement is to be performed in terms of given type
-	 * @pre injection's type is known
-	 * @pre injection contents are not null
-	 * @post injection has been saved inside the container
+	 * @brief Replaces nth injection of given type.
+	 * @param injection Reference to injection type.
+	 * @param at Position at which the replacement is to be performed in terms of given type.
+	 * @pre Injection's type is known.
+	 * @pre Injection contents are not null.
+	 * @post Injection has been saved inside the container.
 	 */
 	template<template <typename> class SPtr, typename U>
 	configurable<T>& replace(const SPtr<U>& object, size_t at=0) {
@@ -96,9 +95,9 @@ public:
 	}
 
 	/**
-	 * @brief removes nth injection of given type, where n == at
-	 * @param at position at which the removal is to be performed
-	 * @post injection of requested type has been removed
+	 * @brief Removes nth injection of given type, where n == at.
+	 * @param at Position at which the removal is to be performed.
+	 * @post Injection of requested type has been removed.
 	 */
 	template<typename U>
 	configurable<T>& remove(size_t at=0) {
@@ -146,7 +145,9 @@ private:
 		}
 	}
 
-	virtual void out_of_bounds() = 0;
+	virtual void out_of_bounds() {
+		T::diagnostics::out_of_bounds();
+	}
 
 protected:
 	typename T::type injections;

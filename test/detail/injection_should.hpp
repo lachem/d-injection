@@ -52,20 +52,20 @@ protected:
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2Second));
 		builder.use(di::unique<TestType2>(t2First));
-		builder.delegate(*testClassInstance);
+		builder.build(*testClassInstance);
 	}
 
 	void givenProperlyBuiltCopyableInstance(CopyableClass* copyableClassInstance, TestType2* t2 = new TestType2) {
 		di::builder_imp<CopyableClass> builder;
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2));
-		builder.delegate(*copyableClassInstance);
+		builder.build(*copyableClassInstance);
 	}
 
 	void givenInproperlyBuiltTestClassInstance(TestClass* testClassInstance) {
 		di::builder_imp<TestClass> builder;
 		try {
-			builder.delegate(*testClassInstance);
+			builder.build(*testClassInstance);
 		}
 		catch(...) {}
 	}
