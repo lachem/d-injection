@@ -36,6 +36,7 @@ struct using_exceptions {
 
 	static void build_unsatisfied_requirement(T* instance) {
 		requirement_not_satisfied exception(instance);
+		//exception will be thrown out of builder, therefore deleting created instance is necessary
 		delete instance;
 		throw exception;
 	}

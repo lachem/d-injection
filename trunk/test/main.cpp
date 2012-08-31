@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include "abstract_builder_should.hpp"
+#include "generic_builder_should.hpp"
 #include "diagnostics/builder_diagnostics_should.hpp"
 #include "performance/builder_performance_should.hpp"
 #include "detail/injection_should.hpp"

@@ -3,13 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_BUILDER_TESTS_HPP_
-#define DI_BUILDER_TESTS_HPP_
+#ifndef DI_ABSTRACT_BUILDER_TESTS_HPP_
+#define DI_ABSTRACT_BUILDER_TESTS_HPP_
 
-#include "gtest/gtest.h"
-
-#include <iostream>
-#include <string>
+#include <gtest/gtest.h>
 
 #include <di/subject.hpp>
 #include <di/builder_imp.hpp>
@@ -30,8 +27,8 @@ protected:
 	abstract_builder<Different4Types>* diff4typesBuilder;
 	Different4Types* diff4types;
 
-	abstract_builder<Same3Types>* same3typesBuilder;
-	Same3Types* same3types;
+	abstract_builder<::testing::NiceMock<Same3Types> >* same3typesBuilder;
+	::testing::NiceMock<Same3Types>* same3types;
 
 	abstract_builder<Same2Types>* same2typesBuilder;
 	Same2Types* same2types;
@@ -85,12 +82,12 @@ protected:
 	}
 
 	void givenSame3TypesBuilder() {
-		same3typesBuilder = new builder_imp<Same3Types>;
+		same3typesBuilder = new builder_imp< ::testing::NiceMock<Same3Types> >;
 		same3typesBuilder->use(d3).use(d3_2).use(d3_3);
 	}
 
 	void givenSame3TypesBuilderWithoutThirdElement() {
-		same3typesBuilder = new builder_imp<Same3Types>;
+		same3typesBuilder = new builder_imp< ::testing::NiceMock<Same3Types> >;
 		same3typesBuilder->use(d3).use(d3_2);
 	}
 
@@ -101,7 +98,7 @@ protected:
 
 	void givenProperlyBuiltSpareInjectionsInstance() {
 		di::builder_imp<SpareInjections> builder;
-		builder.delegate(*spareInjectionsInstance);
+		builder.build(*spareInjectionsInstance);
 	}
 };
 
@@ -205,7 +202,7 @@ TEST_F(AbstractBuilderShould, injectObjectsOfSame2TypesByDelegation) {
 	givenSame2TypesBuilder();
 
 	same2types = new Same2Types;
-	same2typesBuilder->delegate(*same2types);
+	same2typesBuilder->build(*same2types);
 
 	EXPECT_EQ(same2types->some_var.get(),  &d3);
 	EXPECT_EQ(same2types->some_var2.get(), &d3_2);
@@ -220,10 +217,10 @@ TEST_F(AbstractBuilderShould, injectObjectsOfDifferent4TypesByDelegation) {
 	Different4Types diff3_3;
 	Different4Types diff3_4;
 
-	diff4typesBuilder.use<const D3>(d3_2).delegate(diff3_1);
-	diff4typesBuilder.replace<const D3>(d3  ).delegate(diff3_2);
-	diff4typesBuilder.replace<const D3>(d3_3).delegate(diff3_3);
-	diff4typesBuilder.replace<const D3>(d3_2).delegate(diff3_4);	
+	diff4typesBuilder.use<const D3>(d3_2).build(diff3_1);
+	diff4typesBuilder.replace<const D3>(d3  ).build(diff3_2);
+	diff4typesBuilder.replace<const D3>(d3_3).build(diff3_3);
+	diff4typesBuilder.replace<const D3>(d3_2).build(diff3_4);	
 	
 	EXPECT_EQ(diff3_1.some_var.get(),  &d1);
 	EXPECT_EQ(diff3_1.some_var2.get(), &d2);
@@ -278,4 +275,4 @@ TEST_F(AbstractBuilderShould, notRemoveSharedInjectionsWhileProvidedSharedPtrExi
 
 }  // namespace injection
 
-#endif //DI_BUILDER_TESTS_HPP_
+#endif //DI_ABSTRACT_BUILDER_TESTS_HPP_

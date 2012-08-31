@@ -20,7 +20,7 @@ namespace diagnostics {
 
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
-	abstract_builder<Mixed5Types>* mixed5typesBuilder;
+	abstract_builder< ::testing::StrictMock<Mixed5Types> >* mixed5typesBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 
 	virtual void SetUp() {
@@ -31,7 +31,7 @@ protected:
 	}
 
 	void givenMixed5TypesBuilderWithDiagnosticHandlerMock() {
-		mixed5typesBuilder = new builder_imp<Mixed5Types,Mixed5Types>;
+		mixed5typesBuilder = new builder_imp< ::testing::StrictMock<Mixed5Types> >;
 	}
 };
 
@@ -107,9 +107,9 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDeleg
 
 	bool exception_has_been_thrown = false;
 
-	Mixed5Types* subject = new Mixed5Types;
+	::testing::StrictMock<Mixed5Types>* subject = new ::testing::StrictMock<Mixed5Types>;
 	try {
-		mixed5typesBuilder->delegate(*subject);
+		mixed5typesBuilder->build(*subject);
 	}
 	catch (di::requirement_not_satisfied& rnsException) {
 		std::string message(rnsException.what());

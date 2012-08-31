@@ -43,32 +43,40 @@ struct set_of_unique_types {
 
 } // namespace detail
 
+/**
+ * @brief Subject class is a base class for all classes that are inteded do have objects injected to it.
+ *        All injection types are to be listed in subject's variadic template parameter list. To support
+ *        multiple instances of the same types a number of operations on the list of types are performed.
+ *        In result a list of for example <T,T,Y,Z,Y> is transformed into <<T,2>,<T,2>,<Z>>.
+ */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
 class subject {	
 	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,BOOST_PP_INTERCEPT) > raw_mpl_vector;
 	typedef typename detail::vector_without_voids<raw_mpl_vector>::type trimmed_vector;
 	typedef typename detail::vector_of_injection_sources<trimmed_vector>::type source_vector;
 	typedef typename detail::set_of_unique_types<source_vector>::type unique_set;
+
 protected:
 	typedef subject<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,BOOST_PP_INTERCEPT)> subject_type;
+
 public:
 	typedef trimmed_vector raw_type;
 	typedef typename boost::fusion::result_of::as_set<unique_set>::type type;
 	typedef di::using_assertions<subject_type> diagnostics;
 	
+	/**
+	 * @brief Classes with injections derive publicly from subject, therefore virtual destructor is required. 
+	 */
 	virtual ~subject() {}
+
+	/**
+	 * @brief There are cases when a user wants could invoke actions on injected objects right after the injection
+	 *        procedure has finished. Overriding this method provides such possiblity. Each builder calls this
+	 *        method after successfuly performing injections.
+	 */
 	virtual void constructed() {}
 };
 
 } // namespace di
 
 #endif //DI_SUBJECT_HPP
-
-
-
-
-
-
-
-
-

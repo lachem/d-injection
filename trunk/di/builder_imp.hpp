@@ -6,11 +6,10 @@
 #ifndef DI_BUILDER_IMP_HPP
 #define DI_BUILDER_IMP_HPP
 
+#include <boost/type_traits/is_base_of.hpp>
+#include <di/detail/perform_injection.hpp>
 #include <di/abstract_builder.hpp>
 #include <di/diagnostics.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/static_assert.hpp>
-#include <boost/bind.hpp>
 
 namespace di {
 
@@ -21,14 +20,14 @@ class builder_imp : public di::abstract_builder<I>, di::detail::noncopyable {
 public:
 	builder_imp() {}
 
-	virtual I* build() const {
+	virtual I* build() {
 		C* instance = new C;
 		build_inject(instance);
 		instance->constructed();
 		return instance;
 	}
 
-	virtual void delegate(I& instance) const {
+	virtual void build(I& instance) {
 		C* downcasted = static_cast<C*>(&instance);
 		delegate_inject(downcasted);
 		instance.constructed();
@@ -39,14 +38,22 @@ private:
 		C::diagnostics::out_of_bounds();
 	}
 
-	void build_inject(C* instance) const {
+	void build_inject(C* instance) {
+		bool succeeded = true;
 		boost::fusion::for_each(di::configurable<I>::injections,
-			di::detail::perform_injection<C>(instance,C::diagnostics::build_unsatisfied_requirement));
+			di::detail::perform_injection<C>(instance,&succeeded));
+		if(!succeeded) {
+			C::diagnostics::build_unsatisfied_requirement(instance);
+		}
 	}
 
-	void delegate_inject(C* instance) const {
+	void delegate_inject(C* instance) {
+		bool succeeded = true;
 		boost::fusion::for_each(di::configurable<I>::injections,
-			di::detail::perform_injection<C>(instance,C::diagnostics::delegate_unsatisfied_requirement));
+			di::detail::perform_injection<C>(instance,&succeeded));
+		if(!succeeded) {
+			C::diagnostics::delegate_unsatisfied_requirement(instance);
+		}
 	}
 };
 

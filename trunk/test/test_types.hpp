@@ -6,7 +6,7 @@
 #ifndef DI_TEST_TYPES_HPP_
 #define DI_TEST_TYPES_HPP_
 
-#include "gmock/gmock.h"
+#include <gmock/gmock.h>
 
 #include <iostream>
 #include <string>
@@ -53,9 +53,13 @@ struct Same3AbstractTypes : public AbstractSame3AbstractTypes {
 };
 
 struct Same3Types : public subject<D3,D3,D3> {
+	typedef di::using_exceptions<subject_type> diagnostics;
+
 	required<D3> some_var;
 	required<D3> some_var2;
 	optional<D3> some_var3;
+
+	MOCK_METHOD0(constructed, void());
 };
 
 struct Same2Types : public subject<D3,D3> {
