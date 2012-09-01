@@ -11,21 +11,74 @@
 
 namespace di {
 
+/**
+ * @brief generic_builder is a convient facility to build objects with injections. It does not require the subject to be
+ * of any specific type, but to define which injections are to be handled by generic_builder. Therefore using 
+ * generic_builder< subject<T1,T2> > is perfectly fine. The drawback of generic_builder is that it does not support
+ * abstraction i.e. build and build_part methods cannot be mocked nor can build or build_part be used to perform injections
+ * through interfaces.
+ */
 template<typename S>
 class generic_builder : public di::configurable<S> {
 public:
+	/**
+	 * @brief Allows building of any object that needs injections specified by generic_builder template type parameter
+	 * @pre C is a type that contains injections specified by template S
+	 * @pre generic_builder has been configured with injections of instance that were not yet satisfied
+	 * @post All injections which where provided to generic_builder are injectied into instance
+	 * @post constructed has been called on instance
+	 * @param instance Instance of type C that needs injections specified by template S
+	 */
 	template<typename C>
 	void build(C& instance) {
 		bool succeeded = build_inject(&instance);
 		if(!succeeded) {
-			C::diagnostics::delegate_unsatisfied_requirement(&instance);
+			S::diagnostics::delegate_unsatisfied_requirement(&instance);
 		}
 		instance.constructed();
 	}
 
+	/**
+	 * @brief Allows building part of an object. What follows is that neither requirements are checked nor 
+	 * constructed is called.
+	 * @pre C is a type that contains injections specified by template S
+	 * @pre generic_builder has been configured with injections of instance that were not yet satisfied
+	 * @post All injections which where provided to generic_builder are injectied into instance
+	 * @param instance Instance of type C that needs injections specified by template S
+	 */
 	template<typename C>
-	void partial_build(C& instance) {
+	void build_part(C& instance) {
 		(void) build_inject(&instance);
+	}
+
+	template<typename U>
+	generic_builder<S>& use(U& object) {
+		(void) di::configurable<S>::use(object);
+		return *this;
+	}
+
+	template<template <typename> class SPtr, typename U>
+	generic_builder<S>& use(const SPtr<U>& object) {
+		(void) di::configurable<S>::use(object);
+		return *this;
+	}
+
+	template<typename U>
+	generic_builder<S>& replace(U& object, size_t at=0) {
+		(void) di::configurable<S>::replace(object,at);
+		return *this;
+	}
+
+	template<template <typename> class SPtr, typename U>
+	generic_builder<S>& replace(const SPtr<U>& object, size_t at=0) {
+		(void) di::configurable<S>::replace(object,at);
+		return *this;
+	}
+
+	template<typename U>
+	generic_builder<S>& remove(size_t at=0) {
+		(void) di::configurable<S>::remove<U>(at);
+		return *this;
 	}
 
 private:
