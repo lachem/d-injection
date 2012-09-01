@@ -20,7 +20,7 @@ namespace diagnostics {
 
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
-	builder< ::testing::NiceMock<Mixed5Types> > mixed5typesBuilder;
+	builder< ::testing::StrictMock<Mixed5Types> > mixed5typesBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 };
 
@@ -87,7 +87,7 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenBuild
 TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDelegating) {
 	bool exception_has_been_thrown = false;
 
-	::testing::NiceMock<Mixed5Types> subject;
+	::testing::StrictMock<Mixed5Types> subject;
 	try {
 		mixed5typesBuilder.build(subject);
 	}
@@ -101,7 +101,7 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDeleg
 }
 
 TEST_F(BuilderDiagnosticsShould, notCallConstructedWhenExceptionIsThrownWhenDelegating) {
-	::testing::NiceMock<Mixed5Types> subject;
+	::testing::StrictMock<Mixed5Types> subject;
 	EXPECT_CALL(subject,constructed()).Times(0);
 
 	try {
@@ -114,6 +114,7 @@ TEST_F(BuilderDiagnosticsShould, notCallConstructedWhenExceptionIsThrownWhenDele
 TEST_F(BuilderDiagnosticsShould, notIndicateErrorsWhenOptionalIsNotInjected) {
 	bool exceptionHasNotBeenThrown = true;
 
+	builder< ::testing::NiceMock<Mixed5Types> > mixed5typesBuilder;
 	mixed5typesBuilder.use(d1).use(d2).use(d3).use(d3_2);
 	try {
 		delete mixed5typesBuilder.build();
