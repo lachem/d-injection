@@ -20,7 +20,7 @@ namespace diagnostics {
 
 class BuilderDiagnosticsShould : public ::testing::Test {
 protected:
-	builder< ::testing::StrictMock<Mixed5Types> > mixed5typesBuilder;
+	builder< ::testing::NiceMock<Mixed5Types> > mixed5typesBuilder;
 	D1 d1; D2 d2; D3 d3,d3_2,d3_3;
 };
 
@@ -87,7 +87,7 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenBuild
 TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDelegating) {
 	bool exception_has_been_thrown = false;
 
-	::testing::StrictMock<Mixed5Types> subject;
+	::testing::NiceMock<Mixed5Types> subject;
 	try {
 		mixed5typesBuilder.build(subject);
 	}
@@ -98,6 +98,17 @@ TEST_F(BuilderDiagnosticsShould, indicateThatRequirementsHaveNotBeenMetWhenDeleg
 	}
 
 	EXPECT_TRUE(exception_has_been_thrown);
+}
+
+TEST_F(BuilderDiagnosticsShould, notCallConstructedWhenExceptionIsThrownWhenDelegating) {
+	::testing::NiceMock<Mixed5Types> subject;
+	EXPECT_CALL(subject,constructed()).Times(0);
+
+	try {
+		mixed5typesBuilder.build(subject);
+	}
+	catch (di::requirement_not_satisfied&) {
+	}
 }
 
 TEST_F(BuilderDiagnosticsShould, notIndicateErrorsWhenOptionalIsNotInjected) {
