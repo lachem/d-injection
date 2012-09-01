@@ -181,6 +181,14 @@ TEST_F(AbstractBuilderShould, injectObjectsOfSameTypes) {
 	EXPECT_EQ(same3types->some_var3.operator ->(), &d3_3);
 }
 
+TEST_F(AbstractBuilderShould, callConstructedAfterBuildingIsFinished) {
+	givenSame3TypesBuilder();
+
+	::testing::NiceMock<Same3Types> same3types;
+	EXPECT_CALL(same3types,constructed());
+	same3typesBuilder->build(same3types);
+}
+
 TEST_F(AbstractBuilderShould, injectObjectsOfSame2Types) {
 	givenSame2TypesBuilder();
 

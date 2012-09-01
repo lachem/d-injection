@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_ASSEMBLER_TESTS_HPP_
-#define DI_ASSEMBLER_TESTS_HPP_
+#ifndef DI_APPLICATION_TESTS_HPP_
+#define DI_APPLICATION_TESTS_HPP_
 
 #include "gmock/gmock.h"
 #include <test/test_types.hpp>
-#include <di/assembler.hpp>
+#include <di/application.hpp>
 
 using namespace di;
 
@@ -44,91 +44,91 @@ struct Module6 {
 	typedef di::service_list<TestType7,TestType8> needed;
 };
 
-class AssemblerShould : public testing::Test {
+class ApplicationShould : public testing::Test {
 public:	
-	typedef di::assembler<Module1, Module2> TwoModuleAssemblerType;
-	typedef di::assembler<Module1, Module2, Module3, Module4, Module5, Module6> SixModuleAssemblerType;
+	typedef di::application<Module1, Module2> TwoModuleApplicationType;
+	typedef di::application<Module1, Module2, Module3, Module4, Module5, Module6> SixModuleApplicationType;
 
 	virtual void SetUp() {
-		twoModuleAssembler = NULL;
-		sixModuleAssembler = NULL;
+		twoModuleApplication = NULL;
+		sixModuleApplication = NULL;
 	}
 
 	virtual void TearDown() {
-		delete twoModuleAssembler;
-		delete sixModuleAssembler;
+		delete twoModuleApplication;
+		delete sixModuleApplication;
 	}
 
-	TwoModuleAssemblerType& givenTwoModuleAssembler() {
-		return *(twoModuleAssembler ? twoModuleAssembler : twoModuleAssembler = new TwoModuleAssemblerType());
+	TwoModuleApplicationType& giventwoModuleApplication() {
+		return *(twoModuleApplication ? twoModuleApplication : twoModuleApplication = new TwoModuleApplicationType());
 	}
 
-	SixModuleAssemblerType& givenSixModuleAssembler() {
-		return *(sixModuleAssembler ? sixModuleAssembler : sixModuleAssembler = new SixModuleAssemblerType());
+	SixModuleApplicationType& givensixModuleApplication() {
+		return *(sixModuleApplication ? sixModuleApplication : sixModuleApplication = new SixModuleApplicationType());
 	}
 
 private:
-	TwoModuleAssemblerType* twoModuleAssembler;
-	SixModuleAssemblerType* sixModuleAssembler;
+	TwoModuleApplicationType* twoModuleApplication;
+	SixModuleApplicationType* sixModuleApplication;
 };
 
-TEST_F(AssemblerShould, deriveFromModulesItAssembles) {
-	di::module<Module1>* mod1 = &givenTwoModuleAssembler();
-	di::module<Module2>* mod2 = &givenTwoModuleAssembler();
-	di::module<Module3>* mod3 = &givenSixModuleAssembler();
-	di::module<Module4>* mod4 = &givenSixModuleAssembler();
+TEST_F(ApplicationShould, deriveFromModulesItConsistsOf) {
+	di::module<Module1>* mod1 = &giventwoModuleApplication();
+	di::module<Module2>* mod2 = &giventwoModuleApplication();
+	di::module<Module3>* mod3 = &givensixModuleApplication();
+	di::module<Module4>* mod4 = &givensixModuleApplication();
 }
 
-TEST_F(AssemblerShould, allowFeedingModuleItDerivesFrom) {
-	di::module<Module1>& mod1 = givenTwoModuleAssembler();
+TEST_F(ApplicationShould, allowFeedingModuleItDerivesFrom) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
 	mod1.use(di::service<TestType1>(new TestType1));
 }
 
-TEST_F(AssemblerShould, returnElementsProvidedByAnotherModule) {
-	di::module<Module1>& mod1 = givenTwoModuleAssembler();
+TEST_F(ApplicationShould, returnElementsProvidedByAnotherModule) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
 	boost::shared_ptr<TestType1> t1(new TestType1);
 	mod1.use(di::service<TestType1>(t1));
-	di::module<Module2>& mod2 = givenTwoModuleAssembler();
+	di::module<Module2>& mod2 = giventwoModuleApplication();
 
 	EXPECT_EQ(t1,mod2.get<TestType1>());
 }
 
-TEST_F(AssemblerShould, preconfigureBuildersWithServicesWithTwoModuleAssembler) {
-	di::module<Module1>& mod1 = givenTwoModuleAssembler();
+TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithtwoModuleApplication) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
 	mod1.use(di::service<TestType1>(t1));
 	mod1.use(di::service<TestType2>(t2));
 
-	di::module<Module2>& mod2 = givenTwoModuleAssembler();
+	di::module<Module2>& mod2 = giventwoModuleApplication();
 	ServiceClassReq* builtClass = mod2.abstract_builder<ServiceClassReq>()->build();
 
 	EXPECT_EQ(t1,builtClass->var.get());
 	EXPECT_EQ(t2,builtClass->var2.get());
 }
 
-TEST_F(AssemblerShould, preconfigureBuildersWithServicesWithSixModuleAssembler) {
-	di::module<Module1>& mod1 = givenSixModuleAssembler();
+TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplication) {
+	di::module<Module1>& mod1 = givensixModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
 	mod1.use(di::service<TestType1>(t1));
 	mod1.use(di::service<TestType2>(t2));
 
-	di::module<Module4>& mod4 = givenSixModuleAssembler();
+	di::module<Module4>& mod4 = givensixModuleApplication();
 	ServiceClassReq* builtClass = mod4.abstract_builder<ServiceClassReq>()->build();
 
 	EXPECT_EQ(t1,builtClass->var.get());
 	EXPECT_EQ(t2,builtClass->var2.get());
 }
 
-TEST_F(AssemblerShould, preconfigureBuildersWithServicesWithSixModuleAssembler2) {
-	di::module<Module1>& mod1 = givenSixModuleAssembler();
+TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplication2) {
+	di::module<Module1>& mod1 = givensixModuleApplication();
 	boost::shared_ptr<TestType1> t1_shared(new TestType1);
 	TestType2* t2 = new TestType2Mock;
 	mod1.use(di::service<TestType1>(t1_shared));
 	mod1.use(di::service<TestType2>(t2));
 
-	di::module<Module4>& mod4 = givenSixModuleAssembler();
+	di::module<Module4>& mod4 = givensixModuleApplication();
 	CopyableClassWithServicesReq* builtClass =
 		mod4.abstract_builder<CopyableClassWithServicesReq>()->
 		use(di::shared<TestType2>(new TestType2Mock)).use(di::shared<TestType1>(t1_shared)).build();
@@ -139,4 +139,4 @@ TEST_F(AssemblerShould, preconfigureBuildersWithServicesWithSixModuleAssembler2)
 
 }  // namespace assembly
 
-#endif //DI_ASSEMBLER_TESTS_HPP_
+#endif //DI_APPLICATION_TESTS_HPP_
