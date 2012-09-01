@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_ASSEMBLER_HPP
-#define DI_ASSEMBLER_HPP
+#ifndef DI_APPLICATION_HPP
+#define DI_APPLICATION_HPP
 
 #include <boost/mpl/for_each.hpp>
 #include <di/service_list.hpp>
@@ -43,17 +43,17 @@ struct join_all {
 } // namespace detail
 
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
-class assembler : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
-	typedef di::assembler<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> this_type;
+class application : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
+	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> this_type;
 
 public:
-	assembler() {	
+	application() {	
 		boost::mpl::for_each<module_prototypes>(configure_modules(*this));
 	}
 
 private:
 	struct configure_modules {
-		explicit configure_modules(this_type& an_assembler) : configurator(an_assembler) {}
+		explicit configure_modules(this_type& an_application) : configurator(an_application) {}
 		template<typename M>
 		void operator() (const M& param) {
 			configurator.configure_intermodule_connections<M>(configurator.provided_by_modules);
@@ -89,4 +89,4 @@ private:
 
 } //namspace di
 
-#endif //DI_ASSEMBLER_HPP
+#endif //DI_APPLICATION_HPP

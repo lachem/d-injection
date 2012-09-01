@@ -8,7 +8,7 @@
 
 /**
  * @brief Defines the maximum number of template parameters supported by di::subject
- *		  and the maximum number of services and modules supported by di::assembler.
+ *		  and the maximum number of services and modules supported by di::application.
  */
 #ifndef DI_MAX_NUM_INJECTIONS
 #define DI_MAX_NUM_INJECTIONS 10
