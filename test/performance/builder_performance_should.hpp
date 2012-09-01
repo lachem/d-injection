@@ -12,7 +12,7 @@
 #include <string>
 #include <di/required.hpp>
 #include <di/subject.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 
 #include "performance_counter.hpp"
 
@@ -122,48 +122,48 @@ protected:
 
 	void create10DifferentWithDiBuilder(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder_imp<Injection10different> builder;
-			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
-			delete builder.build();
+			builder<Injection10different> abuilder;
+			abuilder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
+			delete abuilder.build();
 		}
 	}
 
 	void create10MixedWithDiBuilder(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder_imp<InjectionMixedTypes> builder;
-			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
-			delete builder.build();
+			builder<InjectionMixedTypes> abuilder;
+			abuilder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
+			delete abuilder.build();
 		}
 	}
 
 	void create10DifferentNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			NoInjection10DifferentBuilder builder;
-			builder.use(t0_0);
-			builder.use(t1);
-			builder.use(t2);
-			builder.use(t3);
-			builder.use(t4_0);
-			builder.use(t5);
-			builder.use(t6);
-			builder.use(t7);
-			builder.use(t8);
-			builder.use(t9);
+			NoInjection10DifferentBuilder abuilder;
+			abuilder.use(t0_0);
+			abuilder.use(t1);
+			abuilder.use(t2);
+			abuilder.use(t3);
+			abuilder.use(t4_0);
+			abuilder.use(t5);
+			abuilder.use(t6);
+			abuilder.use(t7);
+			abuilder.use(t8);
+			abuilder.use(t9);
 
-			delete builder.build();
+			delete abuilder.build();
 		}
 	}
 
 	void create10MixedNormally(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			NoInjectionMixedBuilder builder;
-			builder.use(t0_0,t0_1,t0_2,t0_3);
-			builder.use(t4_0,t4_1,t4_2);
-			builder.use(t7);
-			builder.use(t8);
-			builder.use(t9);
+			NoInjectionMixedBuilder abuilder;
+			abuilder.use(t0_0,t0_1,t0_2,t0_3);
+			abuilder.use(t4_0,t4_1,t4_2);
+			abuilder.use(t7);
+			abuilder.use(t8);
+			abuilder.use(t9);
 			
-			delete builder.build();
+			delete abuilder.build();
 		}
 	}
 

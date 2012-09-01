@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 
 #include <di/subject.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 #include <test/test_types.hpp>
 
 using namespace di;
@@ -66,38 +66,38 @@ protected:
 	}
 
 	void givenDifferent4TypesBuilder() {
-		diff4typesBuilder = new builder_imp<Different4Types>;
+		diff4typesBuilder = new builder<Different4Types>;
 		diff4typesBuilder->use<const D1>(d1).use(d2);
 		diff4typesBuilder->use<const D3>(d3).use(d4);
 	}
 
 	void givenAbstractDifferent4TypesBuilder() {
-		abstractDiff4typesBuilder = new builder_imp<Different4Types,AbstractDifferent4Types>;
+		abstractDiff4typesBuilder = new builder<Different4Types,AbstractDifferent4Types>;
 		abstractDiff4typesBuilder->use<const D1>(d1).use(d2).use<const D3>(d3);
 	}
 
 	void givenAbstractSame3TypesBuilder() {
-		abstractSame3typesBuilder = new builder_imp<Same3AbstractTypes,AbstractSame3AbstractTypes>;
+		abstractSame3typesBuilder = new builder<Same3AbstractTypes,AbstractSame3AbstractTypes>;
 		abstractSame3typesBuilder->use<D>(d1).use<D>(d2).use<D>(d3);
 	}
 
 	void givenSame3TypesBuilder() {
-		same3typesBuilder = new builder_imp< ::testing::NiceMock<Same3Types> >;
+		same3typesBuilder = new builder< ::testing::NiceMock<Same3Types> >;
 		same3typesBuilder->use(d3).use(d3_2).use(d3_3);
 	}
 
 	void givenSame3TypesBuilderWithoutThirdElement() {
-		same3typesBuilder = new builder_imp< ::testing::NiceMock<Same3Types> >;
+		same3typesBuilder = new builder< ::testing::NiceMock<Same3Types> >;
 		same3typesBuilder->use(d3).use(d3_2);
 	}
 
 	void givenSame2TypesBuilder() {
-		same2typesBuilder = new builder_imp<Same2Types>;
+		same2typesBuilder = new builder<Same2Types>;
 		same2typesBuilder->use(d3).use(d3_2);
 	}
 
 	void givenProperlyBuiltSpareInjectionsInstance() {
-		di::builder_imp<SpareInjections> builder;
+		di::builder<SpareInjections> builder;
 		builder.build(*spareInjectionsInstance);
 	}
 };
@@ -217,7 +217,7 @@ TEST_F(AbstractBuilderShould, injectObjectsOfSame2TypesByDelegation) {
 }
 
 TEST_F(AbstractBuilderShould, injectObjectsOfDifferent4TypesByDelegation) {
-	builder_imp<Different4Types> diff4typesBuilder;
+	builder<Different4Types> diff4typesBuilder;
 	diff4typesBuilder.use<const D1>(d1).use(d2);
 
 	Different4Types diff3_1;
@@ -244,37 +244,37 @@ TEST_F(AbstractBuilderShould, bareWithSpareSubjectTypes) {
 }
 
 TEST_F(AbstractBuilderShould, removeSharedInjectionsUponErasure) {
-	abstract_builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	abstract_builder<CopyableClassReq>* abuilder = new builder<CopyableClassReq>();
 	
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
-	builder->use(di::shared<TestType2>(t2Mock));
-	builder->remove<TestType2>();
+	abuilder->use(di::shared<TestType2>(t2Mock));
+	abuilder->remove<TestType2>();
 
-	delete builder;
+	delete abuilder;
 }
 
 TEST_F(AbstractBuilderShould, removeSharedInjectionsUponDelete) {
-	abstract_builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	abstract_builder<CopyableClassReq>* abuilder = new builder<CopyableClassReq>();
 	
 	TestType2Mock* t2Mock = new TestType2Mock;
 	EXPECT_CALL(*t2Mock, die()).Times(1);
-	builder->use(di::shared<TestType2>(t2Mock));
+	abuilder->use(di::shared<TestType2>(t2Mock));
 
-	delete builder;
+	delete abuilder;
 }
 
 TEST_F(AbstractBuilderShould, notRemoveSharedInjectionsWhileProvidedSharedPtrExists) {
-	abstract_builder<CopyableClassReq>* builder = new builder_imp<CopyableClassReq>();
+	abstract_builder<CopyableClassReq>* abuilder = new builder<CopyableClassReq>();
 	
 	TestType1 t1;
 	TestType2* t2 = new TestType2;
 	boost::shared_ptr<TestType2> shared_mock(t2);
 
-	builder->use(t1);
-	builder->use(di::shared<TestType2>(shared_mock));
-	CopyableClassReq* instance = builder->build();
-	delete builder;
+	abuilder->use(t1);
+	abuilder->use(di::shared<TestType2>(shared_mock));
+	CopyableClassReq* instance = abuilder->build();
+	delete abuilder;
 
 	EXPECT_EQ(shared_mock.get(),instance->var_shared.get());
 	delete instance;

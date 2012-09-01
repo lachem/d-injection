@@ -42,6 +42,17 @@ struct join_all {
 
 } // namespace detail
 
+/**
+ * @brief Modules that depend on each other need a way to exchange services. Application class has been 
+ * designed in such a way, which supports easy and convinient module handling. The class itself requires 
+ * a list of module definitions each of which containing two lists of services first defines the needed 
+ * services wheras the second provided services. Application class derives from list of module<M>, where 
+ * M is perviously mentioned module definition. At instantiation the application object connects each 
+ * module's provided and required service lists with its own container (where services are held). Each 
+ * service in the context of a singular application object is required to be represented by one and only 
+ * one instance. The number of application objects is not bound, though modules that belong to different 
+ * application objects cannot exchange service.
+ */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 class application : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
 	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> this_type;
