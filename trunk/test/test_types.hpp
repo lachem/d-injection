@@ -72,6 +72,7 @@ struct SpareInjections : public di::subject<D1,D2,D3> {};
 struct Mixed5Types : public subject<D1,D2,D2,D3,D3> {
 	typedef di::using_exceptions<subject_type> diagnostics;
 
+	MOCK_METHOD0(constructed, void());
 private:
 	required<D1> some_var;
 	required<D2> some_var2;
