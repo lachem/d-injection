@@ -23,8 +23,9 @@ struct using_assertions {
 		assert(requirement_not_satisfied);
 	}
 
-	static void delegate_unsatisfied_requirement(T* address) {
-		build_unsatisfied_requirement(address);
+	static void delegate_unsatisfied_requirement(void* address) {
+		bool requirement_not_satisfied = false;
+		assert(requirement_not_satisfied);
 	}
 };
 
@@ -41,7 +42,7 @@ struct using_exceptions {
 		throw exception;
 	}
 
-	static void delegate_unsatisfied_requirement(T* instance) {
+	static void delegate_unsatisfied_requirement(void* instance) {
 		throw requirement_not_satisfied(instance);
 	}
 };

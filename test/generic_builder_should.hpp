@@ -18,14 +18,16 @@ namespace injection {
 
 class GenericBuilderShould : public ::testing::Test {
 protected:
-	typedef subject<D3,D3> subject;
-	generic_builder<subject> builder;
+	struct subject_part : public subject<D3,D3> {
+		typedef di::using_exceptions<subject_type> diagnostics;
+	};
+	generic_builder<subject_part> builder;
 
 	D3 d3_1, d3_2, d3_3;
 };
 
 TEST_F(GenericBuilderShould, deriveFromConfigurable) {
-	BOOST_STATIC_ASSERT((boost::is_base_of< configurable<subject>,generic_builder<subject> >::value));
+	BOOST_STATIC_ASSERT((boost::is_base_of< configurable<subject_part>,generic_builder<subject_part> >::value));
 }
 
 TEST_F(GenericBuilderShould, buildObjectsByDelegation) {
@@ -60,13 +62,13 @@ TEST_F(GenericBuilderShould, callConstructedAfterBuildingWithNormalBuild) {
 	builder.build(instance);
 }
 
-TEST_F(GenericBuilderShould, notReportErrorsWhenNormalPartialBuildIsUsed) {
+TEST_F(GenericBuilderShould, notReportErrorsWhenBuildingPart) {
 	Same3Types instance;
 	builder.use(d3_1);
 
 	bool exception_has_been_thrown = false;
 	try {
-		builder.partial_build(instance);
+		builder.build_part(instance);
 	}
 	catch (di::requirement_not_satisfied&) {
 		exception_has_been_thrown = true;
@@ -75,13 +77,13 @@ TEST_F(GenericBuilderShould, notReportErrorsWhenNormalPartialBuildIsUsed) {
 	EXPECT_FALSE(exception_has_been_thrown);
 }
 
-TEST_F(GenericBuilderShould, notCallConstructedAfterBuildingWithPartialBuild) {
+TEST_F(GenericBuilderShould, notCallConstructedAfterBuildingPart) {
 	::testing::StrictMock<Same3Types> instance;
 
 	EXPECT_CALL(instance,constructed()).Times(0);
 
 	builder.use(d3_1).use(d3_2);
-	builder.partial_build(instance);
+	builder.build_part(instance);
 }
 
 }  // namespace injection
