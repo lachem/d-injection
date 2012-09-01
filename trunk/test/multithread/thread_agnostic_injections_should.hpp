@@ -12,7 +12,7 @@
 
 #include <di/required.hpp>
 #include <di/subject.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 
 using namespace di;
 
@@ -61,7 +61,7 @@ protected:
 public:
 	void expect10DifferentInjectedCorrectly(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder_imp<Injection10different> builder;
+			builder<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
 			Injection10different* inj10Different = builder.build();
 
@@ -82,7 +82,7 @@ public:
 
 	void expect10MixedInjectedCorrectly(int times = 1) {
 		for(int i=0; i<times ; ++i) {
-			builder_imp<InjectionMixedTypes> builder;
+			builder<InjectionMixedTypes> builder;
 			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
 			InjectionMixedTypes* inj10Mixed = builder.build();
 

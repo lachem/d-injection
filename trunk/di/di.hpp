@@ -11,7 +11,7 @@
 #include <di/optional.hpp>
 #include <di/abstract_builder.hpp>
 #include <di/generic_builder.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 #include <di/application.hpp>
 #include <di/service_list.hpp>
 #include <di/module.hpp>

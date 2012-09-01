@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DI_BUILDER_IMP_HPP
-#define DI_BUILDER_IMP_HPP
+#ifndef DI_BUILDER_HPP
+#define DI_BUILDER_HPP
 
 #include <boost/type_traits/is_base_of.hpp>
 #include <di/detail/perform_injection.hpp>
@@ -14,11 +14,11 @@
 namespace di {
 
 template<typename C, typename I = C>
-class builder_imp : public di::abstract_builder<I>, di::detail::noncopyable {
+class builder : public di::abstract_builder<I>, di::detail::noncopyable {
 	BOOST_MPL_ASSERT_MSG((boost::is_base_of<I,C>::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
 
 public:
-	builder_imp() {}
+	builder() {}
 
 	virtual I* build() {
 		C* instance = new C;
@@ -59,5 +59,5 @@ private:
 
 } //namspace di
 
-#endif //DI_BUILDER_IMP_HPP
+#endif //DI_BUILDER_HPP
 

@@ -8,7 +8,7 @@
 
 #include <boost/type_traits/remove_pointer.hpp>
 #include <di/detail/variadics.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 
 namespace di {
 namespace detail {
@@ -57,24 +57,24 @@ struct module {
 
 	template<typename I,typename C>
 	std::auto_ptr< di::abstract_builder<I> > abstract_builder() {
-		di::abstract_builder<I>* builder = new di::builder_imp<C,I>();
-		boost::fusion::for_each(needed,builder_feeder< di::abstract_builder<I> >(*builder));
-		return std::auto_ptr< di::abstract_builder<I> >(builder);
+		di::abstract_builder<I>* abuilder = new di::builder<C,I>();
+		boost::fusion::for_each(needed,builder_feeder< di::abstract_builder<I> >(*abuilder));
+		return std::auto_ptr< di::abstract_builder<I> >(abuilder);
 	}
 
 private:
 	template<typename B>
 	struct builder_feeder {
-		builder_feeder(B& a_builder) : builder(a_builder) {}
+		builder_feeder(B& a_builder) : abuilder(a_builder) {}
 		template<typename T>
 		void operator()(T& element) const {
 			typedef typename boost::remove_pointer<T>::type::type raw_T;
 			typedef typename boost::mpl::contains<typename B::subject::raw_type, raw_T>::type builders_subject_contains_T;
 			
-			detail::make_selective_use_call<builders_subject_contains_T::value>()(builder,*element);
+			detail::make_selective_use_call<builders_subject_contains_T::value>()(abuilder,*element);
 		}
 
-		mutable B& builder;
+		mutable B& abuilder;
 	};
 
 protected:

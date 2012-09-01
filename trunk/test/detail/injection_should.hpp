@@ -11,7 +11,7 @@
 #include <di/di.hpp>
 #include <di/optional.hpp>
 #include <di/subject.hpp>
-#include <di/builder_imp.hpp>
+#include <di/builder.hpp>
 
 using namespace di;
 
@@ -48,7 +48,7 @@ protected:
 	}
 
 	void givenProperlyBuiltTestClassInstance(TestClass* testClassInstance, TestType2* t2First = new TestType2, TestType2* t2Second = new TestType2) {
-		di::builder_imp<TestClass> builder;
+		di::builder<TestClass> builder;
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2Second));
 		builder.use(di::unique<TestType2>(t2First));
@@ -56,14 +56,14 @@ protected:
 	}
 
 	void givenProperlyBuiltCopyableInstance(CopyableClass* copyableClassInstance, TestType2* t2 = new TestType2) {
-		di::builder_imp<CopyableClass> builder;
+		di::builder<CopyableClass> builder;
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2));
 		builder.build(*copyableClassInstance);
 	}
 
 	void givenInproperlyBuiltTestClassInstance(TestClass* testClassInstance) {
-		di::builder_imp<TestClass> builder;
+		di::builder<TestClass> builder;
 		try {
 			builder.build(*testClassInstance);
 		}
