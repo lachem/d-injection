@@ -7,8 +7,7 @@
 #define DI_INJECTION_DESTINATION_CONTAINER_HPP
 
 #include <di/detail/memory_pool.hpp>
-#include <di/detail/spinlock.hpp>
-#include <di/detail/lock_guard.hpp>
+#include <di/custom/synchronization.hpp>
 #include <di/detail/utility.hpp>
 
 namespace di {
@@ -46,7 +45,7 @@ class injection_destination_container {
 public:
 	inline static size_t size() {
 		#ifndef DI_NO_MULTITHREADING
-		detail::lock_guard<detail::spinlock> guard(lock);
+		di::custom::synchronization::guard guard(lock);
 		#endif
 
 		size_t num_nodes = 0;
@@ -63,7 +62,7 @@ public:
 
 	inline static void insert(const injection_destination<T>& item) {
 		#ifndef DI_NO_MULTITHREADING
-		detail::lock_guard<detail::spinlock> guard(lock);
+		di::custom::synchronization::guard guard(lock);
 		#endif
 
 		node* insert_node = new node(item);
@@ -77,7 +76,7 @@ public:
 
 	inline static injection_destination<T> remove(const injection_destination_key& key) {
 		#ifndef DI_NO_MULTITHREADING
-		detail::lock_guard<detail::spinlock> guard(lock);
+		di::custom::synchronization::guard guard(lock);
 		#endif
  
 		node* prev = &head_sentinel;
@@ -113,7 +112,7 @@ private:
 private:
 	static node head_sentinel;
 	static node* tail;
-	static detail::spinlock lock;
+	static di::custom::synchronization::spinlock lock;
 };
 
 template<typename T>
@@ -125,7 +124,7 @@ typename injection_destination_container<T>::node*
 	injection_destination_container<T>::tail = NULL;
 
 template<typename T>
-detail::spinlock injection_destination_container<T>::lock;
+di::custom::synchronization::spinlock injection_destination_container<T>::lock;
 
 } //namespace detail
 } //namespace di

@@ -6,10 +6,10 @@
 #ifndef DI_SPIN_LOCK_HPP
 #define DI_SPIN_LOCK_HPP
 
-#include <di/detail/atomic.hpp>
+#include <di/custom/atomic.hpp>
 
 namespace di {
-namespace detail {
+namespace custom {
 
 class spinlock {	
 	spinlock(const spinlock&);
@@ -30,7 +30,7 @@ private:
 	uint32_t lock_var;
 };
 
-} // namespace detail
+} // namespace custom
 } // namespace di
 
 #endif //DI_SPIN_LOCK_HPP

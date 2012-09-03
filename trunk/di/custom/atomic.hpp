@@ -16,7 +16,7 @@
 #endif
 
 namespace di {
-namespace detail {
+namespace custom {
 
 typedef boost::uint32_t uint32_t;
 
@@ -40,7 +40,7 @@ inline uint32_t atomic_cas32(volatile uint32_t *mem, uint32_t with, uint32_t cmp
 	return boost_atomics::atomic_cas32(mem,with,cmp);
 }
 
-} // namespace detail
+} // namespace custom
 } // namespace di
 
 #endif //DI_ATOMIC_HPP

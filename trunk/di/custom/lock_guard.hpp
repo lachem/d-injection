@@ -7,7 +7,7 @@
 #define DI_LOCK_GUARD_HPP
 
 namespace di {
-namespace detail {
+namespace custom {
 
 template<typename T>
 class lock_guard {
@@ -22,7 +22,7 @@ public:
 	}
 };
 
-} // namespace detail
+} // namespace custom
 } // namespace di
 
 #endif //DI_LOCK_GUARD_HPP
