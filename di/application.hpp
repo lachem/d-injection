@@ -33,7 +33,6 @@ namespace join_all {
 			 typename join_all::apply<sequence_without_first_element>::type>::type type;
 	};
 	template<>
-
 	struct apply< boost::mpl::vector0<boost::mpl::na> > {
 		typedef boost::mpl::vector0<boost::mpl::na> type;
 	};
@@ -53,7 +52,7 @@ namespace join_all {
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 class application : public boost::mpl::inherit<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename di::detail::wrap_in_module::apply<M, >::type BOOST_PP_INTERCEPT) >::type {
-	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> this_type;
+	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> this_type;
 
 public:
 	application() {	
@@ -88,7 +87,7 @@ private:
 	};
 
 
-	typedef boost::mpl::vector<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)> raw_module_prototypes;
+	typedef boost::mpl::vector<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> raw_module_prototypes;
 	typedef typename detail::vector_without_voids<raw_module_prototypes>::type module_prototypes;
 
 	typename boost::fusion::result_of::as_set<
