@@ -6,14 +6,12 @@
 #ifndef DI_APPLICATION_HPP
 #define DI_APPLICATION_HPP
 
-#include <boost/mpl/for_each.hpp>
 #include <di/service_list.hpp>
 #include <di/module.hpp>
 
 namespace di {
 namespace detail {
-
-struct wrap_in_module {
+namespace wrap_in_module {
 	template<typename T>
 	struct apply {
 		typedef di::module<T> type;
@@ -22,10 +20,10 @@ struct wrap_in_module {
 	struct apply<detail::void_> {
 		typedef boost::mpl::empty_base type;
 	};
-};
+} // namespace wrap_in_module
 
 //uses template recurrence to join all module::provided type sets
-struct join_all {
+namespace join_all {
 	template<typename Seq>
 	struct apply {
 		typedef typename boost::mpl::begin<Seq>::type begin_iterator;
@@ -35,11 +33,11 @@ struct join_all {
 			 typename join_all::apply<sequence_without_first_element>::type>::type type;
 	};
 	template<>
+
 	struct apply< boost::mpl::vector0<boost::mpl::na> > {
 		typedef boost::mpl::vector0<boost::mpl::na> type;
 	};
-};
-
+} // namespace join_all
 } // namespace detail
 
 /**

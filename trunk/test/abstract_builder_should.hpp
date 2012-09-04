@@ -27,7 +27,7 @@ protected:
 	abstract_builder<Different4Types>* diff4typesBuilder;
 	Different4Types* diff4types;
 
-	abstract_builder<::testing::NiceMock<Same3Types> >* same3typesBuilder;
+	abstract_builder< ::testing::NiceMock<Same3Types> >* same3typesBuilder;
 	::testing::NiceMock<Same3Types>* same3types;
 
 	abstract_builder<Same2Types>* same2typesBuilder;

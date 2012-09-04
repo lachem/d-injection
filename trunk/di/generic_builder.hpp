@@ -77,7 +77,7 @@ public:
 
 	template<typename U>
 	generic_builder<S>& remove(size_t at=0) {
-		(void) di::configurable<S>::remove<U>(at);
+		(void) di::configurable<S>::template remove<U>(at);
 		return *this;
 	}
 

@@ -63,7 +63,7 @@ public:
 
 	template<typename U>
 	abstract_builder<T>& remove(size_t at=0) {
-		(void) di::configurable<T>::remove<U>(at);
+		(void) di::configurable<T>::template remove<U>(at);
 		return *this;
 	}
 };
