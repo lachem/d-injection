@@ -6,7 +6,6 @@
 #ifndef DI_SUBJECT_HPP
 #define DI_SUBJECT_HPP
 
-#include <vector>
 #include <di/detail/variadics.hpp>
 #include <di/detail/injection_source_container.hpp>
 #include <di/diagnostics.hpp>
@@ -18,7 +17,7 @@ namespace detail {
 
 template<typename Seq>
 struct vector_without_voids {
-	typedef typename boost::mpl::remove<Seq, void_>::type type;
+	typedef typename boost::mpl::remove<Seq, di::detail::void_>::type type;
 };
 
 template<typename Seq>

@@ -61,10 +61,11 @@
 #include <boost/mpl/for_each.hpp>
 
 #undef FUSION_MAX_VECTOR_SIZE
+#undef FUSION_MAX_SET_SIZE
 #undef BOOST_MPL_LIMIT_VECTOR_SIZE
 #undef BOOST_MPL_LIMIT_SET_SIZE
 #undef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-//#undef BOOST_MPL_LIMIT_METAFUNCTION_ARITY
+#undef BOOST_MPL_LIMIT_METAFUNCTION_ARITY
 
 namespace di {
 namespace detail {
