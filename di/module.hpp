@@ -65,16 +65,16 @@ struct module {
 private:
 	template<typename B>
 	struct builder_feeder {
-		builder_feeder(B& a_builder) : abuilder(a_builder) {}
+		builder_feeder(B& a_builder) : abuilder(&a_builder) {}
 		template<typename T>
 		void operator()(T& element) const {
 			typedef typename boost::remove_pointer<T>::type::type raw_T;
 			typedef typename boost::mpl::contains<typename B::subject::raw_type, raw_T>::type builders_subject_contains_T;
 			
-			detail::make_selective_use_call<builders_subject_contains_T::value>()(abuilder,*element);
+			detail::make_selective_use_call<builders_subject_contains_T::value>()(*abuilder,*element);
 		}
 
-		mutable B& abuilder;
+		mutable B* abuilder;
 	};
 
 protected:

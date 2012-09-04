@@ -58,6 +58,7 @@
 #include <boost/mpl/joint_view.hpp>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/size.hpp>
+#include <boost/mpl/for_each.hpp>
 
 #undef FUSION_MAX_VECTOR_SIZE
 #undef BOOST_MPL_LIMIT_VECTOR_SIZE
