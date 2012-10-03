@@ -9,27 +9,31 @@
 #include <di/configuration.hpp>
 #include <boost/preprocessor/repetition/enum_binary_params.hpp>
 #include <boost/preprocessor/facilities/intercept.hpp>
+#include <boost/fusion/container/vector/limits.hpp>
+#include <boost/fusion/container/set/limits.hpp>
+#include <boost/mpl/limits/vector.hpp>
+#include <boost/mpl/limits/set.hpp>
 
 #if FUSION_MAX_VECTOR_SIZE < DI_MAX_NUM_INJECTIONS
-	#define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#	define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
 #if FUSION_MAX_SET_SIZE < DI_MAX_NUM_INJECTIONS
-	#define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#	define FUSION_MAX_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
 #if BOOST_MPL_LIMIT_VECTOR_SIZE < DI_MAX_NUM_INJECTIONS
-	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-		#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-	#endif
-	#define BOOST_MPL_LIMIT_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
+#	ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#		define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#	endif
+#	define BOOST_MPL_LIMIT_VECTOR_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
 #if BOOST_MPL_LIMIT_SET_SIZE < DI_MAX_NUM_INJECTIONS
-	#ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-		#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-	#endif
-	#define BOOST_MPL_LIMIT_SET_SIZE DI_MAX_NUM_INJECTIONS
+#	ifndef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#		define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
+#	endif
+#	define BOOST_MPL_LIMIT_SET_SIZE DI_MAX_NUM_INJECTIONS
 #endif
 
 #include <boost/fusion/include/as_vector.hpp>
