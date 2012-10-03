@@ -93,7 +93,7 @@ TEST_F(ApplicationShould, returnElementsProvidedByAnotherModule) {
 	EXPECT_EQ(t1,mod2.get<TestType1>());
 }
 
-TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithtwoModuleApplication) {
+TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithtwoModuleApplication) {
 	di::module<Module1>& mod1 = giventwoModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
@@ -107,7 +107,7 @@ TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithtwoModuleApplicati
 	EXPECT_EQ(t2,builtClass->var2.get());
 }
 
-TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplication) {
+TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleApplication) {
 	di::module<Module1>& mod1 = givensixModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
@@ -121,7 +121,7 @@ TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplicati
 	EXPECT_EQ(t2,builtClass->var2.get());
 }
 
-TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplication2) {
+TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleApplication2) {
 	di::module<Module1>& mod1 = givensixModuleApplication();
 	boost::shared_ptr<TestType1> t1_shared(new TestType1);
 	TestType2* t2 = new TestType2Mock;
@@ -131,10 +131,59 @@ TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplicati
 	di::module<Module4>& mod4 = givensixModuleApplication();
 	CopyableClassWithServicesReq* builtClass =
 		mod4.abstract_builder<CopyableClassWithServicesReq>()->
-		use(di::shared<TestType2>(new TestType2Mock)).use(di::shared<TestType1>(t1_shared)).build();
+			use(di::shared<TestType2>(new TestType2Mock)).use(di::shared<TestType1>(t1_shared)).build();
 
 	EXPECT_EQ(t1_shared.get(),builtClass->var_service.get());
 	EXPECT_EQ(t2,builtClass->var_service2.get());
+}
+
+TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithtwoModuleApplication) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
+	TestType1* t1 = new TestType1;
+	TestType2* t2 = new TestType2;
+	mod1.use(di::service<TestType1>(t1));
+	mod1.use(di::service<TestType2>(t2));
+
+	di::module<Module2>& mod2 = giventwoModuleApplication();
+	ServiceClassReq builtClass;
+	mod2.generic_builder<ServiceClassReq>()->build(builtClass);
+
+	EXPECT_EQ(t1,builtClass.var.get());
+	EXPECT_EQ(t2,builtClass.var2.get());
+}
+
+TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithsixModuleApplication) {
+	di::module<Module1>& mod1 = givensixModuleApplication();
+	TestType1* t1 = new TestType1;
+	TestType2* t2 = new TestType2;
+	mod1.use(di::service<TestType1>(t1));
+	mod1.use(di::service<TestType2>(t2));
+
+	di::module<Module4>& mod4 = givensixModuleApplication();
+	ServiceClassReq builtClass;
+	mod4.generic_builder<ServiceClassReq>()->build(builtClass);
+
+	EXPECT_EQ(t1,builtClass.var.get());
+	EXPECT_EQ(t2,builtClass.var2.get());
+}
+
+TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithsixModuleApplication2) {
+	di::module<Module1>& mod1 = givensixModuleApplication();
+	boost::shared_ptr<TestType1> t1_shared(new TestType1);
+	TestType2Mock* t2 = new TestType2Mock;
+	EXPECT_CALL(*t2,die());
+	mod1.use(di::service<TestType1>(t1_shared));
+	mod1.use(di::service<TestType2>(t2));
+
+	di::module<Module4>& mod4 = givensixModuleApplication();
+	CopyableClassWithServicesReq builtClass;
+	TestType2Mock* tempT2 = new TestType2Mock;
+	EXPECT_CALL(*tempT2,die());
+	mod4.generic_builder<CopyableClassWithServicesReq>()->
+		use(di::shared<TestType2>(tempT2)).use(di::shared<TestType1>(t1_shared)).build(builtClass);
+
+	EXPECT_EQ(t1_shared.get(),builtClass.var_service.get());
+	EXPECT_EQ(t2,builtClass.var_service2.get());
 }
 
 }  // namespace assembly

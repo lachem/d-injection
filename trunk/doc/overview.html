@@ -28,6 +28,8 @@
 	
 	<dt><a href="#building_families">Building families of objects</a></dt>
 	
+	<dt><a href="#generic_builder">Generic builder</a></dt>
+	
     <!--dt><a href="#footnotes">Footnotes</a></dt-->
   </dl>
 
@@ -93,15 +95,15 @@
   constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
 
   <h2><a name="builder" id="builder"></a>Builder</h2>
-  <p> The most basic form of building an injection subject is by utilizing <code>builder_imp</code> defined in di/builder_imp.hpp. 
-  <code>di::builder_imp</code> is a class with two template paramters from which only one is obligatory. This topic will cover only 
+  <p> The most basic form of building an injection subject is by utilizing <code>builder</code> defined in di/builder.hpp. 
+  <code>di::builder</code> is a class with two template paramters from which only one is obligatory. This topic will cover only 
   the former, thus leaving the latter for the next chapter. Having a car class that derives from <code>di::subject with</code> injections 
-  specified <code>builder_imp</code> can be used to create <code>Car</code> instance. First however what is necessary is to provide 
+  specified <code>builder</code> can be used to create <code>Car</code> instance. First however what is necessary is to provide 
   objects for injections by calling template method <code>use</code> on builder object.
   </p>
   
   <code> 
-  di::builder_imp&lt;Car&gt; builder;<br>
+  di::builder&lt;Car&gt; builder;<br>
   <br>
   Wheel w1,w2,w3,w4;<br>
   builder.use(w1).use(w2).use(w3).use(w4);<br>
@@ -158,11 +160,11 @@
   </code>
   
   <h2><a name="abstract_builder" id="abstract_builder"></a>Abstract builder</h2>
-  <p> In many cases it may be impractical to use raw <code> builder_imp&lt;typename T&gt; </code> due to coupling and testability issues. Prefferably one might
+  <p> In many cases it may be impractical to use raw <code> builder&lt;typename T&gt; </code> due to coupling and testability issues. Prefferably one might
 	  want to be able to build an object of <code>class Car</code> but pass an object of <code>class Vehicle</code> (base of Car) to be able to change at
 	  any point of the develepment the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of 
-	  mocking <code>builder_imp::build</code> and <code>builder_imp::delegate</code> method to build/inject mocks/stubs instead of real objects. 
-	  To achieve all these benefits <code>di::builder</code> is provided. <code>di::builder</code> is the base class of <code>di::builder_imp</code>, hence the name.
+	  mocking <code>builder::build()</code> and <code>builder::build(T&)</code> methods to build/inject mocks/stubs instead of real objects. 
+	  To achieve all these benefits <code>di::abstract_builder</code> is provided. <code>di::abstract_builder</code> is the base class of <code>di::builder</code>, hence the name.
   </p>
   <p> Considering: </p>
   <code>
@@ -185,21 +187,21 @@
   </code>
   <p> one might write: </p>
   <code>
-  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt();
+  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt();
   </code>
   <p> or: </p>
   <code>
-  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt;() <br>
+  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br>
   ... <br>
   Car porshe(...); <br>
-  vehicle_builder->delegate(porshe); <br>
+  vehicle_builder->build(porshe); <br>
   </code>
   
-  <p> <b> Note!</b> It is the class which is the template parameter of <code> di::builder </code> needs to derive (publicly) from di::subject. 
+  <p> <b> Note!</b> It is the class which is the template parameter of <code> di::abstract_builder </code> needs to derive (publicly) from di::subject. 
 		  Unfortunately this a necessary limitation. </p>
 		  
   <h2><a name="building_families" id="building_families"></a>Building families of objects</h2>
-  <p> Aforementioned <code>di::builder::delegate</code> method allows for building families of objects. I the provided example all the classes
+  <p> Aforementioned <code>di::abstract_builder::build(T&)</code> method allows for building families of objects. I the provided example all the classes
 	  which are subclasses of <code>Construct</code> are considered to be of one family and can be build using the same builder. Additionaly this
 	  example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs
 	  Vehicle-subjects).
@@ -228,25 +230,30 @@
   <br>
   ... <br>
   <br>
-  di:builder&lt;Vehicle&gt;* vehicle_builder = new di::builder_imp&lt;Car,Vehicle&gt;() <br>
-  di:builder&lt;Construct&gt;* construct_builder = new di::builder_imp&lt;Construct,ConstructImp&gt;() <br>
+  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br>
+  di:abstract_builder&lt;Construct&gt;* construct_builder = new di::builder&lt;Construct,ConstructImp&gt;() <br>
   //setup both builders <br>
   <br>
   ... <br>
   <br>
-  vehicle_builder->delegate(scania); <br>
-  construct_builder->delegate(scania); <br>
+  vehicle_builder->build(scania); <br>
+  construct_builder->build(scania); <br>
   <br>
-  vehicle_builder->delegate(mercedes); <br>
-  construct_builder->delegate(mercedes); <br>
+  vehicle_builder->build(mercedes); <br>
+  construct_builder->build(mercedes); <br>
   <br>
-  construct_builder->delegate(highway);<br>
-  construct_builder->delegate(garage1);<br>
-  construct_builder->delegate(garage2);<br>
+  construct_builder->build(highway);<br>
+  construct_builder->build(garage1);<br>
+  construct_builder->build(garage2);<br>
   
   </code>
   
-  
+  <h2><a name="generic_builder" id="generic_builder"></a>Generic builder</h2>
+  <p> Generic builder is another kind of builder that has been designed to handle specific injections for an unspecified subject. Extending previous
+	  example one may consider set of subject types which are interested in the same injections. It would be inconvienient to setup many abstract builder 
+	  for separate types with the same injections. To illustrate the problem one may consider a logger instance which is to be passed to each subject
+	  instance in the system.
+  </p>
   
   <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
 

@@ -62,6 +62,13 @@ struct module {
 		return std::auto_ptr< di::abstract_builder<I> >(abuilder);
 	}
 
+	template<typename C>
+	std::auto_ptr< di::generic_builder<C> > generic_builder() {
+		di::generic_builder<C>* abuilder = new di::generic_builder<C>();
+		boost::fusion::for_each(needed,builder_feeder< di::generic_builder<C> >(*abuilder));
+		return std::auto_ptr< di::generic_builder<C> >(abuilder);
+	}
+
 private:
 	template<typename B>
 	struct builder_feeder {

@@ -19,8 +19,6 @@ namespace di {
 template<typename T>
 class abstract_builder : public di::configurable<T> {	
 public:
-	typedef T subject;
-
 	/**
 	 * @brief Creates the object of type C, performs injections and calls constructed() on subject.
 	 * @pre Injections required by the object under construction were provided to the builder.

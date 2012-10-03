@@ -42,6 +42,8 @@ private:
 template<typename T>
 class configurable {	
 public:
+	typedef T subject;
+
 	template<typename U>
 	configurable<T>& use(U& object) {
 		return this->use(ordinary<U>(&object));
