@@ -16,8 +16,7 @@ namespace detail {
 template<typename T>
 struct perform_injection {
 	perform_injection(T* a_subject, bool* a_succeeded) : 
-		subject(a_subject), succeeded(a_succeeded)  
-	{*succeeded = true;}
+		subject(a_subject), succeeded(a_succeeded) {*succeeded = true;}
 
 	template<typename V>
 	void operator()(V& v) const {

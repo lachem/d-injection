@@ -72,7 +72,7 @@ namespace di
        builder();
 
        virtual T* build() const = 0;
-       virtual void delegate(T&) const = 0;
+       virtual void build(T&) const = 0;
 	   
        template&lt;typename U&gt; builder&lt;T&gt;& use(U& object);
        template&lt;typename U&gt; builder&lt;T&gt;& replace(U& object, int at=0);

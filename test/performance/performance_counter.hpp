@@ -16,10 +16,7 @@
 #endif
 
 #ifndef BOOST_CHRONO_IS_NOT_SUPPORTED
-#define BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-#define BOOST_MPL_LIMIT_METAFUNCTION_ARITY DI_MAX_NUM_INJECTIONS
 #include <boost/chrono.hpp>
-#undef BOOST_MPL_LIMIT_METAFUNCTION_ARITY
 #endif
 
 using namespace di;
