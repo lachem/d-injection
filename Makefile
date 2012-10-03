@@ -1,5 +1,5 @@
 
-GTEST_INC = ../../libraries/gmock-1.6.0/gtest/
+GTEST_INC = ../../libraries/gmock-1.6.0/gtest
 GMOCK_INC = ../../libraries/gmock-1.6.0
 BOOST_INC = ../../libraries/boost_1_50_0
 BOOST_LIB = ../../libraries/boost_1_50_0/stage/lib
