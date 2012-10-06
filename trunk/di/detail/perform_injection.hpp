@@ -23,10 +23,7 @@ struct perform_injection {
 		typedef typename V::value_type::type bare_type;
 		typedef injection_destination_container<bare_type> container;
 
-		typename V::const_iterator it = v.begin();
-		const typename V::const_iterator itEnd = v.end();
-
-		for(; it != itEnd; ++it) {
+		for(typename V::const_iterator it = v.begin(), itEnd = v.end(); it != itEnd; ++it) {
 			if(*it) {
 				injection_destination<bare_type> destination = 
 					container::remove(injection_destination_key(subject,it->get_injection_type_id()));
