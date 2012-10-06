@@ -40,7 +40,7 @@ struct Module5 {
 };
 
 struct Module6 {
-	typedef di::service_list<TestType9> provided;
+	typedef di::service_list<> provided;
 	typedef di::service_list<TestType7,TestType8> needed;
 };
 
@@ -84,6 +84,11 @@ TEST_F(ApplicationShould, allowFeedingModuleItDerivesFrom) {
 	mod1.use(di::service<TestType1>(new TestType1));
 }
 
+TEST_F(ApplicationShould, allowFeedingModuleItDerivesFromInCascadicManner) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
+	mod1.use(di::service<TestType1>(new TestType1)).use(di::service<TestType2>(new TestType2));
+}
+
 TEST_F(ApplicationShould, returnElementsProvidedByAnotherModule) {
 	di::module<Module1>& mod1 = giventwoModuleApplication();
 	boost::shared_ptr<TestType1> t1(new TestType1);
@@ -97,8 +102,7 @@ TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithtwoModuleA
 	di::module<Module1>& mod1 = giventwoModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
-	mod1.use(di::service<TestType1>(t1));
-	mod1.use(di::service<TestType2>(t2));
+	mod1.use(di::service<TestType1>(t1)).use(di::service<TestType2>(t2));
 
 	di::module<Module2>& mod2 = giventwoModuleApplication();
 	ServiceClassReq* builtClass = mod2.abstract_builder<ServiceClassReq>()->build();
@@ -111,8 +115,7 @@ TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleA
 	di::module<Module1>& mod1 = givensixModuleApplication();
 	TestType1* t1 = new TestType1;
 	TestType2* t2 = new TestType2;
-	mod1.use(di::service<TestType1>(t1));
-	mod1.use(di::service<TestType2>(t2));
+	mod1.use(di::service<TestType1>(t1)).use(di::service<TestType2>(t2));
 
 	di::module<Module4>& mod4 = givensixModuleApplication();
 	ServiceClassReq* builtClass = mod4.abstract_builder<ServiceClassReq>()->build();
@@ -172,8 +175,7 @@ TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithsixModuleAp
 	boost::shared_ptr<TestType1> t1_shared(new TestType1);
 	TestType2Mock* t2 = new TestType2Mock;
 	EXPECT_CALL(*t2,die());
-	mod1.use(di::service<TestType1>(t1_shared));
-	mod1.use(di::service<TestType2>(t2));
+	mod1.use(di::service<TestType1>(t1_shared)).use(di::service<TestType2>(t2));
 
 	di::module<Module4>& mod4 = givensixModuleApplication();
 	CopyableClassWithServicesReq builtClass;
