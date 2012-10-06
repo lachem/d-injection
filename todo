@@ -1,7 +1,7 @@
 - [done] change use to set next not already set object of given type
 - [done] add replace(int, object) to replace already set object at given position
 - [done] use boost::preprocessor or your own macros to generate multiple factories
-- [rejected] add support for parametrized constructors in factories
+- [rejected] add support for parametrized constructors in factories - replace with build delegate
 - [done] add error handling (exceptions) and static_asserts
 - [done] synchronization (the same factory producing at once on different threads)
 - [not applicable] replace template<T> use() with preprocessor generated use() methods, that wouldn't need to use for_each and allow polymorphic builders
@@ -12,3 +12,4 @@
 - make it possible to define layers, and determine access rights between them
 - [done] create modules which could belong to layers and be parts of application
 - change configurable replace method to use method with "at" parameter (needed for partial building)
+- dependency cycle detection in di::application

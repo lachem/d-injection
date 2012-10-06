@@ -30,6 +30,8 @@
 	
 	<dt><a href="#generic_builder">Generic builder</a></dt>
 	
+	<dt><a href="#modules">Modules</a></dt>
+	
     <!--dt><a href="#footnotes">Footnotes</a></dt-->
   </dl>
 
@@ -72,20 +74,20 @@
 	 injection definitions might look like: </p>
 	 
   <code> 
-  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br>
-  { <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel; <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel; <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel; <br>
-  &nbsp; di::requried&lt;Seat&gt; leftSeat; <br>
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br>
-  &nbsp; di::optional&lt;Seat&gt; backSeat; <br>
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br>
-  &nbsp; Car() <br>
-  &nbsp; {<br>
-  &nbsp; &nbsp; //injections are not yet available <br>
-  &nbsp; }<br>
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br />
+  { <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel; <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel; <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel; <br />
+  &nbsp; di::requried&lt;Seat&gt; leftSeat; <br />
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br />
+  &nbsp; di::optional&lt;Seat&gt; backSeat; <br />
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br />
+  &nbsp; Car() <br />
+  &nbsp; {<br />
+  &nbsp; &nbsp; //injections are not yet available <br />
+  &nbsp; }<br />
   };
   </code>
   
@@ -103,25 +105,25 @@
   </p>
   
   <code> 
-  di::builder&lt;Car&gt; builder;<br>
-  <br>
-  Wheel w1,w2,w3,w4;<br>
-  builder.use(w1).use(w2).use(w3).use(w4);<br>
-  <br>
-  Seat s1,s2;<br>
-  HandBrake hb;<br>
-  builder.use(s1).use(s2).use(hb);<br>
-  <br>
-  Car* car = builder.build();<br>
-  <br>
-  assert(&w1 == car->frontLeftWheel);<br>
-  assert(&w2 == car->frontRightWheel);<br>
-  assert(&w3 == car->rearLeftWheel);<br>
-  assert(&w4 == car->rearRightWheel);<br>
-  assert(&s1 == car->leftSeat);<br>
-  assert(&s1 == car->rightSeat);<br>
-  assert( 0  == car->backSeat);<br>
-  assert(&hb == car->handBreak);<br>
+  di::builder&lt;Car&gt; builder;<br />
+  <br />
+  Wheel w1,w2,w3,w4;<br />
+  builder.use(w1).use(w2).use(w3).use(w4);<br />
+  <br />
+  Seat s1,s2;<br />
+  HandBrake hb;<br />
+  builder.use(s1).use(s2).use(hb);<br />
+  <br />
+  Car* car = builder.build();<br />
+  <br />
+  assert(&w1 == car->frontLeftWheel);<br />
+  assert(&w2 == car->frontRightWheel);<br />
+  assert(&w3 == car->rearLeftWheel);<br />
+  assert(&w4 == car->rearRightWheel);<br />
+  assert(&s1 == car->leftSeat);<br />
+  assert(&s1 == car->rightSeat);<br />
+  assert( 0  == car->backSeat);<br />
+  assert(&hb == car->handBreak);<br />
   </code>
   <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which <code>requried</code>'s 
 	  and <code>optional</code>'s are declared. This relies to the order of <code>requried</code>s and <code>optional</code>s of same types e.g. in the 
@@ -132,30 +134,30 @@
 	  unsatisfied.
   </p>
   <code> 
-  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
-  { <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br>
-  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- third use of use<Seat>(...) <br>
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br />
+  { <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br />
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- second use of use<Seat>(...) <br />
+  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- third use of use<Seat>(...) <br />
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br />
   };
   </code>
   
   <code> 
-  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br>
-  { <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br>
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br>
-  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- second use of use<Seat>(...) <br>
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- third use of use<Seat>(...), but builder knows only about two seats -> error <br>
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br>
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br />
+  { <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use of use<Wheel>(...) <br />
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use of use<Seat>(...) <br />
+  &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- second use of use<Seat>(...) <br />
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- third use of use<Seat>(...), but builder knows only about two seats -> error <br />
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use of use<HandBreak>(...) <br />
   };
   </code>
   
@@ -168,22 +170,22 @@
   </p>
   <p> Considering: </p>
   <code>
-  struct Vehicle : public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br>
-  { <br>
-  &nbsp; virtual void move(...) = 0;<br>
-  };<br>
-  <br>
-  struct Car: public Vehicle<br>
-  { <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  <br>
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   <br>
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  <br>
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  <br>
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br>
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br>
-  &nbsp; virtual void move(...) {...};<br>
-  }; <br>
+  struct Vehicle : public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br />
+  { <br />
+  &nbsp; virtual void move(...) = 0;<br />
+  };<br />
+  <br />
+  struct Car: public Vehicle<br />
+  { <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  <br />
+  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   <br />
+  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  <br />
+  &nbsp; di::requried&lt;Seat&gt; leftSeat;  <br />
+  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br />
+  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br />
+  &nbsp; virtual void move(...) {...};<br />
+  }; <br />
   </code>
   <p> one might write: </p>
   <code>
@@ -191,10 +193,10 @@
   </code>
   <p> or: </p>
   <code>
-  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br>
-  ... <br>
-  Car porshe(...); <br>
-  vehicle_builder->build(porshe); <br>
+  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br />
+  ... <br />
+  Car porshe(...); <br />
+  vehicle_builder->build(porshe); <br />
   </code>
   
   <p> <b> Note!</b> It is the class which is the template parameter of <code> di::abstract_builder </code> needs to derive (publicly) from di::subject. 
@@ -207,44 +209,44 @@
 	  Vehicle-subjects).
   </p>
   <code>
-  class Construct : public di::subject&lt;Logger,Database,ConversionTools&gt; {};<br>
-  <br>
-  class ConstructImp : public Construct <br>
-  { <br>
-	&nbsp; di::requried&lt;Logger&gt; log; <br>
-	&nbsp; di::requried&lt;Database&gt; db; <br>
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
-  }; <br>
-  <br>
-  class Truck : public Car, public ConstructImp {};<br>
-  <br>
-  class Road : public ConstructImp {};<br>
-  <br>
-  class Garage : public ConstructImp {}; <br>
-  <br>
-  <br>
-  Truck scania;<br>
-  Truck mercedes;<br>
-  Road highway;<br>
-  Garage garage1,garage2;<br>
-  <br>
-  ... <br>
-  <br>
-  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br>
-  di:abstract_builder&lt;Construct&gt;* construct_builder = new di::builder&lt;Construct,ConstructImp&gt;() <br>
-  //setup both builders <br>
-  <br>
-  ... <br>
-  <br>
-  vehicle_builder->build(scania); <br>
-  construct_builder->build(scania); <br>
-  <br>
-  vehicle_builder->build(mercedes); <br>
-  construct_builder->build(mercedes); <br>
-  <br>
-  construct_builder->build(highway);<br>
-  construct_builder->build(garage1);<br>
-  construct_builder->build(garage2);<br>
+  class Construct : public di::subject&lt;Logger,Database,ConversionTools&gt; {};<br />
+  <br />
+  class ConstructImp : public Construct <br />
+  { <br />
+	&nbsp; di::requried&lt;Logger&gt; log; <br />
+	&nbsp; di::requried&lt;Database&gt; db; <br />
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+  }; <br />
+  <br />
+  class Truck : public Car, public ConstructImp {};<br />
+  <br />
+  class Road : public ConstructImp {};<br />
+  <br />
+  class Garage : public ConstructImp {}; <br />
+  <br />
+  <br />
+  Truck scania;<br />
+  Truck mercedes;<br />
+  Road highway;<br />
+  Garage garage1,garage2;<br />
+  <br />
+  ... <br />
+  <br />
+  di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;() <br />
+  di:abstract_builder&lt;Construct&gt;* construct_builder = new di::builder&lt;Construct,ConstructImp&gt;() <br />
+  //setup both builders <br />
+  <br />
+  ... <br />
+  <br />
+  vehicle_builder->build(scania); <br />
+  construct_builder->build(scania); <br />
+  <br />
+  vehicle_builder->build(mercedes); <br />
+  construct_builder->build(mercedes); <br />
+  <br />
+  construct_builder->build(highway);<br />
+  construct_builder->build(garage1);<br />
+  construct_builder->build(garage2);<br />
   
   </code>
   
@@ -255,43 +257,44 @@
 	  to each object in the system. 
   </p>
   <code>
-  class Truck : public di::subject&lt;Logger&gt; {
-	&nbsp; di::requried&lt;Logger&gt; log; <br>
-  };<br>
-  <br>
-  class Road : public di::subject&lt;Logger,Database,ConversionTools&gt <br>
-  { <br>
-	&nbsp; di::requried&lt;Logger&gt; log; <br>
-	&nbsp; di::requried&lt;Database&gt; db; <br>
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
-  }; <br>
-  <br>
-  class Garage : public di::subject&lt;Logger,Database,ConversionTools&gt; <br>
-  { <br>
-	&nbsp; di::requried&lt;Logger&gt; log; <br>
-	&nbsp; di::requried&lt;Database&gt; db; <br>
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
-  }; <br>
-  <br>
+  class Truck : public di::subject&lt;Logger&gt; <br />
+  {
+	&nbsp; di::requried&lt;Logger&gt; log; <br />
+  };<br />
+  <br />
+  class Road : public di::subject&lt;Logger,Database,ConversionTools&gt <br />
+  { <br />
+	&nbsp; di::requried&lt;Logger&gt; log; <br />
+	&nbsp; di::requried&lt;Database&gt; db; <br />
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+  }; <br />
+  <br />
+  class Garage : public di::subject&lt;Logger,Database,ConversionTools&gt; <br />
+  { <br />
+	&nbsp; di::requried&lt;Logger&gt; log; <br />
+	&nbsp; di::requried&lt;Database&gt; db; <br />
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+  }; <br />
+  <br />
   
-  Truck scania;<br>
-  Truck mercedes;<br>
-  Road highway;<br>
-  Garage garage1,garage2;<br>
-  <br>
-  ... <br>
-  <br>
-  di::generic_builder&lt; di::subject&lt;Logger&gt; &gt; gbuilder; <br>
-  gbuilder.use(loggerInstance); <br>
-  ...<br>
-  gbuilder.build(scania); <br>
-  gbuilder.build(mercedes); <br>
-  gbuilder.build_part(highway); <br>
-  gbuilder.build_part(garage1); <br>
-  gbuilder.build_part(garage2); <br>
+  Truck scania;<br />
+  Truck mercedes;<br />
+  Road highway;<br />
+  Garage garage1,garage2;<br />
+  <br />
+  ... <br />
+  <br />
+  di::generic_builder&lt; di::subject&lt;Logger&gt; &gt; gbuilder; <br />
+  gbuilder.use(loggerInstance); <br />
+  ...<br />
+  gbuilder.build(scania); <br />
+  gbuilder.build(mercedes); <br />
+  gbuilder.build_part(highway); <br />
+  gbuilder.build_part(garage1); <br />
+  gbuilder.build_part(garage2); <br />
   //inject rest of required dependencies to highway, garage1, garage2 using abstract_builder or another generic_builder
   </code>
-  <p> The difference between <code>di::generic_builder<...>::build_part</code> and <code>di::generic_builder<...>::build</code> is that 
+  <p> The difference between <code>di::generic_builder&lt;...&gt;::build_part</code> and <code>di::generic_builder&lt;...&gt;::build</code> is that 
 	  <code>build_part</code> does not check whether all requirements have been met. This way issuing <code>gbuilder.build(scania)</code> 
 	  is perfectly fine because <code>Logger</code> is the only dependency required by <code>Truck</code> whereas issuing 
 	  <code>gbuilder.build(highway)</code> would result in an error (assertion, exception or custom defined), while 
@@ -299,6 +302,47 @@
 	  required by <code>Road</code>.
   </p>
   
+  <h2><a name="modules" id="modules"></a>Modules</h2>
+
+  <p> Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by 
+	  logicaly dividing an application into modules. Each module defines list of services it provides and list of services it needs in following
+	  manner:
+  </p>
+  <code>
+  struct Controller <br />
+  { <br />
+	&nbsp; di::service_list&lt;ActionHandler&gt; provided; <br />
+	&nbsp; di::service_list&lt;Logger,Database&gt; needed; <br />
+  }; <br />
+  struct Infrastructure <br />
+  { <br />
+	&nbsp; di::service_list&lt;Logger,Database&gt; provided; <br />
+	&nbsp; di::service_list&lt;&gt; needed; <br />
+  }; <br />
+  struct UI <br />
+  { <br />
+	&nbsp; di::service_list&lt;&gt; provided; <br />
+	&nbsp; di::service_list&lt;ActionHandler&gt; needed; <br />
+  }; <br />
+  </code>
+  <p> The implementer of each module is responsible for providing pointers to those services. <br />
+  </p>
+  <code>
+  // Controller module code <br />
+  di::module&lt;Controller&gt;& controllerModule; <br />
+  ActionHandler handler; <br />
+  controllerModule.use(di::service&lt;ActionHandler&gt;(handler)); <br />
+  ... <br />
+  //Infrastructure module code <br />
+  di::module&lt;Infrastructure&gt;& infrastructureModule; <br />
+  Logger logger; <br />
+  Database db; <br />
+  infrastructureModule.use(di::service&lt;Logger&gt;(logger)).use(di::service&lt;Database&gt;(db)); <br />
+  </code>
+  <p> Modules are connected to each other. Therefore all of the Modules should firstly provide their services by calling the 
+	  <code>di::module&lt;Module&gt;::use</code> method before any of them could obtain any of the needed services.
+  </p>
+	  
   <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
 
   <dl>

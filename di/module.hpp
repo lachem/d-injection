@@ -39,9 +39,10 @@ struct module {
 	typedef M type;
 
 	template<typename T>
-	void use(const di::service<T>& element) {
+	module<M>& use(const di::service<T>& element) {
 		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::provided::ref_type,di::service<T>*>::type::value), TypeIsNotOnModulesProvidedServiceList,);
 		*boost::fusion::at_key<di::service<T>*>(provided) = element;
+		return *this;
 	}
 
 	template<typename T>
