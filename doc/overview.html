@@ -68,7 +68,7 @@
   <h2><a name="injections" id="injections"></a>Declaring injections</h2>
 
   <p>Having declared a class an injection subject it is possible to specify its injections. The types of injections have to match those defined
-	 in template parameters of di::subject, though as already mentioned there is no relation between their order. For our example from previous 
+	 in template parameters of di::subject, though as already mentioned there is no relation between their order. Continuing previous example
 	 injection definitions might look like: </p>
 	 
   <code> 
@@ -89,7 +89,7 @@
   };
   </code>
   
-  <p><code>di::requried</code> class is defined in di/requried.hpp header and <p><code>di::optional</code> class is defined in di/optional.hpp header.
+  <p><code>di::requried</code> class is defined in di/requried.hpp and <p><code>di::optional</code> class is defined in di/optional.hpp header.
   Both <code>di::requried</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of its template argument. 
   The injection itself is performed right after leaving the constructor. Therefore using any of the requried/optional objects inside
   constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
@@ -249,10 +249,54 @@
   </code>
   
   <h2><a name="generic_builder" id="generic_builder"></a>Generic builder</h2>
-  <p> Generic builder is another kind of builder that has been designed to handle specific injections for an unspecified subject. Extending previous
-	  example one may consider set of subject types which are interested in the same injections. It would be inconvienient to setup many abstract builder 
-	  for separate types with the same injections. To illustrate the problem one may consider a logger instance which is to be passed to each subject
-	  instance in the system.
+  <p> Generic builder is another kind of builder that has been designed to inject dependencies into any type of subjects. Extending previous
+	  example one may consider set of subject types which are interested in the same injections. It would be inconvienient to setup many abstract 
+	  builder for separate types with the same injections. To illustrate the problem one may consider a logger instance which ought to be passed 
+	  to each object in the system. 
+  </p>
+  <code>
+  class Truck : public di::subject&lt;Logger&gt; {
+	&nbsp; di::requried&lt;Logger&gt; log; <br>
+  };<br>
+  <br>
+  class Road : public di::subject&lt;Logger,Database,ConversionTools&gt <br>
+  { <br>
+	&nbsp; di::requried&lt;Logger&gt; log; <br>
+	&nbsp; di::requried&lt;Database&gt; db; <br>
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
+  }; <br>
+  <br>
+  class Garage : public di::subject&lt;Logger,Database,ConversionTools&gt; <br>
+  { <br>
+	&nbsp; di::requried&lt;Logger&gt; log; <br>
+	&nbsp; di::requried&lt;Database&gt; db; <br>
+	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br>
+  }; <br>
+  <br>
+  
+  Truck scania;<br>
+  Truck mercedes;<br>
+  Road highway;<br>
+  Garage garage1,garage2;<br>
+  <br>
+  ... <br>
+  <br>
+  di::generic_builder&lt; di::subject&lt;Logger&gt; &gt; gbuilder; <br>
+  gbuilder.use(loggerInstance); <br>
+  ...<br>
+  gbuilder.build(scania); <br>
+  gbuilder.build(mercedes); <br>
+  gbuilder.build_part(highway); <br>
+  gbuilder.build_part(garage1); <br>
+  gbuilder.build_part(garage2); <br>
+  //inject rest of required dependencies to highway, garage1, garage2 using abstract_builder or another generic_builder
+  </code>
+  <p> The difference between <code>di::generic_builder<...>::build_part</code> and <code>di::generic_builder<...>::build</code> is that 
+	  <code>build_part</code> does not check whether all requirements have been met. This way issuing <code>gbuilder.build(scania)</code> 
+	  is perfectly fine because <code>Logger</code> is the only dependency required by <code>Truck</code> whereas issuing 
+	  <code>gbuilder.build(highway)</code> would result in an error (assertion, exception or custom defined), while 
+	  <code>di::generic_builder&lt; di::subject&lt;Logger&gt; &gt;</code> does not provide <code>Database</code> and <code>ConversionTools</code>
+	  required by <code>Road</code>.
   </p>
   
   <!--h2><a name="footnotes" id="footnotes"></a>Footnotes</h2>
@@ -269,8 +313,8 @@
   <p><a href="http://validator.w3.org/check?uri=referer"><img src="style/valid-html401.png" alt="Valid HTML 4.01 Transitional" border="0" height="31" width="88"></a></p>
 
   <p>Revised 
-  <!--webbot bot="Timestamp" s-type="EDITED" s-format="%d %B, %Y" startspan -->26
-  February, 2012<!--webbot bot="Timestamp" endspan i-checksum="38514" --></p>
+  <!--webbot bot="Timestamp" s-type="EDITED" s-format="%d %B, %Y" startspan -->
+  6 October, 2012<!--webbot bot="Timestamp" endspan i-checksum="38514" --></p>
 
   <p><i>Copyright &#169; 2012 <a href="salvage@o2.pl">Adam Lach</a></i></p>
 
