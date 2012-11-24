@@ -6,7 +6,7 @@
 #ifndef DI_GENERIC_BUILDER_TESTS_HPP_
 #define DI_GENERIC_BUILDER_TESTS_HPP_
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <boost/static_assert.hpp>
 #include <di/generic_builder.hpp>

@@ -41,31 +41,31 @@
 
   <h2><a name="introduction" id="introduction"></a>Introduction</h2>
 
-  <p>Header only. Include di/di.hpp. Dependency injection will be referred throughout this documentation simply as DI. </p>
+  <p>This library is header only. To use it, it's enough to include di/di.hpp in your project.</p>
+  <p>Note: dependency injection will be referred throughout this documentation simply as DI. </p>
   <p>
-	 Dependency injection is an implementation of Inversion of Control (IoC) known from java frameworks such as Spring or Qi4j. 
-	 Still C++ community lacks a Dependency Injection framework that would be portable and independent from such libraries
-	 like Qt. This is an attempt to create a simple yet powerful DI library build on boost (in future in pure C++11).
+	 Dependency injection is an implementation of <a href="http://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control (IoC)</a> known from java frameworks such as <a href="http://en.wikipedia.org/wiki/Spring_Framework">Spring</a> or <a href="http://www.qi4j.org/">Qi4j</a>. 
+	 Still C++ community lacks a dependency injection framework that would be portable and independent from libraries
+	 like Qt. This is an attempt to create a simple yet powerful DI library built on <a href="http://www.boost.org/">boost</a> (and in future in pure C++11).
   </p>
 
   <h2><a name="di_subject" id="di_subject"></a>Injection subject</h2>
 
-  <p>Given a class that requires some objects to be injectected into it upon instantion or delegation. That class has to be declared an injection subject.
+  <p>A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject.
      This is achieved by subclassing di::subject class (declared in di/subject.hpp) in the following manner:</p>
 	 
   <code> 
   struct MyClass: public di::subject&lt;T,U,V,...&gt;{};
   </code>
   
-  <p>Template paramaters of the subject class name the types of each particular injection. For the sake of clarity, let us consider some simple example. 
+  <p>Template parameters of the <code>di::subject</code> name the types of each particular injection. For the sake of clarity, let us consider a simple example. 
 	 Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this: </p>
 	 
   <code> 
   struct Car: public di::subject&lt;Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat&gt;{};
   </code>
   
-  <p> However the order of those types is not important. The only thing thing that matters is their
-	  quantity. Therefore the below declaration is equivalent to the one above. </p>
+  <p> However the order of those parameters is not important. At this point only the quantity of each type matters. Therefore declaration below is equivalent to the one above. </p>
   
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;{};
@@ -74,20 +74,20 @@
   <h2><a name="injections" id="injections"></a>Declaring injections</h2>
 
   <p>Having declared a class an injection subject it is possible to specify its injections. The types of injections have to match those defined
-	 in template parameters of di::subject, though as already mentioned there is no relation between their order. Continuing previous example
-	 injection definitions might look like: </p>
+	 in template parameters of di::subject, though as already mentioned there is no relation between their order. Continuing previous
+	 example, injection definitions might look like this: </p>
 	 
   <code> 
-  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt; <br />
+  struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Seat,Wheel&gt; <br />
   { <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel; <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel; <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel; <br />
-  &nbsp; di::requried&lt;Seat&gt; leftSeat; <br />
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br />
+  &nbsp; di::required&lt;Wheel&gt; frontLeftWheel; <br />
+  &nbsp; di::required&lt;Wheel&gt; frontRightWheel; <br />
+  &nbsp; di::required&lt;Wheel&gt; rearLeftWheel; <br />
+  &nbsp; di::required&lt;Wheel&gt; rearRightWheel; <br />
+  &nbsp; di::required&lt;Seat&gt; leftSeat; <br />
+  &nbsp; di::required&lt;Seat&gt; rightSeat; <br />
   &nbsp; di::optional&lt;Seat&gt; backSeat; <br />
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br />
+  &nbsp; di::required&lt;HandBrake&gt; handBrake; <br />
   &nbsp; Car() <br />
   &nbsp; {<br />
   &nbsp; &nbsp; //injections are not yet available <br />
@@ -95,14 +95,16 @@
   };
   </code>
   
-  <p><code>di::requried</code> class is defined in di/requried.hpp and <p><code>di::optional</code> class is defined in di/optional.hpp header.
-  Both <code>di::requried</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of its template argument. 
-  The injection itself is performed right after leaving the constructor. Therefore using any of the requried/optional objects inside
-  constructor is equivalent to using an uninitialized pointer, in fact it is exacly the same.</p>
+  <p><code>di::required</code> class is defined in di/required.hpp and <p><code>di::optional</code> class is defined in di/optional.hpp header.
+  Both <code>di::required</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of their template arguments. 
+  The injection itself is performed right after leaving a constructor. Therefore using any of the required/optional objects inside
+  constructor is equivalent to using an uninitialized pointer, in fact it is exactly the same.</p>
 
   <h2><a name="injection_types" id="injection_types"></a>Types of injections</h2>
 
-  <p> There are four distinct types of injections. All of them have pointer semantics.
+  <p> There are situtations when it is impossible to determine which part of a system is responsible for releasing some object. In such cases
+	  some kinds of smart pointers can be used. Also di provides means of handling pointers in different ways. There are four distinct
+	  types of injections. All of them have pointer semantics.
 	<ul>
 	<li>di::ordinary</li>
 	<li>di::shared</li>
@@ -111,25 +113,25 @@
 	</ul> 
   </p>
   <h4> di::ordinary </h4>
-  <p> Indicates that the injection is represented as a bare pointer and the user is responsible for deleting the object. Using di::ordinary
-	  is equivalent to not providing injection type at all.
+  <p> Indicates that the injection is represented as a bare pointer and the user is responsible for deleting the object. Note also that, 
+  not providing injection type at all is equivalent to using di::ordinary.
   </p>
   <code> 
   struct Car: public di::subject&lt;Wheel&gt; <br />
   { <br />
-  &nbsp; di::requried&lt; di::ordinary&lt;Wheel&gt; &gt; wheel; <br />
+  &nbsp; di::required&lt; di::ordinary&lt;Wheel&gt; &gt; wheel; <br />
   };
   </code>
   <p> is the same as </p>
   <code> 
   struct Car: public di::subject&lt;Wheel&gt; <br />
   { <br />
-  &nbsp; di::requried&lt;Wheel&gt; wheel; <br />
+  &nbsp; di::required&lt;Wheel&gt; wheel; <br />
   };
   </code>
   <h4> di::shared </h4>
-  <p> Indicates that the injection is represented as a shared_ptr. Threfore object will be released when there are no more associations
-	  to it. Can be converted to shared_ptr.
+  <p> Indicates that the injection is represented as a shared_ptr. Therefore object will be released when there are no more associations
+	  to it. Due to its internal represantation <code>di::shared</code> injections can be converted to <code>boost::shared_ptr</code>.
   </p>
   <code> 
   struct Car: public di::subject&lt;Wheel&gt; <br />
@@ -138,8 +140,8 @@
   };
   </code>
   <h4> di::unique </h4>
-  <p> Indicates that the injection is represented as auto_ptr (in future it will be unique_ptr). The injection subject which requires
-	  an injection of type di::unique will become noncopyable.
+  <p> Indicates that the injection will be represented as auto_ptr (or unique_ptr when C++11 will be used). Obviously, injection subject
+  which requires an injection of type di::unique will become noncopyable.
   </p>
   <code> 
   struct Car: public di::subject&lt;Wheel&gt; // Car is noncopyable bacause wheel injection is of type di::unique <br />
@@ -157,7 +159,6 @@
   &nbsp; di::optional&lt; di::service&lt;Logger&gt; &gt; logger; <br />
   };
   </code>
-
   <h2><a name="builder" id="builder"></a>Builder</h2>
   <p> The most basic form of building an injection subject is by utilizing <code>builder</code> defined in di/builder.hpp. 
   <code>di::builder</code> is a class with two template paramters from which only one is obligatory. Having a car class that
@@ -185,10 +186,10 @@
   assert(&s1 == car->leftSeat);<br />
   assert(&s1 == car->rightSeat);<br />
   assert( 0  == car->backSeat);<br />
-  assert(&hb == car->handBreak);<br />
+  assert(&hb == car->handBrake);<br />
   </code>
   <p> In contradiction to <code>subject</code>'s template parameters, the order of use calls is strictly bound to the order in which 
-	  <code>requried</code>'s and <code>optional</code>'s are declared. This relies to the order of <code>requried</code>s and 
+	  <code>required</code>'s and <code>optional</code>'s are declared. This relies to the order of <code>required</code>s and 
 	  <code>optional</code>s of same types e.g. in the above example changing the order of use calls, such that 
 	  <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code> car->frontLeftWheel == &w4 </code> and 
 	  <code> car->rearRightWheel == &w1 </code>. For the same reason changing the order in which <code>optional</code>s 
@@ -199,30 +200,32 @@
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br />
   { <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use&lt;Seat&gt;(...) call <br />
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; //<-- second use&lt;Seat&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; frontLeftWheel;  //<-- first use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; frontRightWheel; //<-- second use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; rearLeftWheel;   //<-- third use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; rearRightWheel;  //<-- fourth use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Seat&gt; leftSeat;  //<-- first use&lt;Seat&gt;(...) call <br />
+  &nbsp; di::required&lt;Seat&gt; rightSeat; //<-- second use&lt;Seat&gt;(...) call <br />
   &nbsp; di::optional&lt;Seat&gt; backSeat; //<-- third use&lt;Seat&gt;(...) call <br />
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use&lt;HandBreak>(...) call <br />
+  &nbsp; di::required&lt;HandBrake&gt; handBrake; //<-- first use&lt;HandBrake>(...) call <br />
   }; <br />
   </code>
   
   <code> 
   struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;<br />
   { <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  //<-- first use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; //<-- second use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   //<-- third use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  //<-- fourth use&lt;Wheel&gt;(...) call <br />
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  //<-- first use&lt;Seat&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; frontLeftWheel;  //<-- first use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; frontRightWheel; //<-- second use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; rearLeftWheel;   //<-- third use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Wheel&gt; rearRightWheel;  //<-- fourth use&lt;Wheel&gt;(...) call <br />
+  &nbsp; di::required&lt;Seat&gt; leftSeat;  //<-- first use&lt;Seat&gt;(...) call <br />
   &nbsp; di::<u>optional</u>&lt;Seat&gt; backSeat; //<-- second use&lt;Seat&gt;(...) call <br />
-  &nbsp; di::<u>requried</u>&lt;Seat&gt; rightSeat; //<-- third use&lt;Seat&gt;(...) call, but builder knows only about two seats -> error <br />
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; //<-- first use&lt;HandBreak&gt;(...) call <br />
+  &nbsp; di::<u>required</u>&lt;Seat&gt; rightSeat; //<-- third use&lt;Seat&gt;(...) call, but builder knows only about two seats -> error <br />
+  &nbsp; di::required&lt;HandBrake&gt; handBrake; //<-- first use&lt;HandBrake&gt;(...) call <br />
   };
   </code>
+  <p> Note! All builders are injection type aware i.e. <code>builder.use(di::shared&lt;Wheel&gt;(w1));</code> will be injected to <code> 
+	  di::required&lt; di::shared&lt;Wheel&gt; &gt;</code> and not to <code>di::required&lt;Wheel&gt;</code>.
   
   <h2><a name="abstract_builder" id="abstract_builder"></a>Abstract builder</h2>
   <p> In many cases it may be impractical to use raw <code> builder&lt;typename T&gt; </code> due to coupling and testability issues. Prefferably one might
@@ -240,13 +243,13 @@
   <br />
   struct Car: public Vehicle<br />
   { <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontLeftWheel;  <br />
-  &nbsp; di::requried&lt;Wheel&gt; frontRightWheel; <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearLeftWheel;   <br />
-  &nbsp; di::requried&lt;Wheel&gt; rearRightWheel;  <br />
-  &nbsp; di::requried&lt;Seat&gt; leftSeat;  <br />
-  &nbsp; di::requried&lt;Seat&gt; rightSeat; <br />
-  &nbsp; di::requried&lt;HandBreak&gt; handBreak; <br />
+  &nbsp; di::required&lt;Wheel&gt; frontLeftWheel;  <br />
+  &nbsp; di::required&lt;Wheel&gt; frontRightWheel; <br />
+  &nbsp; di::required&lt;Wheel&gt; rearLeftWheel;   <br />
+  &nbsp; di::required&lt;Wheel&gt; rearRightWheel;  <br />
+  &nbsp; di::required&lt;Seat&gt; leftSeat;  <br />
+  &nbsp; di::required&lt;Seat&gt; rightSeat; <br />
+  &nbsp; di::required&lt;HandBrake&gt; handBrake; <br />
   &nbsp; virtual void move(...) {...};<br />
   }; <br />
   </code>
@@ -277,9 +280,9 @@
   <br />
   class ConstructImp : public Construct <br />
   { <br />
-	&nbsp; di::requried&lt;Logger&gt; log; <br />
-	&nbsp; di::requried&lt;Database&gt; db; <br />
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+	&nbsp; di::required&lt;Logger&gt; log; <br />
+	&nbsp; di::required&lt;Database&gt; db; <br />
+	&nbsp; di::required&lt;ConversionTools&gt; conversion; <br />
   }; <br />
   <br />
   class Truck : public Car, public ConstructImp {};<br />
@@ -323,21 +326,21 @@
   <code>
   class Truck : public di::subject&lt;Logger&gt; <br />
   {
-	&nbsp; di::requried&lt;Logger&gt; log; <br />
+	&nbsp; di::required&lt;Logger&gt; log; <br />
   };<br />
   <br />
   class Road : public di::subject&lt;Logger,Database,ConversionTools&gt <br />
   { <br />
-	&nbsp; di::requried&lt;Logger&gt; log; <br />
-	&nbsp; di::requried&lt;Database&gt; db; <br />
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+	&nbsp; di::required&lt;Logger&gt; log; <br />
+	&nbsp; di::required&lt;Database&gt; db; <br />
+	&nbsp; di::required&lt;ConversionTools&gt; conversion; <br />
   }; <br />
   <br />
   class Garage : public di::subject&lt;Logger,Database,ConversionTools&gt; <br />
   { <br />
-	&nbsp; di::requried&lt;Logger&gt; log; <br />
-	&nbsp; di::requried&lt;Database&gt; db; <br />
-	&nbsp; di::requried&lt;ConversionTools&gt; conversion; <br />
+	&nbsp; di::required&lt;Logger&gt; log; <br />
+	&nbsp; di::required&lt;Database&gt; db; <br />
+	&nbsp; di::required&lt;ConversionTools&gt; conversion; <br />
   }; <br />
   <br />
   
@@ -418,14 +421,14 @@
 	modules an application object should be created
   </p>
   <code>
-  di::application<Controller,Infrastructure,UI> application;
+  di::application&lt;Controller,Infrastructure,UI&gt; application;
   </code>
   <p> to obtain <code>di::module</code>s from application instance
   </p>
   <code>
-  di::module<Controller>& controllerModule = application;
-  di::module<Infrastructure>& infrastructureModule = application;
-  di::module<UI>& uiModule = application;
+  di::module&lt;Controller&gt;& controllerModule = application; <br />
+  di::module&lt;Infrastructure&gt;& infrastructureModule = application; <br />
+  di::module&lt;UI&gt;& uiModule = application; <br />
   </code>
   <p> This way controllerModule, infrastructureModule and uiModule can be fed up seperately.
   </p>

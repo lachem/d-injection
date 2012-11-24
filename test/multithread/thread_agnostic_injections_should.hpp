@@ -31,15 +31,30 @@ struct Injection10different : public subject<T0,T1,T2,T3,T4,T5,T6,T7,T8,T9> {
 };
 
 struct InjectionMixedTypes : public subject<T0,T0,T0,T0,T4,T4,T4,T7,T8,T9> {
-	required<T0> var0; required<T0> var1; required<T0> var2;
+	required<T0> var0; required< di::shared<T0> > var1; required< di::unique<T0> > var2;
 	required<T0> var3; required<T4> var4; required<T4> var5;
 	required<T4> var6; required<T7> var7; required<T8> var8;
 	required<T9> var9;
 };
 
+struct VisualCompilerGuard {
+	VisualCompilerGuard(di::custom::synchronization::spinlock& aLock) : lock(aLock) {
+#ifdef _MSC_VER
+		lock.lock();
+#endif
+	}
+	~VisualCompilerGuard() {
+#ifdef _MSC_VER
+		lock.unlock();
+#endif
+	}
+private:
+	di::custom::synchronization::spinlock& lock;
+};
+
 class ThreadAgnosticsInjectionsShould : public ::testing::Test {
 protected:
-	static const int repetitions = 10000;
+	static const int repetitions = 10000000;
 
 	T0 t0_0, t0_1, t0_2, t0_3;
 	T1 t1; 
@@ -52,11 +67,7 @@ protected:
 	T8 t8;
 	T9 t9;
 
-	virtual void SetUp() {
-	}
-
-	virtual void TearDown() {	
-	}
+	di::custom::synchronization::spinlock lock;
 
 public:
 	void expect10DifferentInjectedCorrectly(int times = 1) {
@@ -64,7 +75,8 @@ public:
 			builder<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
 			Injection10different* inj10Different = builder.build();
-
+			
+			VisualCompilerGuard guard(lock);
 			EXPECT_EQ(inj10Different->var0.operator ->(),&t0_0);
 			EXPECT_EQ(inj10Different->var1.operator ->(),&t1);
 			EXPECT_EQ(inj10Different->var2.operator ->(),&t2);
@@ -82,13 +94,19 @@ public:
 
 	void expect10MixedInjectedCorrectly(int times = 1) {
 		for(int i=0; i<times ; ++i) {
+			T0* dynt0_1 = new T0;
+			T0* dynt0_2 = new T0;
 			builder<InjectionMixedTypes> builder;
-			builder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
+			builder.use(t0_0);
+			builder.use(di::shared<T0>(dynt0_1));
+			builder.use(di::unique<T0>(dynt0_2));
+			builder.use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
 			InjectionMixedTypes* inj10Mixed = builder.build();
 
+			VisualCompilerGuard guard(lock);
 			EXPECT_EQ(inj10Mixed->var0.operator ->(),&t0_0);
-			EXPECT_EQ(inj10Mixed->var1.operator ->(),&t0_1);
-			EXPECT_EQ(inj10Mixed->var2.operator ->(),&t0_2);
+			EXPECT_EQ(inj10Mixed->var1.operator ->(),dynt0_1);
+			EXPECT_EQ(inj10Mixed->var2.operator ->(),dynt0_2);
 			EXPECT_EQ(inj10Mixed->var3.operator ->(),&t0_3);
 			EXPECT_EQ(inj10Mixed->var4.operator ->(),&t4_0);
 			EXPECT_EQ(inj10Mixed->var5.operator ->(),&t4_1);
@@ -101,6 +119,29 @@ public:
 		}
 	}
 };
+
+TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfSameTypesFor2Threads) {
+	boost::thread thread0(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+	boost::thread thread1(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+
+	thread0.join();
+	thread1.join();
+}
+
+TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfSameTypesFor5Threads) {
+
+	boost::thread thread0(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+	boost::thread thread1(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+	boost::thread thread2(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+	boost::thread thread3(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+	boost::thread thread4(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
+
+	thread0.join();
+	thread1.join();
+	thread2.join();
+	thread3.join();
+	thread4.join();
+}
 
 TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfDifferentTypesFor2Threads) {
 	boost::thread thread1(boost::bind(&ThreadAgnosticsInjectionsShould::expect10DifferentInjectedCorrectly,this,repetitions));
@@ -123,14 +164,6 @@ TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfDifferentTypesFor5Threads
 	thread2.join();
 	thread3.join();
 	thread4.join();
-}
-
-TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfSameTypesFor2Threads) {
-	boost::thread thread0(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
-	boost::thread thread1(boost::bind(&ThreadAgnosticsInjectionsShould::expect10MixedInjectedCorrectly,this,repetitions));
-
-	thread0.join();
-	thread1.join();
 }
 
 TEST_F(ThreadAgnosticsInjectionsShould, handleObjectsOfSameTypesFor20Threads) {

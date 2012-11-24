@@ -6,7 +6,7 @@
 #ifndef DI_ABSTRACT_BUILDER_TESTS_HPP_
 #define DI_ABSTRACT_BUILDER_TESTS_HPP_
 
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <di/subject.hpp>
 #include <di/builder.hpp>
