@@ -101,7 +101,7 @@ struct NoInjectionMixedBuilder : public NoInjectionMixedTypes {
 
 class BuilderPerformanceShould : public ::testing::Test {
 protected:
-	static const int repetitions = 100000;
+	static const int repetitions = 1000000;
 
 	T0 t0_0, t0_1, t0_2, t0_3;
 	T1 t1; 

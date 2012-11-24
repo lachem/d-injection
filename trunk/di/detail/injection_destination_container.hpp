@@ -45,68 +45,81 @@ class injection_destination_container {
 public:
 	inline static size_t size() {
 		#ifndef DI_NO_MULTITHREADING
-		di::custom::synchronization::guard guard(lock);
+		volatile di::custom::synchronization::guard guard(lock);
 		#endif
 
+		verify_invariant();
+
 		size_t num_nodes = 0;
-		node* curr = head_sentinel.next;
-		if (empty()) {
-			return num_nodes;
-		}
+		node* curr = &head_sentinel;
 		while(curr != tail) {
 			curr = curr->next;
 			++num_nodes;
 		}
-		return num_nodes+1;
+
+		verify_invariant();
+
+		return num_nodes;
 	}
 
 	inline static void insert(const injection_destination<T>& item) {
 		#ifndef DI_NO_MULTITHREADING
-		di::custom::synchronization::guard guard(lock);
+		volatile di::custom::synchronization::guard guard(lock);
 		#endif
 
-		node* insert_node = new node(item);
-		if(empty()) {
-			tail = head_sentinel.next = insert_node;
-		}
-		else {
-			tail = tail->next = insert_node;
-		}
+		verify_invariant();
+
+		tail->next = new node(item);
+		tail = tail->next;
+		
+		verify_invariant();
 	}
 
 	inline static injection_destination<T> remove(const injection_destination_key& key) {
 		#ifndef DI_NO_MULTITHREADING
-		di::custom::synchronization::guard guard(lock);
+		volatile di::custom::synchronization::guard guard(lock);
 		#endif
+
+		verify_invariant();
  
-		node* prev = &head_sentinel;
-		node* curr = head_sentinel.next;
 		if (empty()) {
 			return head_sentinel.item;
 		}
+
+		node* prev = &head_sentinel;
+		node* curr = head_sentinel.next;
 		while(curr != tail) {
 			if(curr->matches(key)) {
 				injection_destination<T> item = curr->item;
 				prev->next = curr->next;
 				delete curr;
+				verify_invariant();
 				return item;
 			}
 			prev = curr;
 			curr = curr->next;
 		}
+
 		if(curr->matches(key)) {
 			injection_destination<T> item = curr->item;
 			tail = prev;
-			prev->next = NULL;
 			delete curr;
+			verify_invariant();
 			return item;
 		}
+
+		verify_invariant();
+
 		return head_sentinel.item;
 	}
 
 private:
 	inline static bool empty() {
-		return head_sentinel.next == NULL;
+		return tail == &head_sentinel;
+	}
+
+	inline static void verify_invariant() {
+		assert(head_sentinel.next != NULL || empty());
 	}
 
 private:
@@ -121,7 +134,8 @@ typename injection_destination_container<T>::node
 
 template<typename T>
 typename injection_destination_container<T>::node* 
-	injection_destination_container<T>::tail = NULL;
+	injection_destination_container<T>::tail = 
+		&injection_destination_container<T>::head_sentinel;
 
 template<typename T>
 di::custom::synchronization::spinlock injection_destination_container<T>::lock;
