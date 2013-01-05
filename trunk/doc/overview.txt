@@ -1,14 +1,24 @@
 Dependency Injection Overview
 =============================
 
+[glossary]
+Glossary
+--------
+
+[glossary]
+DI::
+    Dependency Injection
+
+IoC::
+    Inversion Of Control
+
+  
 Introduction
 ------------
 
-This library is header only. To use it, it's enough to include di/di.hpp in your project.
+This library is header only. To use it just include di/di.hpp in your project.
 
-NOTE: dependency injection will be referred throughout this documentation simply as DI.
-
-Dependency injection is an implementation of http://en.wikipedia.org/wiki/Inversion_of_control[Inversion of Control (IoC)] known from java frameworks such as http://en.wikipedia.org/wiki/Spring_Framework[Spring] or http://www.qi4j.org/[Qi4j]. Still C\++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on http://www.boost.org/[boost] (and in future in pure C++11).
+Dependency injection is an implementation of http://en.wikipedia.org/wiki/Inversion_of_control[Inversion of Control] known from java frameworks such as http://en.wikipedia.org/wiki/Spring_Framework[Spring] or http://www.qi4j.org/[Qi4j]. Still C\++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on http://www.boost.org/[boost] (and in future in pure C++11).
 
 Injection subject
 -----------------
@@ -152,10 +162,10 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
     di::required<Wheel> frontRightWheel; //<-- second use<Wheel>(...) call 
     di::required<Wheel> rearLeftWheel;   //<-- third use<Wheel>(...) call 
     di::required<Wheel> rearRightWheel;  //<-- fourth use<Wheel>(...) call 
-    di::required<Seat> leftSeat;  //<-- first use<Seat>(...) call 
-    di::required<Seat> rightSeat; //<-- second use<Seat>(...) call 
-    di::optional<Seat> backSeat; //<-- third use<Seat>(...) call 
-    di::required<HandBrake> handBrake; //<-- first use<HandBrake>(...) call 
+    di::required<Seat> leftSeat;         //<-- first use<Seat>(...) call 
+    di::required<Seat> rightSeat;        //<-- second use<Seat>(...) call 
+    di::optional<Seat> backSeat;         //<-- third use<Seat>(...) call 
+    di::required<HandBrake> handBrake;   //<-- first use<HandBrake>(...) call 
 }; 
 ---------------------------------------------------------------------
   
@@ -166,11 +176,11 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
     di::required<Wheel> frontRightWheel; //<-- second use<Wheel>(...) call 
     di::required<Wheel> rearLeftWheel;   //<-- third use<Wheel>(...) call 
     di::required<Wheel> rearRightWheel;  //<-- fourth use<Wheel>(...) call 
-    di::required<Seat> leftSeat;  //<-- first use<Seat>(...) call 
-    di::optional<Seat> backSeat; //<-- second use<Seat>(...) call 
-    di::required<Seat> rightSeat; //<-- third use<Seat>(...) call
+    di::required<Seat> leftSeat;         //<-- first use<Seat>(...) call 
+    di::optional<Seat> backSeat;         //<-- second use<Seat>(...) call 
+    di::required<Seat> rightSeat;        //<-- third use<Seat>(...) call
     //builder knows only about two seats, third seat will cause an error 
-    di::required<HandBrake> handBrake; //<-- first use<HandBrake>(...) call 
+    di::required<HandBrake> handBrake;   //<-- first use<HandBrake>(...) call 
 };
 ---------------------------------------------------------------------
 
@@ -371,9 +381,4 @@ di::module<UI>& uiModule = application;
 
 This way +controllerModule+, +infrastructureModule+ and +uiModule+ can be fed up seperately.
 
-
-''''
-
-Copyright (C) 2012 mailto:salvage@o2.pl[Adam Lach]
-
-Distributed under the Boost Software License, Version 1.0. (See accompanying file http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt[LICENSE_1_0.txt] or copy at http://www.boost.org/LICENSE_1_0.txt).
+include::footer.txt[]

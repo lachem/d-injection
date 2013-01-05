@@ -1,0 +1,9 @@
+++++
+<br />
+<br />
+++++
+''''
+
+Copyright (C) 2012 mailto:salvage@o2.pl[Adam Lach]
+
+Distributed under the Boost Software License, Version 1.0. (See accompanying file http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt[LICENSE_1_0.txt] or copy at http://www.boost.org/LICENSE_1_0.txt).
