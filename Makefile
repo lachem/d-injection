@@ -8,7 +8,12 @@ BOOST_LIB = ../../libraries/boost_1_50_0/stage/lib
 SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc $(GMOCK_INC)/src/gmock-all.cc
 INC = ./ $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
 LIB = $(BOOST_LIB)/libboost_thread.a $(BOOST_LIB)/libboost_chrono.a $(BOOST_LIB)/libboost_system.a -lpthread -lrt
-DOC = doc/overview.txt
+DOC = doc/overview.txt doc/rationale.txt doc/configuration.txt
+
+define \n
+
+
+endef
 
 all: debug release
 
@@ -24,5 +29,6 @@ run_debug: debug
 run_release: release
 	./di_test_release
 
-doc:
-	python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(DOC)
+.PHONY: doc
+doc: 
+	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
