@@ -21,7 +21,7 @@ struct Timer
 };
 ---------------------------------------------------------------------
 
-Timer is a class that is meant to wait for specified amount of miliseconds and then execute a callback. There are however other parameters than time and callback that are necessary for the Timer to work those are thread pool and clock. This of course might not be the best timer specification, but for the sake of this example it is just fine.
+Timer is a class that is meant to wait for a specified amount of time and then execute a callback. There are however other parameters than time and callback that are necessary for the Timer to work, those are thread pool and clock. This of course might not be the best timer specification, but for the sake of this example it is just fine.
 
 ---------------------------------------------------------------------
 struct Poller
@@ -38,7 +38,7 @@ struct Poller
 };
 ---------------------------------------------------------------------
 
-Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, neither it needs the clock to carry out it's task, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
+Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, nor it needs the clock to carry out it's task, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
 
 ---------------------------------------------------------------------
 struct TimerFactory
