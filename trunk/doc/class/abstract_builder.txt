@@ -1,0 +1,118 @@
+Dependency Injection - Header link:../../di/builder.hpp[<builder.hpp>]
+====================================================================
+
+Introduction
+-------------
+
+{{Introductory text}}
+
+Class builder
+-------------
+
+{{class overview text}}
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+   template<typename T>
+   class builder
+   {
+       builder();
+
+       virtual T* build() const = 0;
+       virtual void build(T&) const = 0;
+	   
+       template<typename U> builder<T>& use(U& object);
+       template<typename U> builder<T>& replace(U& object, int at=0);
+   };
+};
+---------------------------------------------------------------------
+
+Constructors and Destructor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+---------------------------------------------------------------------
+builder()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* internal container pointer values are set to null +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* O(n) where n is the arrity of +subject+ (see subject.hpp) +
+*Note:* none +
+*Danger:* none +
+*Rationale:* TODO +
+  
+Modifier Functions
+~~~~~~~~~~~~~~~~~~
+
+---------------------------------------------------------------------
+template<typename U> builder<T>& use(U& object)
+---------------------------------------------------------------------
+
+*Requires:* U is one of the types specified by +subject+ A place for another U type object remains in builder. +
+*Effects:* unless succeeded out_of_bounds is called from derriving class (e.g. see builder_imp) +
+*Postconditions:* builder contains use reference to +object+ +
+*Returns:* self +
+*Throws:* depends upon diagnostics mode +
+*Complexity:* O(n) where n is the arrity of +subject+ (see subject.hpp) +
+*Note:* none +
+*Danger:* none +
+*Rationale:* TODO +
+
+---------------------------------------------------------------------
+template<typename U> builder<T>& replace(U& object, int at=0)
+---------------------------------------------------------------------
+
+*Requires:* +subject+ specified at least +at+1+ injections of type U. +
+*Effects:* unless succeeded out_of_bounds is called from derriving class (e.g. see builder_imp) +
+*Postconditions:* builder contains use reference to +object+ +
+*Returns:* self +
+*Throws:* depends upon diagnostics mode +
+*Complexity:* O(n) where n is the arrity of +subject+ (see subject.hpp) +
+*Note:* none +
+*Danger:* none +
+*Rationale:* TODO +
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+virtual T* build() const = 0
+---------------------------------------------------------------------
+
+*Requires:* all objects required by +subject+ (see subject.hpp) are already provided to the builder +
+*Effects:* after construction is finished +subject::constructed+ is called; unless succeeded diagnostic functions may be executed +
+*Postconditions:* none +
+*Returns:* new instance of +T+ +
+*Throws:* depends upon diagnostics mode +
+*Complexity:* implementation specific +
+*Note:* none +
+*Danger:* none +
+*Rationale:* TODO +
+
+---------------------------------------------------------------------
+virtual void delegate(T&) const = 0
+---------------------------------------------------------------------
+
+*Requires:* all objects required by +subject+ (see subject.hpp) are already provided to the builder +
+*Effects:* after construction is finished +subject::constructed+ is called; unless succeeded diagnostic functions may be executed +
+*Postconditions:* none +
+*Returns:* new instance of +T+ +
+*Throws:* depends upon diagnostics mode +
+*Complexity:* implementation specific +
+*Note:* none +
+*Danger:* none +
+*Rationale:* TODO +
+
+Example(s)
+----------
+
+{{Example(s)}}
+
+include::../footer.txt[]

@@ -1,0 +1,6 @@
+Dependency Injection Acknowledgments
+====================================
+
+I would like to thank Pawel Stopinski for reviewing DI.
+
+include::footer.txt[]
