@@ -1,0 +1,6 @@
+Dependency Injection Frequently Asked Questions
+===============================================
+
+No questions asked yet :)
+
+include::footer.txt[]

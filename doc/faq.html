@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title>Dependency Injection Rationale</title>
+<title>Dependency Injection Frequently Asked Questions</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -731,77 +731,16 @@ asciidoc.install(2);
 </head>
 <body class="article" style="max-width:60em">
 <div id="header">
-<h1>Dependency Injection Rationale</h1>
+<h1>Dependency Injection Frequently Asked Questions</h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_introduction">Introduction</h2>
+<div id="preamble">
 <div class="sectionbody">
-<div class="paragraph"><p>Much of todays engineering work in big system is focused on managing dependencies between entities. Amongst it a great deal of work is being put in a proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on.
-Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the right approach as it imposes unwanted constraints and limitations.</p></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_inversion_of_control_containers">Inversion of Control Containers</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>Inversion of Control Container is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the caller&#8217;s shoulders. The result of such an approach is reduced coupling.</p></div>
-<div class="listingblock">
-<div class="title">Example</div>
-<div class="content">
-<pre><code>struct Timer
-{
-    Timer(long long timeInMilis, boost::function&lt;void ()&gt; callback,
-          Clock&amp; clock, ThreadPool&amp; pool);
-};</code></pre>
-</div></div>
-<div class="paragraph"><p>Timer is a class that is meant to wait for a specified amount of time and then execute a callback. There are however other parameters than time and callback that are necessary for the Timer to work, those are thread pool and clock. This of course might not be the best timer specification, but for the sake of this example it is just fine.</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>struct Poller
-{
-    void run()
-    {
-        while(state == working)
-        {
-            boost::function&lt;void ()&gt; callback = boost::bind(&amp;Poller::indicateFailure,this);
-            timer = new Timer(100,callback,clock,threadpool);
-            //make a query, await response and delete timer
-        }
-    }
-};</code></pre>
-</div></div>
-<div class="paragraph"><p>Not going too deep into specifics of this implementation the problem is that although Poller doesn&#8217;t need threadpool, nor it needs the clock to carry out it&#8217;s task, it has to obtain them somehow to pass to Timer&#8217;s constructor. IoC gives a remedy for that problem. Given :</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>struct TimerFactory
-{
-    TimerFactory(Clock&amp; clock, ThreadPool&amp; threadPool);&lt;br&gt;
-    Timer* createTimer(long long timeInMilis, boost::function&lt;void ()&gt; callback)
-    {
-        return new Timer(timeInMilis, callback, clock, threadpool);
-    }
-};</code></pre>
-</div></div>
-<div class="paragraph"><p>the Poller needs only to call createTimer from TimerFactory, instead of creating the Timer by itself, to get rid of the necessity of obtaining clock and threadpool. The body of Poller::run might be altered to look like:</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>while(state == working)
-{
-    boost::function&lt;void ()&gt; callback = boost::bind(&amp;Poller::indicateFailure,this);
-    timer = new timerFactory-&gt;createTimer(100,callback);
-    //make a query, await response and delete timer
-}</code></pre>
-</div></div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_dependency_injection">Dependency Injection</h2>
-<div class="sectionbody">
-<div class="paragraph"><p>IoC is simple yet it gives good benefits. Of course implementing a new factory every time when there is a need to "invert control" seems a bit discouraging. Therefore Dependency Injection is a "generic" implementation of IoC. It provides all the benefits of IoC in a convient manner.</p></div>
+<div class="paragraph"><p>No questions asked yet :)</p></div>
 <br />
 <br />
 <hr />
@@ -813,7 +752,7 @@ Moreover vast majority of developers working with object oriented langauges were
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-01-12 23:43:26 Środkowoeuropejski czas stand.
+Last updated 2013-01-12 23:49:50 Środkowoeuropejski czas stand.
 </div>
 </div>
 </body>

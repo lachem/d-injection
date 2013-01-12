@@ -15,7 +15,6 @@ Reference::
 		link:policies/using_threads.html[Policy using_threads]::::
 link:configuration.html[Configuration Information]::
 link:rationale.html[Rationale]::
-link:definitions.html[Definitions]::
 link:faq.html[Frequently Asked Questions (FAQs)]::
 link:bibliography.html[Bibliography]::
 link:acknowledgments.html[Acknowledgments]::
