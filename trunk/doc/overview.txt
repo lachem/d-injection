@@ -32,7 +32,7 @@ Template parameters of the +di::subject+ name the types of each particular injec
 ---------------------------------------------------------------------
 struct Car: public di::subject<Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat>{};
 ---------------------------------------------------------------------
-However the order of those parameters is not important. At this point only the quantity of each type matters. Therefore declaration below is equivalent to the one above.
+However the order of those parameters is not important. Only the quantity of each type matters. Therefore declaration below is equivalent to the one above.
   
 ---------------------------------------------------------------------
 struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>{};
@@ -40,7 +40,7 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>{};
   
 Declaring injections
 --------------------
-Having declared a class an injection subject it is possible to specify its injections. The types of injections have to match those defined in template parameters of +di::subject+, though as already mentioned there is no relation between their order. Continuing previous example, injection definitions might look like this:
+A class which is an injection subject may declare attributes which will be placeholders for the injections. The types of injections have to match those defined in template parameters of +di::subject+, though as already mentioned there is no relation between their order. Extending previous example with injection placeholders results in:
      
 ---------------------------------------------------------------------
 struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Seat,Wheel>
@@ -61,7 +61,7 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Seat,Wheel>
 };
 ---------------------------------------------------------------------
   
-+di::required+ class is defined in di/required.hpp and +di::optional+ class is defined in di/optional.hpp header. Both +di::required+ and +di::optional+ have pointer semantics and are convertible to pointer or reference of their template arguments. The injection itself is performed right after leaving a constructor. Therefore using any of the required/optional objects inside constructor is equivalent to using an uninitialized pointer, in fact it is exactly the same.
++di::required+ class is defined in di/required.hpp and +di::optional+ class is defined in di/optional.hpp header. Both +di::required+ and +di::optional+ have pointer semantics and are convertible to pointer or reference of their template arguments. The injection process is performed right after leaving the constructor in case of build() method or on demmand in case of build(...) or build_part(...). Therefore using any of the required/optional class attributes inside constructor is equivalent to using an uninitialized pointer, in fact it is exactly the same.
 
 Types of injections
 -------------------
@@ -129,7 +129,9 @@ struct Car: public di::subject<Wheel>
   
 Builder
 -------
-The most basic form of building an injection subject is by utilizing +builder+ defined in di/builder.hpp.+di::builder+ is a class with two template paramters from which only one is obligatory. Having a car class that derives from +di::subject with+ injections specified +builder+ can be used to create +Car+ instance. First however what is necessary is to provide objects for injections by calling template method +use+ on builder object.
+The most basic form of building a dependency injection subject is by utilizing +builder+ defined in di/builder.hpp.+di::builder+ is a class with two template paramters from which only the first is obligatory as it names the real type +builder+ is able to build. 
+
+Having a +Car+ class which derives from +subject+ and a +builder<Car>+ an instance of +Car+ may be created. Before that could happen however, +builder<Car>+ needs to know the objects it is supposed to inject to Car.
 
 ---------------------------------------------------------------------
 di::builder<Car> builder;
@@ -153,7 +155,7 @@ assert( 0  == car->backSeat);
 assert(&hb == car->handBrake);
 ---------------------------------------------------------------------
 In contradiction to subject's template parameters, the order of use calls is strictly bound to the order in which 
-requireds and optionals are declared. This relies to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls, such that +builder.use(w4).use(w2).use(w3).use(w1);+ would result in +car\->frontLeftWheel == &w4+ and +car\->rearRightWheel == &w1+. For the same reason changing the order in which optionals and requireds are declared would result in and error (assert, exception etc. depending on user's choice), because the third second seat passed to builder would be injected into optional, thus leaving the last +required<Seat>+ unsatisfied.
+requireds and optionals are declared. This relies to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to +builder.use(w4).use(w2).use(w3).use(w1);+ would result in +car\->frontLeftWheel == &w4+ and +car\->rearRightWheel == &w1+. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user's choice), because the third second seat passed to builder would be injected into +optional+, thus leaving the last +required<Seat>+ unsatisfied.
 
 ---------------------------------------------------------------------
 struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
@@ -188,7 +190,7 @@ NOTE: All builders are injection type aware i.e. +builder.use(di::shared<Wheel>(
   
 Abstract builder
 ----------------
-In many cases it may be impractical to use raw +builder<typename T> + due to coupling and testability issues. Prefferably one might want to be able to build an object of +class Car+ but pass an object of +class Vehicle+ (base of Car) to be able to change at any point of the develepment the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of mocking +builder::build()+ and +builder::build(T&)+ methods to build/inject mocks/stubs instead of real objects. To achieve all these benefits +di::abstract_builder+ is provided. +di::abstract_builder+ is the base class of +di::builder+, hence the name.
+In many cases it may be impractical to use raw +builder<T>+ due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of +class Car+ but pass an object of +class Vehicle+ (base of Car) to be able to change, at any given point of develepment, the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of mocking +builder::build()+ and +builder::build(T&)+ methods to build/inject mocks/stubs instead of real objects. To get all these benefits +di::abstract_builder+ is provided. +di::abstract_builder+ is the base class of +di::builder+, hence the name.
 
 Considering:
 
@@ -211,14 +213,14 @@ struct Car: public Vehicle
 }; 
 ---------------------------------------------------------------------
 
-one might write:
+one might write
 
 ---------------------------------------------------------------------
 di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>(); 
 Vehicle* porshe = vehicle_builder->build();
 ---------------------------------------------------------------------
 
-or:
+or
 
 ---------------------------------------------------------------------
 di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>() 
@@ -227,11 +229,11 @@ Car porshe(...);
 vehicle_builder->build(porshe); 
 ---------------------------------------------------------------------
   
-NOTE: It is the class which is the template parameter of +di::abstract_builder+ that needs to derive (publicly) from di::subject. Unfortunately this a necessary limitation.
+NOTE: It is the class which is the template parameter of +di::abstract_builder+ is the one that needs to derive (publicly) from di::subject. Unfortunately this is a necessary limitation.
           
 Building families of objects
 ----------------------------
-Aforementioned +di::abstract_builder::build(T&)+ method allows for building families of objects. I the provided example all the classes which are subclasses of +Construct+ are considered to be of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).
+Aforementioned +di::abstract_builder::build(T&)+ method allows for building families of objects. In the provided example all the classes which are subclasses of +Construct+ are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).
 
 ---------------------------------------------------------------------
 class Construct : public di::subject<Logger,Database,ConversionTools> {};
@@ -276,7 +278,7 @@ construct_builder->build(garage2);
   
 Generic builder
 ---------------
-Generic builder is another kind of builder that has been designed to inject dependencies into any type of subjects. Extending previous example one may consider set of subject types which are interested in the same injections. It would be inconvienient to setup many abstract builder for separate types with the same injections. To illustrate the problem consider a logger instance which ought to be passed to each object in the system. 
+It would be inconvienient to setup many abstract builders for a set of subject types which are interested in the same injections. To overcome this inconvience the approach proposed in previous chapter could be used. It has a major drawback though, it requires specific class hierarchy, here generic builder comed to the rescue. Generic builder is a kind of builder that has been designed to inject dependencies into any type of subject. Its flexiblity however, comes for a price. Because it has been achieved by replacing virtual +build(...)+ method with its template counterpart, generic_builder<...>::build cannot be mocked. Example of generic_builder usage.
 
 ---------------------------------------------------------------------
 class Truck : public di::subject<Logger> 
@@ -318,7 +320,7 @@ gbuilder.build_part(garage2);
 //abstract_builder or another generic_builder
 ---------------------------------------------------------------------
 
-The difference between +di::generic_builder<...>::build_part+ and +di::generic_builder<...>::build+ is that +build_part+ does not check whether all requirements have been met. This way issuing +gbuilder.build(scania)+ is perfectly fine because +Logger+ is the only dependency required by +Truck+ whereas issuing +gbuilder.build(highway)+ would result in an error (assertion, exception or custom defined), while +di::generic_builder< di::subject<Logger> >+ does not provide +Database+ and +ConversionTools+ required by +Road+. Additionally in contradiction to +di::generic_builder<...>::build+ +di::generic_builder<...>::build_part+ does not invoke subject's +constructed+ method.
+The difference between +di::generic_builder<...>::build_part+ and +di::generic_builder<...>::build+ is that the former does not check whether all requirements have been met. This way issuing +gbuilder.build(scania)+ is perfectly fine because +Logger+ is the only dependency required by +Truck+ whereas issuing +gbuilder.build(highway)+ would result in an error (assertion, exception or custom defined), while +di::generic_builder< di::subject<Logger> >+ does not provide +Database+ and +ConversionTools+ required by +Road+. Additionally in contradiction to +di::generic_builder<...>::build+ +di::generic_builder<...>::build_part+ does not invoke subject's +constructed+ method.
 
 Modules
 -------
