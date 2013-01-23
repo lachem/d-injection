@@ -1,4 +1,5 @@
 ASCIIDOC  = ../../programs/asciidoc/asciidoc.py
+DOXYGEN	  = ../../programs/doxygen/bin/doxygen
 
 GTEST_INC = ../../libraries/gmock-1.6.0/gtest
 GMOCK_INC = ../../libraries/gmock-1.6.0
@@ -32,3 +33,4 @@ run_release: release
 .PHONY: doc
 doc: 
 	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
+	$(DOXYGEN) example/doc_generator/input/doxygen.cfg
