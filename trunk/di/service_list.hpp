@@ -7,6 +7,7 @@
 #define DI_SERVICE_LIST_HPP
 
 #include <di/detail/variadics.hpp>
+#include <di/injection_types.hpp>
 
 namespace di {
 namespace detail {

@@ -8,6 +8,7 @@
 
 #include <boost/type_traits/remove_pointer.hpp>
 #include <di/detail/variadics.hpp>
+#include <di/generic_builder.hpp>
 #include <di/builder.hpp>
 
 namespace di {
@@ -37,6 +38,11 @@ struct make_selective_use_call<true> {
 template<typename M>
 struct module {
 	typedef M type;
+
+	template<typename T>
+	module<M>& use(const boost::shared_ptr<T>& element) {
+		return use(di::service<T>(element));
+	}
 
 	template<typename T>
 	module<M>& use(const di::service<T>& element) {
