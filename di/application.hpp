@@ -12,6 +12,13 @@
 namespace di {
 namespace detail {
 
+struct wrap_in_identity {
+	template<typename T>
+	struct apply {
+		typedef boost::mpl::identity<T> type;
+	};
+};
+
 template<unsigned i>
 struct empty_base {};
 
@@ -75,16 +82,19 @@ class application : public detail::inherit_modules<BOOST_PP_ENUM_BINARY_PARAMS(D
 	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> this_type;
 
 public:
-	application() {	
-		boost::mpl::for_each<module_prototypes>(configure_modules(*this));
+	application() {
+		//for_each instantiates each type in the traversed container using defualt constructor,
+		//this is unwanted, because the user might want to disable those default constructors.
+		//Workaround: transform the container so that it instantiates boost::identity<T>
+		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(configure_modules(*this));
 	}
 
 private:
 	struct configure_modules {
 		explicit configure_modules(this_type& an_application) : configurator(an_application) {}
 		template<typename M>
-		void operator() (const M& param) {
-			configurator.configure_intermodule_connections<M>(configurator.provided_by_modules);
+		void operator() (const M&) {
+			configurator.configure_intermodule_connections<M::type>(configurator.provided_by_modules);
 		}
 		this_type& configurator;
 	};

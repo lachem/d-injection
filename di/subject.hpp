@@ -16,11 +16,6 @@ namespace di {
 namespace detail {
 
 template<typename Seq>
-struct vector_without_voids {
-	typedef typename boost::mpl::remove<Seq, di::detail::void_>::type type;
-};
-
-template<typename Seq>
 struct make_injection_source {
 	template<typename T>
 	struct apply {

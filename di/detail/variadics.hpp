@@ -56,16 +56,15 @@
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/for_each.hpp>
 
-#undef FUSION_MAX_VECTOR_SIZE
-#undef FUSION_MAX_SET_SIZE
-#undef BOOST_MPL_LIMIT_VECTOR_SIZE
-#undef BOOST_MPL_LIMIT_SET_SIZE
-#undef BOOST_MPL_CFG_NO_PREPROCESSED_HEADERS
-
 namespace di {
 namespace detail {
-	
+
 struct void_ {};
+
+template<typename Seq>
+struct vector_without_voids {
+	typedef typename boost::mpl::remove<Seq, di::detail::void_>::type type;
+};
 
 } // namespace detail
 } // namespace di
