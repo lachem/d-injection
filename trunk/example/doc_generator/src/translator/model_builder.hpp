@@ -18,9 +18,7 @@ namespace translator {
 
 class ModelBuilder : public di::subject<doxygen_input::FileRepository> {
 public:
-	model::Model assemble() {
-		model::Model cppModel;
-		
+	void assemble(boost::shared_ptr<model::Model> model) {
 		for(auto& it = fileRepository->begin(); it != fileRepository->end(); ++it) {
 			try {
 				std::string kind = it->getChild("doxygen.compounddef").getAttribute("kind");
@@ -37,13 +35,11 @@ public:
 						method.signature = it->getChild("definition").getValue();
 						cls.methods.push_back(std::move(method));
 					}
-					cppModel.classes.push_back(cls);
+					model->classes.push_back(cls);
 				}
 			}
 			catch(...) {}
 		}
-
-		return std::move(cppModel);
 	}
 
 private:

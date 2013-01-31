@@ -15,21 +15,23 @@
 namespace translator {
 
 struct Module {
-	typedef di::service_list<> provided;
+	typedef di::service_list<model::Model> provided;
 	typedef di::service_list<doxygen_input::FileRepository> needed;
 
 	Module(di::module<Module>* aModule) : module(aModule) {}
 
-	void start() {
-		model::Model cppModel = module->abstract_builder<translator::ModelBuilder>()->build()->assemble();
+	void build() {
+		model.reset(new model::Model);
+		module->use(model);
+	}
 
-		for(auto& cls : cppModel.classes) {
-			std::cout << cls;
-		}
+	void start() {
+		module->abstract_builder<translator::ModelBuilder>()->build()->assemble(model);
 	}
 
 private:
 	di::module<Module>* module;
+	boost::shared_ptr<model::Model> model;
 };
 
 } // namespace translator
