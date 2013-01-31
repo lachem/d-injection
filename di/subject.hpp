@@ -15,6 +15,8 @@
 namespace di {
 namespace detail {
 
+struct subject_base {};
+
 template<typename Seq>
 struct make_injection_source {
 	template<typename T>
@@ -44,7 +46,7 @@ struct set_of_unique_types {
  *        In result a list of for example <T,T,Y,Z,Y> is transformed into <<T,2>,<T,2>,<Z>>.
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
-class subject {	
+class subject : public detail::subject_base {	
 	typedef boost::mpl::vector< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, T,BOOST_PP_INTERCEPT) > raw_mpl_vector;
 	typedef typename detail::vector_without_voids<raw_mpl_vector>::type trimmed_vector;
 	typedef typename detail::vector_of_injection_sources<trimmed_vector>::type source_vector;

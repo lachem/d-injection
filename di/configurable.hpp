@@ -41,6 +41,9 @@ private:
 
 template<typename T>
 class configurable {	
+
+	BOOST_MPL_ASSERT_MSG((boost::is_base_of<detail::subject_base,T>::value),ProvidedTypeDoesNotDeriveFromSubject,);
+
 public:
 	typedef T subject;
 
