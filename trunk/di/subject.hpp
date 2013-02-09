@@ -8,14 +8,13 @@
 
 #include <di/detail/variadics.hpp>
 #include <di/detail/injection_source_container.hpp>
+#include <di/detail/utility.hpp>
 #include <di/diagnostics.hpp>
 
 // Visual macro expansion CL /EP /C YourCodeFile.cpp 
 
 namespace di {
 namespace detail {
-
-struct subject_base {};
 
 template<typename Seq>
 struct make_injection_source {

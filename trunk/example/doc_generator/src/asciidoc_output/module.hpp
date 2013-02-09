@@ -10,6 +10,7 @@
 #include <di/service_list.hpp>
 
 #include "model/model.hpp"
+#include "filesystem/directory.hpp"
 #include "asciidoc_output/model_printer.hpp"
 
 namespace asciidoc_output {
@@ -18,14 +19,18 @@ struct Module {
 	typedef di::service_list<> provided;
 	typedef di::service_list<model::Model> needed;
 
-	Module(di::module<Module>* aModule) : module(aModule) {}
+	Module(di::module<Module>* aModule, const std::string& anOutputDirectory) : 
+		module(aModule), outputDirectory(anOutputDirectory) {}
 
 	void start() {
-		module->abstract_builder<ModelPrinter>()->build()->print();
+		auto builder = module->abstract_builder<ModelPrinter>();
+		builder->use(di::unique<filesystem::Directory>(new filesystem::Directory(outputDirectory)));
+		builder->build()->print();
 	}
 
 private:
 	di::module<Module>* module;
+	const std::string outputDirectory;
 };
 
 } // namespace asciidoc_output

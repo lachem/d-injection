@@ -19,14 +19,4 @@ struct Class {
 
 } // namespace Model
 
-std::ostream& operator<<(std::ostream& stream, const model::Class& cls) {
-	stream << cls.name << "," << cls.filename << std::endl;
-	for(auto it = cls.methods.begin(); it != cls.methods.end(); ++it) {
-		stream << "\t" << it->name << std::endl;
-		stream << "\t" << it->signature << std::endl;
-	}
-	stream << std::endl;
-	return stream;
-}
-
 #endif // CLASS_HPP

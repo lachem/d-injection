@@ -9,14 +9,14 @@
 #include <di/module.hpp>
 #include <di/service_list.hpp>
 
-#include "doxygen_input/file_repository.hpp"
+#include "doxygen_input/xml_repository.hpp"
 #include "translator/model_builder.hpp"
 
 namespace translator {
 
 struct Module {
 	typedef di::service_list<model::Model> provided;
-	typedef di::service_list<doxygen_input::FileRepository> needed;
+	typedef di::service_list<doxygen_input::XmlRepository> needed;
 
 	Module(di::module<Module>* aModule) : module(aModule) {}
 

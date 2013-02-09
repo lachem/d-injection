@@ -3,8 +3,8 @@ DOXYGEN	  = ../../programs/doxygen/bin/doxygen
 
 GTEST_INC = ../../libraries/gmock-1.6.0/gtest
 GMOCK_INC = ../../libraries/gmock-1.6.0
-BOOST_INC = ../../libraries/boost_1_50_0
-BOOST_LIB = ../../libraries/boost_1_50_0/stage/lib
+BOOST_INC = ../../libraries/boost_1_52_0
+BOOST_LIB = ../../libraries/boost_1_52_0/stage/lib
 
 SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc $(GMOCK_INC)/src/gmock-all.cc
 INC = ./ $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
@@ -32,5 +32,5 @@ run_release: release
 
 .PHONY: doc
 doc: 
-	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
 	$(DOXYGEN) example/doc_generator/input/doxygen.cfg
+	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))

@@ -3,16 +3,16 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef FILE_REPOSITORY_HPP
-#define FILE_REPOSITORY_HPP
+#ifndef XML_REPOSITORY_HPP
+#define XML_REPOSITORY_HPP
 
 #include <vector>
 #include <doxygen_input/xml_file.hpp>
 
 namespace doxygen_input {
 
-typedef std::vector<doxygen_input::XmlFile> FileRepository;
+typedef std::vector<doxygen_input::XmlFile> XmlRepository;
 
 } // namespace doxygen_input
 
-#endif // FILE_REPOSITORY_HPP
+#endif // XML_REPOSITORY_HPP

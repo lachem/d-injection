@@ -3,16 +3,7 @@ Dependency Injection
 
 .Contents
 link:overview.html[Overview]::
-Reference::
-	Building:::
-		link:class/abstract_builder.html[Class abstract_builder]::::
-		link:class/generic_builder.html[Class generic_builder]::::
-		link:class/subject.html[Class subject]::::
-		link:class/required.html[Class required]::::
-		link:class/optional.html[Class optional]::::
-	Diagnostics:::
-		link:policies/using_assertions.html[Policy using_assertions]::::
-		link:policies/using_threads.html[Policy using_threads]::::
+include::reference.txt[]
 link:configuration.html[Configuration Information]::
 link:rationale.html[Rationale]::
 link:faq.html[Frequently Asked Questions (FAQs)]::

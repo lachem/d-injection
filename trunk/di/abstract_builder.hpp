@@ -31,9 +31,9 @@ public:
 	 * @brief Performs injections and calls constructed() on subject.
 	 * @pre Injections required by the instance object were provided to the builder.
 	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
-	 * @param Instance of builder's corresponding subject.
+	 * @param instance of builder's corresponding subject.
 	 */
-	virtual void build(T&) = 0;
+	virtual void build(T& instance) = 0;
 
 	template<typename U>
 	abstract_builder<T>& use(U& object) {

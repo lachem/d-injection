@@ -14,16 +14,31 @@
 
 namespace asciidoc_output {
 
-class ModelPrinter : public di::subject<model::Model> {
+std::ostream& operator<<(std::ostream& stream, const model::Class& cls) {
+	stream << cls.name << "," << cls.filename << std::endl;
+	for(auto it = cls.methods.begin(); it != cls.methods.end(); ++it) {
+		stream << "\t" << it->name << std::endl;
+		stream << "\t" << it->signature << std::endl;
+	}
+	stream << std::endl;
+	return stream;
+}
+
+
+class ModelPrinter : public di::subject<model::Model,filesystem::Directory> {
 public:
 	void print() {
+		std::stringstream sstream;
 		for(auto& cls : model->classes) {
-			std::cout << cls;
+			sstream << cls;
 		}
+		filesystem::File file;
+		file.content = std::move(sstream.str());
 	}
 
 private:
 	di::required<di::service<model::Model>> model;
+	di::required<di::unique<filesystem::Directory>> outputDirectory;
 };
 
 } // namespace asciidoc_output

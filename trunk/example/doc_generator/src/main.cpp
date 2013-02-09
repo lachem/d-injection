@@ -13,12 +13,12 @@
 
 int main(int argc, char* argv[])
 {
-	if(argc > 1) {
+	if(argc > 2) {
 		di::application<doxygen_input::Module,translator::Module,asciidoc_output::Module> app;
 
 		doxygen_input::Module inputModule(&app,argv[1]);
 		translator::Module translatorModule(&app);
-		asciidoc_output::Module outputModule(&app);
+		asciidoc_output::Module outputModule(&app,argv[2]);
 
 		inputModule.build();
 		translatorModule.build();
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 		outputModule.start();
 	}
 	else {
-		std::cerr << "Please provide the path to doxygen generated xml input." << std::endl;
+		std::cerr << "Please provide the path to doxygen generated xml input and the path of asciidoc output." << std::endl;
 	}
 	return 0;
 }
