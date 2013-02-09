@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <filesystem>
 #include <boost/filesystem.hpp>
 
 #include "filesystem/file.hpp"
@@ -27,7 +26,7 @@ namespace filesystem {
 class Directory {
 public:
 	template<typename PathType>
-	Directory(PathType&& aPath) : path(aPath) {}
+	explicit Directory(PathType&& aPath) : path(aPath) {}
 	
 	const std::string& getPath() const {
 		return path;
