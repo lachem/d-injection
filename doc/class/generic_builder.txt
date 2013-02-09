@@ -1,0 +1,4 @@
+ Dependency Injection - Header link:../../di/generic_builder.hpp[<generic_builder.hpp>]
+=======================================================================================
+
+include::../footer.txt[]

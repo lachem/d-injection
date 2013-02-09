@@ -24,21 +24,25 @@ public:
 				std::string kind = it->getChild("doxygen.compounddef").getAttribute("kind");
 				if(kind == "class" || kind == "struct") {
 					model::Class cls;
-					cls.filename = it->getFilename();
+                    cls.filename = it->getChild("doxygen.compounddef.includes").getValue();
 					cls.name = it->getChild("doxygen.compounddef.compoundname").getValue();
 
 					std::vector<doxygen_input::XmlNode> methodNames = 
 						it->getChildren("doxygen.compounddef.sectiondef.memberdef");
 					for(auto it = methodNames.begin(); it != methodNames.end(); ++it) {
-						model::Method method;
-						method.name = it->getChild("name").getValue();
-						method.signature = it->getChild("definition").getValue();
-						cls.methods.push_back(std::move(method));
+                        if(it->getAttribute("kind") == "function") {
+						    model::Method method;
+						    method.name = it->getChild("name").getValue();
+						    method.signature = it->getChild("definition").getValue();
+						    cls.methods.push_back(std::move(method));
+                        }
 					}
 					model->classes.push_back(cls);
 				}
 			}
-			catch(...) {}
+			catch(std::exception& ex) {
+                std::cerr << ex.what() << std::endl;
+            }
 		}
 	}
 
