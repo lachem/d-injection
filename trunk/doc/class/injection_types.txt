@@ -1,0 +1,4 @@
+ Dependency Injection - Header link:../../di/injection_types.hpp[<injection_types.hpp>]
+=======================================================================================
+
+include::../footer.txt[]

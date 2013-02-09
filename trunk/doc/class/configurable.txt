@@ -1,0 +1,4 @@
+ Dependency Injection - Header link:../../di/configurable.hpp[<configurable.hpp>]
+=================================================================================
+
+include::../footer.txt[]

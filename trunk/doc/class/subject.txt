@@ -1,0 +1,4 @@
+ Dependency Injection - Header link:../../di/subject.hpp[<subject.hpp>]
+=======================================================================
+
+include::../footer.txt[]

@@ -6,10 +6,34 @@
 #ifndef DI_DIAGNOSTICS_HPP
 #define DI_DIAGNOSTICS_HPP
 
-#include <di/abstract_builder.hpp>
 #include <stdexcept>
 
 namespace di {
+
+struct out_of_range : public std::exception {
+	~out_of_range() throw () {}
+	
+	virtual const char* what() const throw() {
+		return "Builder cannot handle any more injections of given type";
+	}
+};
+
+struct requirement_not_satisfied : public std::exception {
+	requirement_not_satisfied(void* subject_address) {
+		std::stringstream sstream;
+		sstream << "Builder has failed to satisfy all requirements of subject at " << subject_address;
+		message = sstream.str();
+	}
+
+	~requirement_not_satisfied() throw() {}
+
+	virtual const char* what() const throw() {
+		return message.c_str();
+	}
+
+private:
+	std::string message;
+};
 
 template<typename T>
 struct using_assertions {

@@ -58,7 +58,7 @@ public:
 	}
 
 	void addFile(const File& file) {
-		std::fstream filestr (path + file.name, std::fstream::out);
+		std::fstream filestr (path + "/" + file.name, std::fstream::out);
 		filestr << file.content <<std::endl;
 		filestr.close();
 	}

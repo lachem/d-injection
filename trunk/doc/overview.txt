@@ -373,7 +373,7 @@ Application is a construct that binds modules with each other. For example to bi
 di::application<Controller,Infrastructure,UI> application;
 ---------------------------------------------------------------------
 
-to obtain +di::module+ s from application instance
+obtaining +di::module+ s from application instance is pretty simple
 
 ---------------------------------------------------------------------
 di::module<Controller>& controllerModule = application; 
