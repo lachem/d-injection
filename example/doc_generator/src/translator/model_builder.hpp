@@ -11,15 +11,15 @@
 #include <di/subject.hpp>
 #include <di/required.hpp>
 
-#include "doxygen_input/file_reader.hpp"
+#include "doxygen_input/xml_reader.hpp"
 #include "model/model.hpp"
 
 namespace translator {
 
-class ModelBuilder : public di::subject<doxygen_input::FileRepository> {
+class ModelBuilder : public di::subject<doxygen_input::XmlRepository> {
 public:
 	void assemble(boost::shared_ptr<model::Model> model) {
-		for(auto& it = fileRepository->begin(); it != fileRepository->end(); ++it) {
+		for(auto& it = xmlRepository->begin(); it != xmlRepository->end(); ++it) {
 			try {
 				std::string kind = it->getChild("doxygen.compounddef").getAttribute("kind");
 				if(kind == "class" || kind == "struct") {
@@ -43,7 +43,7 @@ public:
 	}
 
 private:
-	di::required<di::service<doxygen_input::FileRepository>> fileRepository;
+	di::required<di::service<doxygen_input::XmlRepository>> xmlRepository;
 };
 
 } //namespace translator

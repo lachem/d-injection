@@ -34,6 +34,8 @@ struct mem_block{
 	char bytes[size];
 };
 
+struct subject_base {};
+
 } // namespace detail
 } // namespace di
 

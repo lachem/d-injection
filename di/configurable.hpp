@@ -7,6 +7,7 @@
 #define DI_CONFIGURABLE_HPP
 
 #include <di/detail/variadics.hpp>
+#include <di/detail/utility.hpp>
 #include <di/configuration.hpp>
 #include <exception>
 #include <sstream>
@@ -54,7 +55,7 @@ public:
 
 	/**
 	 * @brief Inserts object at first unoccupied position matching given type.
-	 * @param injection Reference to injection type.
+	 * @param object Reference to injection type.
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.
 	 * @post Injection has been saved inside the container.
@@ -80,7 +81,7 @@ public:
 
 	/**
 	 * @brief Replaces nth injection of given type.
-	 * @param injection Reference to injection type.
+	 * @param object Reference to injection type.
 	 * @param at Position at which the replacement is to be performed in terms of given type.
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.

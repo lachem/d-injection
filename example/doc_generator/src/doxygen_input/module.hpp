@@ -9,30 +9,31 @@
 #include <di/module.hpp>
 #include <di/service_list.hpp>
 
-#include "doxygen_input/file_repository.hpp"
+#include "filesystem/directory.hpp"
+#include "doxygen_input/xml_repository.hpp"
 
 namespace doxygen_input {
 
 struct Module {
-	typedef di::service_list<doxygen_input::FileRepository> provided;
+	typedef di::service_list<doxygen_input::XmlRepository> provided;
 	typedef di::service_list<> needed;
 
 	Module(di::module<Module>* aModule, const std::string& anInputDirectory) : 
 		module(aModule), inputDirectory(anInputDirectory) {}
 
 	void build() {
-		fileRepository.reset(new FileRepository());
-		module->use(fileRepository);
+		xmlRepository.reset(new XmlRepository());
+		module->use(xmlRepository);
 	}
 
 	void start() {
-		*fileRepository.get() = doxygen_input::FileReader().getAllFiles(inputDirectory);
+		*xmlRepository.get() = doxygen_input::XmlReader().getXmlFiles(filesystem::Directory(inputDirectory));
 	}
 
 private:
 	std::string inputDirectory;
 	di::module<Module>* module;
-	boost::shared_ptr<FileRepository> fileRepository;
+	boost::shared_ptr<XmlRepository> xmlRepository;
 };
 
 } // namespace doxygen_input

@@ -94,7 +94,7 @@ private:
 		explicit configure_modules(this_type& an_application) : configurator(an_application) {}
 		template<typename M>
 		void operator() (const M&) {
-			configurator.configure_intermodule_connections<M::type>(configurator.provided_by_modules);
+			configurator.configure_intermodule_connections<typename M::type>(configurator.provided_by_modules);
 		}
 		this_type& configurator;
 	};
