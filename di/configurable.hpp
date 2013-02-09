@@ -6,6 +6,7 @@
 #ifndef DI_CONFIGURABLE_HPP
 #define DI_CONFIGURABLE_HPP
 
+#include <di/detail/injection_source_container.hpp>
 #include <di/detail/variadics.hpp>
 #include <di/detail/utility.hpp>
 #include <di/configuration.hpp>

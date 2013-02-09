@@ -18,36 +18,36 @@ namespace translator {
 
 class ModelBuilder : public di::subject<doxygen_input::XmlRepository> {
 public:
-	void assemble(boost::shared_ptr<model::Model> model) {
-		for(auto& it = xmlRepository->begin(); it != xmlRepository->end(); ++it) {
-			try {
-				std::string kind = it->getChild("doxygen.compounddef").getAttribute("kind");
-				if(kind == "class" || kind == "struct") {
-					model::Class cls;
+    void assemble(boost::shared_ptr<model::Model> model) {
+        for(auto it = xmlRepository->begin(); it != xmlRepository->end(); ++it) {
+            try {
+                std::string kind = it->getChild("doxygen.compounddef").getAttribute("kind");
+                if(kind == "class" || kind == "struct") {
+                    model::Class cls;
                     cls.filename = it->getChild("doxygen.compounddef.includes").getValue();
-					cls.name = it->getChild("doxygen.compounddef.compoundname").getValue();
+                    cls.name = it->getChild("doxygen.compounddef.compoundname").getValue();
 
-					std::vector<doxygen_input::XmlNode> methodNames = 
-						it->getChildren("doxygen.compounddef.sectiondef.memberdef");
-					for(auto it = methodNames.begin(); it != methodNames.end(); ++it) {
+                    std::vector<doxygen_input::XmlNode> methodNames = 
+                        it->getChildren("doxygen.compounddef.sectiondef.memberdef");
+                    for(auto it = methodNames.begin(); it != methodNames.end(); ++it) {
                         if(it->getAttribute("kind") == "function") {
-						    model::Method method;
-						    method.name = it->getChild("name").getValue();
-						    method.signature = it->getChild("definition").getValue();
-						    cls.methods.push_back(std::move(method));
+                            model::Method method;
+                            method.name = it->getChild("name").getValue();
+                            method.signature = it->getChild("definition").getValue();
+                            cls.methods.push_back(std::move(method));
                         }
-					}
-					model->classes.push_back(cls);
-				}
-			}
-			catch(std::exception& ex) {
+                    }
+                    model->classes.push_back(cls);
+                }
+            }
+            catch(std::exception& ex) {
                 std::cerr << ex.what() << std::endl;
             }
-		}
-	}
+        }
+    }
 
 private:
-	di::required<di::service<doxygen_input::XmlRepository>> xmlRepository;
+    di::required<di::service<doxygen_input::XmlRepository>> xmlRepository;
 };
 
 } //namespace translator
