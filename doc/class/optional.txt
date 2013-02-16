@@ -1,4 +1,23 @@
  Dependency Injection - Header link:../../di/optional.hpp[<optional.hpp>]
-=========================================================================
+========================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> struct optional : public nonallocatable
+  {
+    optional();
+    optional(const optional< T > &source);
+    optional<T>& operator=(const optional< T > &source);
+    operator T *();
+    operator T const *() const ;
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

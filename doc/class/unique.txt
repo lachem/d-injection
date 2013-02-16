@@ -1,0 +1,23 @@
+ Dependency Injection - Header link:../../di/injection_types.hpp[<injection_types.hpp>]
+======================================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename> struct unique : 
+  {
+    unique(T *an_object);
+    unique(representation an_object);
+    static T* extract(representation *rep);
+    static const T* extract(const representation *rep);
+    static void init(representation *rep);
+  };
+}
+---------------------------------------------------------------------
+
+
+include::../footer.txt[]

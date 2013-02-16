@@ -1,0 +1,25 @@
+ Dependency Injection - Header link:../../di/injection_types.hpp[<injection_types.hpp>]
+======================================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> struct service : 
+  {
+    service();
+    service(T *an_object);
+    service(const representation &an_object);
+    operator representation();
+    static T* extract(representation *rep);
+    static const T* extract(const representation *rep);
+    static void init(representation *rep);
+  };
+}
+---------------------------------------------------------------------
+
+
+include::../footer.txt[]

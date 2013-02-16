@@ -1,4 +1,20 @@
  Dependency Injection - Header link:../../di/subject.hpp[<subject.hpp>]
-=======================================================================
+======================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T1, typename T2, ..., template Tn> class subject : public subject_base
+  {
+    virtual ~subject();
+    virtual void constructed();
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

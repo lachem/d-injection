@@ -14,6 +14,8 @@ namespace model {
 struct Class {
 	std::string filename;
 	std::string name;
+    std::string space;
+    std::string signature;
 	std::vector<Method> methods;
 };
 

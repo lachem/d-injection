@@ -109,13 +109,21 @@ private:
 	struct connect_provided {
 		connect_provided(Seq& a_sequence) : sequence(a_sequence) {}
 		template<typename T>
-		void operator()(T*& element) const {
-			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq,T>::type::value), NoModuleProvidesTheNeededService,);
-			element = &boost::fusion::at_key<T>(sequence);
+		void operator()(di::service<T>*& element) const {
+            //The user might want define services to be read only for some modules and read/write for others. 
+            //Therefore a service may be non const onprovided services list and const ond required.
+            typedef boost::mpl::eval_if_c< 
+                boost::mpl::contains<Seq, di::service<T> >::type::value,
+                    boost::mpl::identity< di::service<T> >, 
+                    boost::mpl::identity< di::service<boost::remove_const<T>::type> > >::type contained;
+
+			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq, contained >::type::value), NoModuleProvidesTheNeededService,);
+
+            //TODO: perhaps there is a better way to that, without using reinterpret_cast
+			element = reinterpret_cast<di::service<T>*>(&boost::fusion::at_key<contained>(sequence));
 		}
 		Seq& sequence;
 	};
-
 
 	typedef boost::mpl::vector<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> raw_module_prototypes;
 	typedef typename detail::vector_without_voids<raw_module_prototypes>::type module_prototypes;
