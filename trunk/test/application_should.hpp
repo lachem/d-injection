@@ -16,17 +16,17 @@ namespace assembly {
 
 struct Module1 {
 	typedef di::service_list<TestType1,TestType2,TestType3> provided;
-	typedef di::service_list<TestType4,TestType5> needed;
+	typedef di::service_list<const TestType4,const TestType5> needed;
 };
 	
 struct Module2 {
-	typedef di::service_list<TestType4,TestType5> provided;
+	typedef di::service_list<const TestType4,TestType5> provided;
 	typedef di::service_list<TestType1,TestType2,TestType3> needed;
 };
 
 struct Module3 {
 	typedef di::service_list<TestType6> provided;
-	typedef di::service_list<TestType2,TestType4,TestType5> needed;
+	typedef di::service_list<TestType2,const TestType4,TestType5> needed;
 };
 
 struct Module4 {

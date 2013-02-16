@@ -1,4 +1,28 @@
  Dependency Injection - Header link:../../di/configurable.hpp[<configurable.hpp>]
-=================================================================================
+================================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> class configurable : 
+  {
+    BOOST_MPL_ASSERT_MSG((boost::is_base_of< detail::subject_base, T >::value), ProvidedTypeDoesNotDeriveFromSubject,);
+    void do_usage(U &object);
+    void do_replacement(U &object, size_t at);
+    void do_removal(size_t at);
+    virtual void out_of_bounds();
+    configurable<T>& use(U &object);
+    configurable<T>& use(const SPtr< U > &object);
+    configurable<T>& replace(U &object, size_t at=0);
+    configurable<T>& replace(const SPtr< U > &object, size_t at=0);
+    configurable<T>& remove(size_t at=0);
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

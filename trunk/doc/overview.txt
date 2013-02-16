@@ -359,7 +359,7 @@ Database db;
 infrastructureModule.use(di::service<Logger>(logger)).use(di::service<Database>(db)); 
 ---------------------------------------------------------------------
 
-Modules are connected to each other. Therefore all of the Modules should firstly provide their services by calling the +di::module<Module>::use+ method before any of them could obtain any of the needed services.
+Modules are connected to each other. Therefore all Modules should firstly provide their services by calling the +di::module<Module>::use+ method before any of them could obtain any of the needed services.
       
 Modules work in terms services. Only one instance per service type is supported. That is neither one module nor two different
 modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which provider should be connected to which needer.
@@ -382,5 +382,10 @@ di::module<UI>& uiModule = application;
 ---------------------------------------------------------------------
 
 This way +controllerModule+, +infrastructureModule+ and +uiModule+ can be fed up seperately.
+
+Access Control
+--------------
+
+
 
 include::footer.txt[]

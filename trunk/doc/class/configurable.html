@@ -738,8 +738,27 @@ asciidoc.install(2);
 </div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_synopsis">Synopsis</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>namespace di
+{
+  template&lt;typename T&gt; class configurable :
+  {
+    BOOST_MPL_ASSERT_MSG((boost::is_base_of&lt; detail::subject_base, T &gt;::value), ProvidedTypeDoesNotDeriveFromSubject,);
+    void do_usage(U &amp;object);
+    void do_replacement(U &amp;object, size_t at);
+    void do_removal(size_t at);
+    virtual void out_of_bounds();
+    configurable&lt;T&gt;&amp; use(U &amp;object);
+    configurable&lt;T&gt;&amp; use(const SPtr&lt; U &gt; &amp;object);
+    configurable&lt;T&gt;&amp; replace(U &amp;object, size_t at=0);
+    configurable&lt;T&gt;&amp; replace(const SPtr&lt; U &gt; &amp;object, size_t at=0);
+    configurable&lt;T&gt;&amp; remove(size_t at=0);
+  };
+}</code></pre>
+</div></div>
 <br />
 <br />
 <hr />
@@ -747,11 +766,10 @@ asciidoc.install(2);
 <div class="paragraph"><p>Distributed under the Boost Software License, Version 1.0. (See accompanying file <a href="http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt">LICENSE_1_0.txt</a> or copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>).</p></div>
 </div>
 </div>
-</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-09 22:18:21 Eur
+Last updated 2013-02-16 20:59:18 Eur
 </div>
 </div>
 </body>

@@ -1,4 +1,24 @@
  Dependency Injection - Header link:../../di/module.hpp[<module.hpp>]
-=====================================================================
+====================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename> struct module : 
+  {
+    module<M>& use(const boost::shared_ptr< T > &element);
+    module<M>& use(const di::service< T > &element);
+    boost::shared_ptr<T> get();
+    std::auto_ptr< di::abstract_builder<C> > abstract_builder();
+    std::auto_ptr< di::abstract_builder<I> > abstract_builder();
+    std::auto_ptr< di::generic_builder<C> > generic_builder();
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

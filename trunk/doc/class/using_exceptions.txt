@@ -8,11 +8,11 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  struct using_exceptions : 
+  template<typename> struct using_exceptions : 
   {
-    static void di::using_exceptions< T >::out_of_bounds()
-    static void di::using_exceptions< T >::build_unsatisfied_requirement(T *instance)
-    static void di::using_exceptions< T >::delegate_unsatisfied_requirement(void *instance)
+    static void out_of_bounds();
+    static void build_unsatisfied_requirement(T *instance);
+    static void delegate_unsatisfied_requirement(void *instance);
   };
 }
 ---------------------------------------------------------------------

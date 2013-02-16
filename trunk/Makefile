@@ -34,7 +34,7 @@ run_release: release
 .PHONY: doc
 doc: 
 	$(DOXYGEN) example/doc_generator/input/doxygen.cfg
-	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n)
+	$(foreach doc,$(DOC),python $(ASCIIDOC) -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
 
 doc_generator:
 	g++ example/doc_generator/src/main.cpp -I./example/doc_generator/src -I$(BOOST_INC) -I./ $(BOOST_LIB)/libboost_filesystem.a -std=c++11 $(LIB) -g -o example/doc_generator/doc_generator

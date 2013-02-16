@@ -1,4 +1,20 @@
  Dependency Injection - Header link:../../di/application.hpp[<application.hpp>]
-===============================================================================
+==============================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T1, typename T2, ..., template Tn> class application : public inherit_modules< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)>
+  {
+    application();
+    void configure_intermodule_connections(Seq &sequence);
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

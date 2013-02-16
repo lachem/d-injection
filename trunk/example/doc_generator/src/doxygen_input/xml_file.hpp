@@ -13,6 +13,9 @@
 namespace doxygen_input {
 
 class XmlNode {
+private:
+    XmlNode(const XmlNode&);
+
 public:
 	template<typename PtreeType>
 	explicit XmlNode(PtreeType&& aPtree) : ptree(aPtree) {}
@@ -28,13 +31,23 @@ public:
 	}
 
 	std::vector<XmlNode> getChildren(const std::string& tagName) const {
-		size_t lastDotPos = tagName.find_last_of(".");
-		size_t childTagLen = tagName.size() - lastDotPos - 1;
-		std::string childTag = tagName.substr(lastDotPos+1,childTagLen);
-		std::string parrentTag = tagName.substr(0,tagName.size() - childTagLen - 1);
+        std::vector<XmlNode> result;
 
-		std::vector<XmlNode> result;
-		boost::property_tree::ptree childPtree = ptree.get_child(parrentTag);
+        std::string childTag;
+        boost::property_tree::ptree childPtree;
+		size_t lastDotPos = tagName.find_last_of(".");
+        
+        if(lastDotPos != std::string::npos) {
+		    size_t childTagLen = tagName.size() - lastDotPos - 1;
+		    std::string parrentTag = tagName.substr(0,tagName.size() - childTagLen - 1);
+            childTag = tagName.substr(lastDotPos+1,childTagLen);
+            childPtree = ptree.get_child(parrentTag);
+        }
+        else {
+            childTag = tagName;
+            childPtree = ptree;
+        }
+
 		for(auto it = childPtree.begin(); it != childPtree.end(); ++it) {
 			if(it->first == childTag)
 				result.emplace_back(XmlNode(it->second));

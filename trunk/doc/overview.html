@@ -1152,7 +1152,7 @@ Logger logger;
 Database db;
 infrastructureModule.use(di::service&lt;Logger&gt;(logger)).use(di::service&lt;Database&gt;(db));</code></pre>
 </div></div>
-<div class="paragraph"><p>Modules are connected to each other. Therefore all of the Modules should firstly provide their services by calling the <code>di::module&lt;Module&gt;::use</code> method before any of them could obtain any of the needed services.</p></div>
+<div class="paragraph"><p>Modules are connected to each other. Therefore all Modules should firstly provide their services by calling the <code>di::module&lt;Module&gt;::use</code> method before any of them could obtain any of the needed services.</p></div>
 <div class="paragraph"><p>Modules work in terms services. Only one instance per service type is supported. That is neither one module nor two different
 modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which provider should be connected to which needer.</p></div>
 </div>
@@ -1173,6 +1173,11 @@ di::module&lt;Infrastructure&gt;&amp; infrastructureModule = application;
 di::module&lt;UI&gt;&amp; uiModule = application;</code></pre>
 </div></div>
 <div class="paragraph"><p>This way <code>controllerModule</code>, <code>infrastructureModule</code> and <code>uiModule</code> can be fed up seperately.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_access_control">Access Control</h2>
+<div class="sectionbody">
 <br />
 <br />
 <hr />
@@ -1184,7 +1189,7 @@ di::module&lt;UI&gt;&amp; uiModule = application;</code></pre>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-09 19:44:10 Eur
+Last updated 2013-02-16 18:25:27 Eur
 </div>
 </div>
 </body>

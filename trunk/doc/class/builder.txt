@@ -1,4 +1,30 @@
  Dependency Injection - Header link:../../di/builder.hpp[<builder.hpp>]
-=======================================================================
+======================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename C, typename I> class builder : public abstract_builder< I >, private noncopyable
+  {
+    BOOST_MPL_ASSERT_MSG((boost::is_base_of< I, C >::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
+    virtual void out_of_bounds();
+    void build_inject(C *instance);
+    void delegate_inject(C *instance);
+    builder();
+    virtual I* build();
+    virtual void build(I &instance);
+    abstract_builder<I >& use(U &object);
+    abstract_builder<I >& use(const SPtr< U > &object);
+    abstract_builder<I >& replace(U &object, size_t at=0);
+    abstract_builder<I >& replace(const SPtr< U > &object, size_t at=0);
+    abstract_builder<I >& remove(size_t at=0);
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

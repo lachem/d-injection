@@ -1,27 +1,25 @@
  Reference::
 	Application:::
-		link:class/application.html[Class di::application]::::
-		link:class/module.html[Class di::module]::::
-		link:class/service_list.html[Class di::service_list]::::
+		link:class/application.html[Class application]::::
+		link:class/module.html[Class module]::::
+		link:class/service_list.html[Class service_list]::::
 	Building:::
-		link:class/abstract_builder.html[Class di::abstract_builder]::::
-		link:class/builder.html[Class di::builder]::::
-		link:class/configurable.html[Class di::configurable]::::
-		link:class/generic_builder.html[Class di::generic_builder]::::
+		link:class/abstract_builder.html[Class abstract_builder]::::
+		link:class/builder.html[Class builder]::::
+		link:class/configurable.html[Class configurable]::::
+		link:class/generic_builder.html[Class generic_builder]::::
 	Diagnostics:::
-		link:class/diagnostics.html[Class di::out_of_range]::::
-		link:class/diagnostics.html[Class di::requirement_not_satisfied]::::
-		link:class/diagnostics.html[Class di::using_assertions]::::
-		link:class/diagnostics.html[Class di::using_exceptions]::::
+		link:class/using_assertions.html[Class using_assertions]::::
+		link:class/using_exceptions.html[Class using_exceptions]::::
 	Injection types:::
-		link:class/injection_types.html[Class di::ordinary]::::
-		link:class/injection_types.html[Class di::service]::::
-		link:class/injection_types.html[Class di::shared]::::
-		link:class/injection_types.html[Class di::unique]::::
+		link:class/ordinary.html[Class ordinary]::::
+		link:class/service.html[Class service]::::
+		link:class/shared.html[Class shared]::::
+		link:class/unique.html[Class unique]::::
 	Subject:::
-		link:class/subject.html[Class di::subject]::::
+		link:class/subject.html[Class subject]::::
 	Optional:::
-		link:class/optional.html[Class di::optional]::::
+		link:class/optional.html[Class optional]::::
 	Required:::
-		link:class/required.html[Class di::required]::::
+		link:class/required.html[Class required]::::
 

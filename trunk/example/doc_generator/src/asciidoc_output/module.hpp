@@ -18,7 +18,7 @@ namespace asciidoc_output {
 
 struct Module {
     typedef di::service_list<> provided;
-    typedef di::service_list<model::Model> needed;
+    typedef di::service_list<const model::Model> needed;
 
     Module(di::module<Module>* aModule, const std::string& anOutputDirectory) : 
         module(aModule), outputDirectory(anOutputDirectory) {}

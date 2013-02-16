@@ -1,4 +1,23 @@
  Dependency Injection - Header link:../../di/required.hpp[<required.hpp>]
-=========================================================================
+========================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> struct required : public nonallocatable
+  {
+    required();
+    required(const required< T > &source);
+    required<T>& operator=(const required< T > &source);
+    operator T *();
+    operator T const *() const ;
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

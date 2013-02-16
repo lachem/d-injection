@@ -1,4 +1,26 @@
  Dependency Injection - Header link:../../di/generic_builder.hpp[<generic_builder.hpp>]
-=======================================================================================
+======================================================================================
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename S> class generic_builder : public configurable< S >
+  {
+    void build(C &instance);
+    void build_part(C &instance);
+    generic_builder<S>& use(U &object);
+    generic_builder<S>& use(const SPtr< U > &object);
+    generic_builder<S>& replace(U &object, size_t at=0);
+    generic_builder<S>& replace(const SPtr< U > &object, size_t at=0);
+    generic_builder<S>& remove(size_t at=0);
+    bool build_inject(C *instance);
+  };
+}
+---------------------------------------------------------------------
+
 
 include::../footer.txt[]

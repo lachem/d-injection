@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title> Dependency Injection - Header <a href="../../di/application.hpp">&lt;application.hpp&gt;</a></title>
+<title> Dependency Injection - Header <a href="../../di/injection_types.hpp">&lt;injection_types.hpp&gt;</a></title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -731,7 +731,7 @@ asciidoc.install(2);
 </head>
 <body class="article" style="max-width:60em">
 <div id="header">
-<h1> Dependency Injection - Header <a href="../../di/application.hpp">&lt;application.hpp&gt;</a></h1>
+<h1> Dependency Injection - Header <a href="../../di/injection_types.hpp">&lt;injection_types.hpp&gt;</a></h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -744,10 +744,12 @@ asciidoc.install(2);
 <div class="content">
 <pre><code>namespace di
 {
-  template&lt;typename T1, typename T2, ..., template Tn&gt; class application : public inherit_modules&lt; BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)&gt;
+  template&lt;typename&gt; struct ordinary :
   {
-    application();
-    void configure_intermodule_connections(Seq &amp;sequence);
+    ordinary(T *an_object);
+    static T* extract(representation *rep);
+    static const T* extract(const representation *rep);
+    static void init(representation *rep);
   };
 }</code></pre>
 </div></div>
