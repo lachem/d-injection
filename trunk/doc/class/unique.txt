@@ -2,10 +2,8 @@
 ======================================================================================
 
 
-
 Class unique
 ------------
-
 
 
 
@@ -15,10 +13,11 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct unique
+  template<typename T> struct unique
   {
     unique(T *an_object);
     unique(representation an_object);
+    T* get_object() const ;
     static T* extract(representation *rep);
     static const T* extract(const representation *rep);
     static void init(representation *rep);
@@ -38,7 +37,7 @@ unique(T *an_object)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -52,7 +51,21 @@ unique(representation an_object)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+T* get_object() const 
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -66,7 +79,7 @@ static T* extract(representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -80,7 +93,7 @@ static const T* extract(const representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -94,7 +107,7 @@ static void init(representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

@@ -2,10 +2,8 @@
 ================================================================================
 
 
-
 Class configurable
 ------------------
-
 
 
 
@@ -17,11 +15,6 @@ namespace di
 {
   template<typename T> class configurable
   {
-    BOOST_MPL_ASSERT_MSG((boost::is_base_of< detail::subject_base, T >::value), ProvidedTypeDoesNotDeriveFromSubject,);
-    void do_usage(U &object);
-    void do_replacement(U &object, size_t at);
-    void do_removal(size_t at);
-    virtual void out_of_bounds();
     configurable<T>& use(U &object);
     configurable<T>& use(const SPtr< U > &object);
     configurable<T>& replace(U &object, size_t at=0);
@@ -36,76 +29,6 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-BOOST_MPL_ASSERT_MSG((boost::is_base_of< detail::subject_base, T >::value), ProvidedTypeDoesNotDeriveFromSubject,)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-void do_usage(U &object)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-void do_replacement(U &object, size_t at)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-void do_removal(size_t at)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-virtual void out_of_bounds()
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
 configurable<T>& use(U &object)
 ---------------------------------------------------------------------
 
@@ -113,7 +36,7 @@ configurable<T>& use(U &object)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -123,11 +46,20 @@ configurable<T>& use(U &object)
 configurable<T>& use(const SPtr< U > &object)
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Inserts object at first unoccupied position matching given type. 
+
+
+
+
+
+
+
+
+*Requires:* Injection's type is known.  +
 *Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
+*Postconditions:* Injection has been saved inside the container.  +
+*Returns:* self  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -141,7 +73,7 @@ configurable<T>& replace(U &object, size_t at=0)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -151,11 +83,20 @@ configurable<T>& replace(U &object, size_t at=0)
 configurable<T>& replace(const SPtr< U > &object, size_t at=0)
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Replaces nth injection of given type. 
+
+
+
+
+
+
+
+
+*Requires:* Injection's type is known.  +
 *Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
+*Postconditions:* Injection has been saved inside the container.  +
+*Returns:* self  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -165,11 +106,19 @@ configurable<T>& replace(const SPtr< U > &object, size_t at=0)
 configurable<T>& remove(size_t at=0)
 ---------------------------------------------------------------------
 
+Removes nth injection of given type, where n == at. 
+
+
+
+
+
+
+
 *Requires:* none +
 *Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
+*Postconditions:* Injection of requested type has been removed.  +
+*Returns:* self  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

@@ -23,6 +23,7 @@ public:
 	 * @brief Creates the object of type C, performs injections and calls constructed() on subject.
 	 * @pre Injections required by the object under construction were provided to the builder.
 	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
+     * @throw Depending on diagnostics method chosen may throw requirement_not_satisfied exception
 	 * @return New instance of subject type.
 	 */
 	virtual T* build() = 0;
@@ -31,34 +32,50 @@ public:
 	 * @brief Performs injections and calls constructed() on subject.
 	 * @pre Injections required by the instance object were provided to the builder.
 	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
+     * @throw Depending on diagnostics method chosen may throw requirement_not_satisfied exception
 	 * @param instance of builder's corresponding subject.
 	 */
 	virtual void build(T& instance) = 0;
 
+    /**
+     * @see di::configurable::use
+     */
 	template<typename U>
 	abstract_builder<T>& use(U& object) {
 		(void) di::configurable<T>::use(object);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::use
+     */
 	template<template <typename> class SPtr, typename U>
 	abstract_builder<T>& use(const SPtr<U>& object) {
 		(void) di::configurable<T>::use(object);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::replace
+     */
 	template<typename U>
 	abstract_builder<T>& replace(U& object, size_t at=0) {
 		(void) di::configurable<T>::replace(object,at);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::replace
+     */
 	template<template <typename> class SPtr, typename U>
 	abstract_builder<T>& replace(const SPtr<U>& object, size_t at=0) {
 		(void) di::configurable<T>::replace(object,at);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::remove
+     */
 	template<typename U>
 	abstract_builder<T>& remove(size_t at=0) {
 		(void) di::configurable<T>::template remove<U>(at);

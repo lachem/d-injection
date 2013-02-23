@@ -2,12 +2,10 @@
 ======================================================================
 
 
-
 Class subject
 -------------
 
 Subject is a base class for all classes that are inteded do have objects injected to it. All injection types are to be listed in subject's variadic template parameter list. To support multiple instances of the same types a number of operations on the list of types are performed. In result a list of for example <T,T,Y,Z,Y> is transformed into <<T,2>,<T,2>,<Z>>. 
-
 
 Synopsis
 ~~~~~~~~
@@ -31,11 +29,13 @@ Functions
 virtual ~subject()
 ---------------------------------------------------------------------
 
+Classes with injections derive publicly from subject, therefore virtual destructor is required. 
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -45,11 +45,13 @@ virtual ~subject()
 virtual void constructed()
 ---------------------------------------------------------------------
 
+There are cases when a user wants could invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections. 
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

@@ -2,10 +2,8 @@
 ======================================================================
 
 
-
 Class builder
 -------------
-
 
 
 
@@ -17,10 +15,6 @@ namespace di
 {
   template<typename C, typename I> class builder : public abstract_builder< I >, private noncopyable
   {
-    BOOST_MPL_ASSERT_MSG((boost::is_base_of< I, C >::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
-    virtual void out_of_bounds();
-    void build_inject(C *instance);
-    void delegate_inject(C *instance);
     builder();
     virtual I* build();
     virtual void build(I &instance);
@@ -38,62 +32,6 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-BOOST_MPL_ASSERT_MSG((boost::is_base_of< I, C >::value), FirstTemplateParameterDoesNotDeriveFromSecond,)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-virtual void out_of_bounds()
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-void build_inject(C *instance)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-void delegate_inject(C *instance)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
 builder()
 ---------------------------------------------------------------------
 
@@ -101,7 +39,7 @@ builder()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -111,11 +49,19 @@ builder()
 virtual I* build()
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Creates the object of type C, performs injections and calls constructed() on subject. 
+
+
+
+
+
+
+
+*Requires:* Injections required by the object under construction were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
+*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
+*Returns:* New instance of subject type.  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -125,11 +71,19 @@ virtual I* build()
 virtual void build(I &instance)
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Performs injections and calls constructed() on subject. 
+
+
+
+
+
+
+
+*Requires:* Injections required by the instance object were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* none +
+*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -139,11 +93,14 @@ virtual void build(I &instance)
 abstract_builder<I >& use(U &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -153,11 +110,14 @@ abstract_builder<I >& use(U &object)
 abstract_builder<I >& use(const SPtr< U > &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -167,11 +127,14 @@ abstract_builder<I >& use(const SPtr< U > &object)
 abstract_builder<I >& replace(U &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -181,11 +144,14 @@ abstract_builder<I >& replace(U &object, size_t at=0)
 abstract_builder<I >& replace(const SPtr< U > &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -195,11 +161,14 @@ abstract_builder<I >& replace(const SPtr< U > &object, size_t at=0)
 abstract_builder<I >& remove(size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

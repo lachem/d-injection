@@ -30,7 +30,7 @@ struct Module {
         builder->build()->run();
     }
 
-    private:
+private:
     di::module<Module>* module;
     const std::string outputDirectory;
 };

@@ -34,7 +34,9 @@ public:
 	 * @param object Reference to injection type.
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.
+     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
 	 * @post Injection has been saved inside the container.
+     * @return self
 	 */
 	template<template <typename> class SPtr, typename U>
 	configurable<T>& use(const SPtr<U>& object) {
@@ -62,6 +64,8 @@ public:
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.
 	 * @post Injection has been saved inside the container.
+     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
+     * @return self
 	 */
 	template<template <typename> class SPtr, typename U>
 	configurable<T>& replace(const SPtr<U>& object, size_t at=0) {
@@ -80,6 +84,8 @@ public:
 	 * @brief Removes nth injection of given type, where n == at.
 	 * @param at Position at which the removal is to be performed.
 	 * @post Injection of requested type has been removed.
+     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
+     * @return self
 	 */
 	template<typename U>
 	configurable<T>& remove(size_t at=0) {

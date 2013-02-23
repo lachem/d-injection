@@ -9,6 +9,8 @@
 		link:class/configurable.html[Class configurable]::::
 		link:class/generic_builder.html[Class generic_builder]::::
 	Diagnostics:::
+		link:class/out_of_range.html[Class out_of_range]::::
+		link:class/requirement_not_satisfied.html[Class requirement_not_satisfied]::::
 		link:class/using_assertions.html[Class using_assertions]::::
 		link:class/using_exceptions.html[Class using_exceptions]::::
 	Injection types:::

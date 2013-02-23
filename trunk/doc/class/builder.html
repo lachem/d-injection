@@ -749,10 +749,6 @@ asciidoc.install(2);
 {
   template&lt;typename C, typename I&gt; class builder : public abstract_builder&lt; I &gt;, private noncopyable
   {
-    BOOST_MPL_ASSERT_MSG((boost::is_base_of&lt; I, C &gt;::value), FirstTemplateParameterDoesNotDeriveFromSecond,);
-    virtual void out_of_bounds();
-    void build_inject(C *instance);
-    void delegate_inject(C *instance);
     builder();
     virtual I* build();
     virtual void build(I &amp;instance);
@@ -769,65 +765,13 @@ asciidoc.install(2);
 <h3 id="_functions">Functions</h3>
 <div class="listingblock">
 <div class="content">
-<pre><code>BOOST_MPL_ASSERT_MSG((boost::is_base_of&lt; I, C &gt;::value), FirstTemplateParameterDoesNotDeriveFromSecond,)</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>virtual void out_of_bounds()</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>void build_inject(C *instance)</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>void delegate_inject(C *instance)</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
 <pre><code>builder()</code></pre>
 </div></div>
 <div class="paragraph"><p><strong>Requires:</strong> none<br />
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -836,11 +780,12 @@ asciidoc.install(2);
 <div class="content">
 <pre><code>virtual I* build()</code></pre>
 </div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<div class="paragraph"><p>Creates the object of type C, performs injections and calls constructed() on subject.</p></div>
+<div class="paragraph"><p><strong>Requires:</strong> Injections required by the object under construction were provided to the builder. <br />
 <strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Postconditions:</strong> All provided injections have been injected, subject&lt;T&#8230;&gt;::constucted() has been called. <br />
+<strong>Returns:</strong> New instance of subject type. <br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -849,11 +794,12 @@ asciidoc.install(2);
 <div class="content">
 <pre><code>virtual void build(I &amp;instance)</code></pre>
 </div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<div class="paragraph"><p>Performs injections and calls constructed() on subject.</p></div>
+<div class="paragraph"><p><strong>Requires:</strong> Injections required by the instance object were provided to the builder. <br />
 <strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
+<strong>Postconditions:</strong> All provided injections have been injected, subject&lt;T&#8230;&gt;::constucted() has been called. <br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -866,7 +812,7 @@ asciidoc.install(2);
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -879,7 +825,7 @@ asciidoc.install(2);
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -892,7 +838,7 @@ asciidoc.install(2);
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -905,7 +851,7 @@ asciidoc.install(2);
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -918,7 +864,7 @@ asciidoc.install(2);
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
 <strong>Returns:</strong> none<br />
-<strong>Throws:</strong> no<br />
+<strong>Throws:</strong> none<br />
 <strong>Complexity:</strong> no info<br />
 <strong>Note:</strong> none<br />
 <strong>Danger:</strong> none<br />
@@ -935,7 +881,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-23 17:27:20 Eur
+Last updated 2013-02-23 21:56:55 Eur
 </div>
 </div>
 </body>
