@@ -2,13 +2,20 @@
 ======================================================================================
 
 
+Class ordinary
+--------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct ordinary : 
+  template<typename> struct ordinary
   {
     ordinary(T *an_object);
     static T* extract(representation *rep);

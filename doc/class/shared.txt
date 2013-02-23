@@ -2,13 +2,20 @@
 ======================================================================================
 
 
+Class shared
+------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct shared : 
+  template<typename> struct shared
   {
     shared(T *an_object);
     shared(const representation &an_object);

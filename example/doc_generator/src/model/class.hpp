@@ -12,6 +12,7 @@
 namespace model {
 
 struct Class {
+    std::string description;
 	std::string filename;
 	std::string name;
     std::string space;

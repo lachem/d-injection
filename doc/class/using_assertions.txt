@@ -2,13 +2,20 @@
 ==============================================================================
 
 
+Class using_assertions
+----------------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct using_assertions : 
+  template<typename> struct using_assertions
   {
     static void out_of_bounds();
     static void build_unsatisfied_requirement(T *address);

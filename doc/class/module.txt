@@ -2,13 +2,20 @@
 ====================================================================
 
 
+Class module
+------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct module : 
+  template<typename> struct module
   {
     module<M>& use(const boost::shared_ptr< T > &element);
     module<M>& use(const di::service< T > &element);

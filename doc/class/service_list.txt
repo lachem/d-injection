@@ -2,13 +2,20 @@
 ================================================================================
 
 
+Class service_list
+------------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T1, typename T2, ..., template Tn> struct service_list : 
+  template<typename T1, typename T2, ..., template Tn> struct service_list
   {
   };
 }

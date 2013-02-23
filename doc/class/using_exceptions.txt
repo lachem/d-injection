@@ -2,13 +2,20 @@
 ==============================================================================
 
 
+Class using_exceptions
+----------------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct using_exceptions : 
+  template<typename> struct using_exceptions
   {
     static void out_of_bounds();
     static void build_unsatisfied_requirement(T *instance);

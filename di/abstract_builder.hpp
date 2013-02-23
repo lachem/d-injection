@@ -11,7 +11,7 @@
 namespace di {
 	
 /**
- * @brief abstract_builder provides convinient abstraction for building objects of abstract or concrete types.
+ * Abstract Builder provides convinient abstraction for building objects of abstract or concrete types.
  * The main advantage of using abstract_builder is the possibility to mock build methods. If the user does not 
  * need mocking or can test building using other means (checking injections directly) then using more convinient 
  * generic_builder is advised.

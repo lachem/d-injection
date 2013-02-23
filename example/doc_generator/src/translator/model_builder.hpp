@@ -19,11 +19,12 @@ namespace translator {
 class ModelBuilder : public di::subject<doxygen_input::XmlRepository,model::Model> {
 public:
     void assemble() {
-        for(auto it = xmlRepository->begin(); it != xmlRepository->end(); ++it) {
+        for(auto&& node : *xmlRepository) {
             try {
-                if(isStructOrClass(*it)) {
-                    model::Class cls = readClass(*it);
-                    cls.methods = readMethods(*it);
+                doxygen_input::XmlNode compounddefNode = node.getChild("doxygen.compounddef");
+                if(isStructOrClass(compounddefNode)) {
+                    model::Class cls = readClass(compounddefNode);
+                    cls.methods = readMethods(compounddefNode);
                     model->classes.push_back(cls);
                 }
             }
@@ -34,21 +35,25 @@ public:
     }
 
 private:
-    bool isStructOrClass (doxygen_input::XmlFile& xmlFile) {
-        std::string kind = xmlFile.getChild("doxygen.compounddef").getAttribute("kind");
+    bool isStructOrClass (doxygen_input::XmlNode& xmlNode) {
+        std::string kind = xmlNode.getAttribute("kind");
         return kind == "class" || kind == "struct";
     }
 
-    model::Class readClass(doxygen_input::XmlFile& xmlFile) {
+    model::Class readClass(doxygen_input::XmlNode& xmlNode) {
         model::Class cls;
-        cls.filename = xmlFile.getChild("doxygen.compounddef.includes").getValue();
-        std::string qualifiedName = xmlFile.getChild("doxygen.compounddef.compoundname").getValue();
+        cls.description = xmlNode.getChild("detaileddescription.para").getValue();
+        cls.filename = xmlNode.getChild("includes").getValue();
+        std::string qualifiedName = xmlNode.getChild("compoundname").getValue();
         cls.space = readNamespace(qualifiedName);
         cls.name  = readUnqualifiedName(qualifiedName);
-        cls.signature = readTemplates(xmlFile);
-        cls.signature += (xmlFile.getChild("doxygen.compounddef").getAttribute("kind")=="class") ? "class" : "struct";
+        cls.signature = readTemplates(xmlNode);
+        cls.signature += (xmlNode.getAttribute("kind")=="class") ? "class" : "struct";
         cls.signature += " " + cls.name;
-        cls.signature += " : " + readInheritance(xmlFile);
+        std::string inheritance = readInheritance(xmlNode);
+        if(!inheritance.empty()) {
+            cls.signature += " : " + inheritance;
+        }
         return std::move(cls);
     }
 
@@ -68,9 +73,9 @@ private:
         return std::move(qualifiedName);
     }
 
-    std::string readTemplates(doxygen_input::XmlFile& xmlFile) {
+    std::string readTemplates(doxygen_input::XmlNode& xmlNode) {
         std::string templates;
-        for(auto&& node : xmlFile.getChildren("doxygen.compounddef.templateparamlist.param")) {
+        for(auto&& node : xmlNode.getChildren("templateparamlist.param")) {
             try {
                 templates += node.getChild("type").getValue();
                 templates += " " + node.getChild("declname").getValue() + ", ";
@@ -91,12 +96,12 @@ private:
         return std::move(templates);
     }
 
-    std::string readInheritance(doxygen_input::XmlFile& xmlFile) try {
+    std::string readInheritance(doxygen_input::XmlNode& xmlNode) try {
         std::string inheritance;
         std::string base;
-        for(auto&& node : xmlFile.getChildren("doxygen.compounddef.basecompoundref")) {
+        for(auto&& node : xmlNode.getChildren("basecompoundref")) {
             base = std::move(node.getValue());
-            if(base.find("detail") == std::string::npos) {
+            if(base.find("inherit_modules") == std::string::npos) {
                 inheritance += node.getAttribute("prot") + " " + base + ", ";
             }
         }
@@ -110,10 +115,10 @@ private:
         return "";
     }
 
-    std::vector<model::Method> readMethods(doxygen_input::XmlFile& xmlFile) {
+    std::vector<model::Method> readMethods(doxygen_input::XmlNode& xmlNode) {
         std::vector<model::Method> methods;
 
-        for(auto&& parent : xmlFile.getChildren("doxygen.compounddef.sectiondef")) {
+        for(auto&& parent : xmlNode.getChildren("sectiondef")) {
             for(auto&& node : parent.getChildren("memberdef")) {
                 if(node.getAttribute("kind") == "function") {
                     model::Method method;

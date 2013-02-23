@@ -92,14 +92,16 @@ struct service {
 	enum{id=detail::injection_id::service};
 
 	typedef T type;
+    typedef typename boost::remove_const<T>::type non_const_type;
 	typedef boost::shared_ptr<T> representation;
+    typedef boost::shared_ptr<non_const_type> storage;
 
-	service() : object(NULL_PTR(T)) {}
+	service() : object(NULL_PTR(non_const_type)) {}
 	explicit service(T* an_object) : object(an_object) {}
 	explicit service(const representation& an_object) : object(an_object) {}
 
 	operator representation() {
-		return object;
+		return representation(object);
 	}
 
 	static T* extract(representation* rep) {
@@ -112,7 +114,7 @@ struct service {
 		rep->reset(NULL_PTR(T));
 	}
 
-	representation object;
+	storage object;
 };
 
 } // namespace di

@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title> Dependency Injection - Header <a href="../../di/optional.hpp">&lt;optional.hpp&gt;</a></title>
+<title>Dependency Injection - Header <a href="../../di/builder.hpp">&lt;builder.hpp&gt;</a></title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -731,7 +731,7 @@ asciidoc.install(2);
 </head>
 <body class="article" style="max-width:60em">
 <div id="header">
-<h1> Dependency Injection - Header <a href="../../di/optional.hpp">&lt;optional.hpp&gt;</a></h1>
+<h1>Dependency Injection - Header <a href="../../di/builder.hpp">&lt;builder.hpp&gt;</a></h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -739,24 +739,115 @@ asciidoc.install(2);
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_class_optional">Class optional</h2>
+<h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>{{Introductory text}}</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_class_builder">Class builder</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>{{class overview text}}</p></div>
 <div class="sect2">
 <h3 id="_synopsis">Synopsis</h3>
 <div class="listingblock">
 <div class="content">
 <pre><code>namespace di
 {
-  template&lt;typename T&gt; struct optional : public detail::injection&lt; T, ordinary&lt; T &gt; &gt;, public nonallocatable
-  {
-    optional();
-    optional(const optional&lt; T &gt; &amp;source);
-    optional&lt;T&gt;&amp; operator=(const optional&lt; T &gt; &amp;source);
-    operator T *();
-    operator T const *() const ;
-  };
-}</code></pre>
+   template&lt;typename T&gt;
+   class builder
+   {
+       builder();
+
+       virtual T* build() const = 0;
+       virtual void build(T&amp;) const = 0;
+
+       template&lt;typename U&gt; builder&lt;T&gt;&amp; use(U&amp; object);
+       template&lt;typename U&gt; builder&lt;T&gt;&amp; replace(U&amp; object, int at=0);
+   };
+};</code></pre>
 </div></div>
+</div>
+<div class="sect2">
+<h3 id="_constructors_and_destructor">Constructors and Destructor</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>builder()</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> internal container pointer values are set to null<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> O(n) where n is the arrity of <code>subject</code> (see subject.hpp)<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> TODO<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_modifier_functions">Modifier Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>template&lt;typename U&gt; builder&lt;T&gt;&amp; use(U&amp; object)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> U is one of the types specified by <code>subject</code> A place for another U type object remains in builder.<br />
+<strong>Effects:</strong> unless succeeded out_of_bounds is called from derriving class (e.g. see builder_imp)<br />
+<strong>Postconditions:</strong> builder contains use reference to <code>object</code><br />
+<strong>Returns:</strong> self<br />
+<strong>Throws:</strong> depends upon diagnostics mode<br />
+<strong>Complexity:</strong> O(n) where n is the arrity of <code>subject</code> (see subject.hpp)<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> TODO<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>template&lt;typename U&gt; builder&lt;T&gt;&amp; replace(U&amp; object, int at=0)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> <code>subject</code> specified at least <code>at+1</code> injections of type U.<br />
+<strong>Effects:</strong> unless succeeded out_of_bounds is called from derriving class (e.g. see builder_imp)<br />
+<strong>Postconditions:</strong> builder contains use reference to <code>object</code><br />
+<strong>Returns:</strong> self<br />
+<strong>Throws:</strong> depends upon diagnostics mode<br />
+<strong>Complexity:</strong> O(n) where n is the arrity of <code>subject</code> (see subject.hpp)<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> TODO<br /></p></div>
+</div>
+<div class="sect2">
+<h3 id="_functions">Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>virtual T* build() const = 0</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> all objects required by <code>subject</code> (see subject.hpp) are already provided to the builder<br />
+<strong>Effects:</strong> after construction is finished <code>subject::constructed</code> is called; unless succeeded diagnostic functions may be executed<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> new instance of <code>T</code><br />
+<strong>Throws:</strong> depends upon diagnostics mode<br />
+<strong>Complexity:</strong> implementation specific<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> TODO<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>virtual void delegate(T&amp;) const = 0</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> all objects required by <code>subject</code> (see subject.hpp) are already provided to the builder<br />
+<strong>Effects:</strong> after construction is finished <code>subject::constructed</code> is called; unless succeeded diagnostic functions may be executed<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> new instance of <code>T</code><br />
+<strong>Throws:</strong> depends upon diagnostics mode<br />
+<strong>Complexity:</strong> implementation specific<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> TODO<br /></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_s">Example(s)</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>{{Example(s)}}</p></div>
 <br />
 <br />
 <hr />
@@ -765,11 +856,10 @@ asciidoc.install(2);
 </div>
 </div>
 </div>
-</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-18 20:35:14 Eur
+Last updated 2013-02-12 19:21:32 Eur
 </div>
 </div>
 </body>

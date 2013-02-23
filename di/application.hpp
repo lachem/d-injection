@@ -67,7 +67,7 @@ namespace join_all {
 } // namespace detail
 
 /**
- * @brief Modules that depend on each other need a way to exchange services. Application class has been 
+ * Modules that depend on each other need a way to exchange services. Application class has been 
  * designed in such a way, which supports easy and convinient module handling. The class itself requires 
  * a list of module definitions each of which containing two lists of services first defines the needed 
  * services wheras the second provided services. Application class derives from list of module<M>, where 
