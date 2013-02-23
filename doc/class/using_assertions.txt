@@ -2,10 +2,8 @@
 ==============================================================================
 
 
-
 Class using_assertions
 ----------------------
-
 
 
 
@@ -15,7 +13,7 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct using_assertions
+  template<typename T> struct using_assertions
   {
     static void out_of_bounds();
     static void build_unsatisfied_requirement(T *address);
@@ -36,7 +34,7 @@ static void out_of_bounds()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -50,7 +48,7 @@ static void build_unsatisfied_requirement(T *address)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -64,7 +62,7 @@ static void delegate_unsatisfied_requirement(void *address)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

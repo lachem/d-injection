@@ -28,6 +28,7 @@ public:
 	 * @post All injections which where provided to generic_builder are injectied into instance
 	 * @post constructed has been called on instance
 	 * @param instance Instance of type C that needs injections specified by template S
+     * @throw Depending on diagnostics method chosen may throw requirement_not_satisfied exception
 	 */
 	template<typename C>
 	void build(C& instance) {
@@ -51,30 +52,45 @@ public:
 		(void) build_inject(&instance);
 	}
 
+    /**
+     * @see di::configurable::use
+     */
 	template<typename U>
 	generic_builder<S>& use(U& object) {
 		(void) di::configurable<S>::use(object);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::use
+     */
 	template<template <typename> class SPtr, typename U>
 	generic_builder<S>& use(const SPtr<U>& object) {
 		(void) di::configurable<S>::use(object);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::replace
+     */
 	template<typename U>
 	generic_builder<S>& replace(U& object, size_t at=0) {
 		(void) di::configurable<S>::replace(object,at);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::replace
+     */
 	template<template <typename> class SPtr, typename U>
 	generic_builder<S>& replace(const SPtr<U>& object, size_t at=0) {
 		(void) di::configurable<S>::replace(object,at);
 		return *this;
 	}
 
+    /**
+     * @see di::configurable::remove
+     */
 	template<typename U>
 	generic_builder<S>& remove(size_t at=0) {
 		(void) di::configurable<S>::template remove<U>(at);

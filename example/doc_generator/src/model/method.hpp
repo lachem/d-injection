@@ -13,7 +13,18 @@ namespace model {
 struct Method {
 	enum kind {constructor, destructor, function};
 
-    std::string description;
+    struct Description {
+        Description() : precondition("none"), postcondition("none"), throws("none"), returns("none") {}
+
+        std::string brief;
+        std::string detailed;
+        std::string precondition;
+        std::string postcondition;
+        std::string throws;
+        std::string returns;
+    };
+
+    Description description;
 	std::string name;
 	std::string signature;
 };

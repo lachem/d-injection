@@ -2,10 +2,8 @@
 ======================================================================================
 
 
-
 Class shared
 ------------
-
 
 
 
@@ -15,10 +13,12 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct shared
+  template<typename T> struct shared
   {
     shared(T *an_object);
     shared(const representation &an_object);
+    operator representation();
+    representation get_object() const ;
     static T* extract(representation *rep);
     static const T* extract(const representation *rep);
     static void init(representation *rep);
@@ -38,7 +38,7 @@ shared(T *an_object)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -52,7 +52,35 @@ shared(const representation &an_object)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+operator representation()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+representation get_object() const 
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -66,7 +94,7 @@ static T* extract(representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -80,7 +108,7 @@ static const T* extract(const representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -94,7 +122,7 @@ static void init(representation *rep)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

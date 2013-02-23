@@ -2,12 +2,10 @@
 ======================================================================================
 
 
-
 Class generic_builder
 ---------------------
 
 Generic Builder is a convient facility to build objects with injections. It does not require the subject to be of any specific type, but to define which injections are to be handled by . Therefore using < subject<T1,T2> > is perfectly fine. The drawback of  is that it does not support abstraction i.e. build and build_part methods cannot be mocked nor can build or build_part be used to perform injections through interfaces. 
-
 
 Synopsis
 ~~~~~~~~
@@ -24,7 +22,6 @@ namespace di
     generic_builder<S>& replace(U &object, size_t at=0);
     generic_builder<S>& replace(const SPtr< U > &object, size_t at=0);
     generic_builder<S>& remove(size_t at=0);
-    bool build_inject(C *instance);
   };
 }
 ---------------------------------------------------------------------
@@ -37,11 +34,19 @@ Functions
 void build(C &instance)
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Allows building of any object that needs injections specified by  template type parameter. 
+
+
+
+
+
+
+
+*Requires:* C is a type that contains injections specified by template S  +
 *Effects:* none +
-*Postconditions:* none +
+*Postconditions:* All injections which where provided to  are injectied into instance  +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -51,11 +56,18 @@ void build(C &instance)
 void build_part(C &instance)
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Allows building part of an object. What follows is that neither requirements are checked nor constructed is called. 
+
+
+
+
+
+
+*Requires:* C is a type that contains injections specified by template S  +
 *Effects:* none +
-*Postconditions:* none +
+*Postconditions:* All injections which where provided to  are injectied into instance  +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -65,11 +77,14 @@ void build_part(C &instance)
 generic_builder<S>& use(U &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -79,11 +94,14 @@ generic_builder<S>& use(U &object)
 generic_builder<S>& use(const SPtr< U > &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -93,11 +111,14 @@ generic_builder<S>& use(const SPtr< U > &object)
 generic_builder<S>& replace(U &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -107,11 +128,14 @@ generic_builder<S>& replace(U &object, size_t at=0)
 generic_builder<S>& replace(const SPtr< U > &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -121,25 +145,14 @@ generic_builder<S>& replace(const SPtr< U > &object, size_t at=0)
 generic_builder<S>& remove(size_t at=0)
 ---------------------------------------------------------------------
 
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
 
----------------------------------------------------------------------
-bool build_inject(C *instance)
----------------------------------------------------------------------
+
 
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

@@ -2,10 +2,8 @@
 ====================================================================
 
 
-
 Class module
 ------------
-
 
 
 
@@ -15,7 +13,7 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct module
+  template<typename M> struct module
   {
     module<M>& use(const boost::shared_ptr< T > &element);
     module<M>& use(const di::service< T > &element);
@@ -39,7 +37,7 @@ module<M>& use(const boost::shared_ptr< T > &element)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -53,7 +51,7 @@ module<M>& use(const di::service< T > &element)
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -67,7 +65,7 @@ boost::shared_ptr<T> get()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -81,7 +79,7 @@ std::auto_ptr< di::abstract_builder<C> > abstract_builder()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -95,7 +93,7 @@ std::auto_ptr< di::abstract_builder<I> > abstract_builder()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -109,7 +107,7 @@ std::auto_ptr< di::generic_builder<C> > generic_builder()
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

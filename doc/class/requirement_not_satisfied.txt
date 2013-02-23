@@ -2,8 +2,8 @@
 ==============================================================================
 
 
-Class using_exceptions
-----------------------
+Class requirement_not_satisfied
+-------------------------------
 
 
 
@@ -13,11 +13,11 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct using_exceptions
+  struct requirement_not_satisfied : public exception
   {
-    static void out_of_bounds();
-    static void build_unsatisfied_requirement(T *instance);
-    static void delegate_unsatisfied_requirement(void *instance);
+    requirement_not_satisfied(void *subject_address);
+    ~requirement_not_satisfied();
+    virtual const char* what() const ;
   };
 }
 ---------------------------------------------------------------------
@@ -27,7 +27,7 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-static void out_of_bounds()
+requirement_not_satisfied(void *subject_address)
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -41,7 +41,7 @@ static void out_of_bounds()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-static void build_unsatisfied_requirement(T *instance)
+~requirement_not_satisfied()
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -55,7 +55,7 @@ static void build_unsatisfied_requirement(T *instance)
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-static void delegate_unsatisfied_requirement(void *instance)
+virtual const char* what() const 
 ---------------------------------------------------------------------
 
 *Requires:* none +

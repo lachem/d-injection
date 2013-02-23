@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title>Dependency Injection</title>
+<title> Dependency Injection - Header <a href="../../di/diagnostics.hpp">&lt;diagnostics.hpp&gt;</a></title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -731,161 +731,72 @@ asciidoc.install(2);
 </head>
 <body class="article" style="max-width:60em">
 <div id="header">
-<h1>Dependency Injection</h1>
+<h1> Dependency Injection - Header <a href="../../di/diagnostics.hpp">&lt;diagnostics.hpp&gt;</a></h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_class_requirement_not_satisfied">Class requirement_not_satisfied</h2>
 <div class="sectionbody">
-<div class="dlist"><div class="title">Contents</div><dl>
-<dt class="hdlist1">
-<a href="overview.html">Overview</a>
-</dt>
-<dt class="hdlist1">
-Reference
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-Application
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/application.html">Class application</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/module.html">Class module</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/service_list.html">Class service_list</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Building
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/abstract_builder.html">Class abstract_builder</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/builder.html">Class builder</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/configurable.html">Class configurable</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/generic_builder.html">Class generic_builder</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Diagnostics
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/out_of_range.html">Class out_of_range</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/requirement_not_satisfied.html">Class requirement_not_satisfied</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/using_assertions.html">Class using_assertions</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/using_exceptions.html">Class using_exceptions</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Injection types
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/ordinary.html">Class ordinary</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/service.html">Class service</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/shared.html">Class shared</a>
-</dt>
-<dt class="hdlist1">
-<a href="class/unique.html">Class unique</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Subject
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/subject.html">Class subject</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Optional
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/optional.html">Class optional</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-Required
-</dt>
-<dd>
-<div class="dlist"><dl>
-<dt class="hdlist1">
-<a href="class/required.html">Class required</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
-</dd>
-</dl></div>
-</dd>
-<dt class="hdlist1">
-<a href="configuration.html">Configuration Information</a>
-</dt>
-<dt class="hdlist1">
-<a href="rationale.html">Rationale</a>
-</dt>
-<dt class="hdlist1">
-<a href="faq.html">Frequently Asked Questions (FAQs)</a>
-</dt>
-<dt class="hdlist1">
-<a href="bibliography.html">Bibliography</a>
-</dt>
-<dt class="hdlist1">
-<a href="acknowledgments.html">Acknowledgments</a>
-</dt>
-<dd>
-</dd>
-</dl></div>
+<div class="sect2">
+<h3 id="_synopsis">Synopsis</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>namespace di
+{
+  struct requirement_not_satisfied : public exception
+  {
+    requirement_not_satisfied(void *subject_address);
+    ~requirement_not_satisfied();
+    virtual const char* what() const ;
+  };
+}</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_functions">Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>requirement_not_satisfied(void *subject_address)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>~requirement_not_satisfied()</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>virtual const char* what() const</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
 <br />
 <br />
 <hr />
@@ -894,10 +805,11 @@ Required
 </div>
 </div>
 </div>
+</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-01 19:26:22 Eur
+Last updated 2013-02-23 21:56:55 Eur
 </div>
 </div>
 </body>

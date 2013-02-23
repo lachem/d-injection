@@ -12,7 +12,6 @@
 #include <di/subject.hpp>
 
 #include "asciidoc_output/grouper.hpp"
-#include "asciidoc_output/header.hpp"
 #include "asciidoc_output/synopsis.hpp"
 #include "asciidoc_output/reference.hpp"
 #include "asciidoc_output/introduction.hpp"
@@ -20,6 +19,26 @@
 #include "model/model.hpp"
 
 namespace asciidoc_output {
+
+class Header : public DocumentElement {
+public:
+    Header(const model::Class* aClass) : cls(aClass) {}
+
+private:
+    void print(std::ostream& stream) const {
+        std::string heading = "Dependency Injection - Header link:../../di/" + cls->filename + "[<"+cls->filename+">]";
+        stream << heading << std::endl;
+        stream << std::string(heading.length(),'=') << std::endl;
+    }
+
+    const model::Class* cls;
+};
+
+class Footer : public DocumentElement {
+    void print(std::ostream& stream) const {
+        stream << "include::../footer.txt[]";
+    }
+};
 
 class ModelPrinter : public di::subject<const model::Model,filesystem::Directory,asciidoc_output::Grouper> {
 public:
@@ -48,23 +67,19 @@ private:
 
             std::stringstream sstream;
 
-            sstream << Header(&cls) << std::endl;
+            sstream << Header(&cls);
             sstream << std::endl << std::endl;
-            sstream << Introduction(&cls) << std::endl;
+            sstream << Introduction(&cls);
             sstream << std::endl << std::endl;
             sstream << Synopsis(&cls);
             sstream << std::endl << std::endl;
             sstream << Functions(&cls);
             sstream << std::endl << std::endl;
-            addFooter(sstream);
+            sstream << Footer();
                 
             file.content = sstream.str();
             classDirectory.addFile(file);
         }
-    }
-
-    void addFooter(std::ostream& stream) {
-        stream << "include::../footer.txt[]";
     }
 
 	di::required<di::service<const model::Model>> model;

@@ -2,12 +2,10 @@
 ========================================================================================
 
 
-
 Class abstract_builder
 ----------------------
 
 Abstract Builder provides convinient abstraction for building objects of abstract or concrete types. The main advantage of using  is the possibility to mock build methods. If the user does not need mocking or can test building using other means (checking injections directly) then using more convinient  is advised. 
-
 
 Synopsis
 ~~~~~~~~
@@ -36,11 +34,19 @@ Functions
 virtual T* build()=0
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Creates the object of type C, performs injections and calls constructed() on subject. 
+
+
+
+
+
+
+
+*Requires:* Injections required by the object under construction were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* no +
+*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
+*Returns:* New instance of subject type.  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -50,11 +56,19 @@ virtual T* build()=0
 virtual void build(T &instance)=0
 ---------------------------------------------------------------------
 
-*Requires:* none +
+Performs injections and calls constructed() on subject. 
+
+
+
+
+
+
+
+*Requires:* Injections required by the instance object were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* none +
+*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -64,11 +78,14 @@ virtual void build(T &instance)=0
 abstract_builder<T>& use(U &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -78,11 +95,14 @@ abstract_builder<T>& use(U &object)
 abstract_builder<T>& use(const SPtr< U > &object)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -92,11 +112,14 @@ abstract_builder<T>& use(const SPtr< U > &object)
 abstract_builder<T>& replace(U &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -106,11 +129,14 @@ abstract_builder<T>& replace(U &object, size_t at=0)
 abstract_builder<T>& replace(const SPtr< U > &object, size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -120,11 +146,14 @@ abstract_builder<T>& replace(const SPtr< U > &object, size_t at=0)
 abstract_builder<T>& remove(size_t at=0)
 ---------------------------------------------------------------------
 
+
+
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
 *Returns:* none +
-*Throws:* no +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

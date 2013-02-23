@@ -2,8 +2,8 @@
 ==============================================================================
 
 
-Class using_exceptions
-----------------------
+Class out_of_range
+------------------
 
 
 
@@ -13,11 +13,10 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct using_exceptions
+  struct out_of_range : public exception
   {
-    static void out_of_bounds();
-    static void build_unsatisfied_requirement(T *instance);
-    static void delegate_unsatisfied_requirement(void *instance);
+    ~out_of_range();
+    virtual const char* what() const ;
   };
 }
 ---------------------------------------------------------------------
@@ -27,7 +26,7 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-static void out_of_bounds()
+~out_of_range()
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -41,21 +40,7 @@ static void out_of_bounds()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-static void build_unsatisfied_requirement(T *instance)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* none +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-static void delegate_unsatisfied_requirement(void *instance)
+virtual const char* what() const 
 ---------------------------------------------------------------------
 
 *Requires:* none +

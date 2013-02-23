@@ -9,11 +9,14 @@
 #include <utility>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/utility.hpp>
 
 namespace doxygen_input {
 
 class XmlNode {
+private:
     XmlNode(const XmlNode& other);
+
 public:
 	template<typename PtreeType>
 	explicit XmlNode(PtreeType&& aPtree) : ptree(aPtree) {}
