@@ -11,8 +11,6 @@
 #include <di/detail/utility.hpp>
 #include <di/diagnostics.hpp>
 
-// Visual macro expansion CL /EP /C YourCodeFile.cpp 
-
 namespace di {
 namespace detail {
 

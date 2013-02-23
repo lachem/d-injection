@@ -67,7 +67,7 @@ public:
 		return *(sixModuleApplication ? sixModuleApplication : sixModuleApplication = new SixModuleApplicationType());
 	}
 
-private:
+protected:
 	TwoModuleApplicationType* twoModuleApplication;
 	SixModuleApplicationType* sixModuleApplication;
 };
@@ -105,6 +105,7 @@ TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithtwoModuleA
 	mod1.use(di::service<TestType1>(t1)).use(di::service<TestType2>(t2));
 
 	di::module<Module2>& mod2 = giventwoModuleApplication();
+    mod2.use(di::service<const TestType4>(new const TestType4()));
 	ServiceClassReq* builtClass = mod2.abstract_builder<ServiceClassReq>()->build();
 
 	EXPECT_EQ(t1,builtClass->var.get());
