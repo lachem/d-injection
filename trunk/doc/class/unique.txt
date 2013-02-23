@@ -2,13 +2,20 @@
 ======================================================================================
 
 
+Class unique
+------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename> struct unique : 
+  template<typename> struct unique
   {
     unique(T *an_object);
     unique(representation an_object);

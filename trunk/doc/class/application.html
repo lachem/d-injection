@@ -738,13 +738,17 @@ asciidoc.install(2);
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_class_application">Class application</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Modules that depend on each other need a way to exchange services. Application class has been designed in such a way, which supports easy and convinient module handling. The class itself requires a list of module definitions each of which containing two lists of services first defines the needed services wheras the second provided services. Application class derives from list of module&lt;M&gt;, where M is perviously mentioned module definition. At instantiation the application object connects each module&#8217;s provided and required service lists with its own container (where services are held). Each service in the context of a singular application object is required to be represented by one and only one instance. The number of application objects is not bound, though modules that belong to different application objects cannot exchange service.</p></div>
 <div class="sect2">
 <h3 id="_synopsis">Synopsis</h3>
 <div class="listingblock">
 <div class="content">
 <pre><code>namespace di
 {
-  template&lt;typename T1, typename T2, ..., template Tn&gt; class application : public inherit_modules&lt; BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)&gt;
+  template&lt;typename T1, typename T2, ..., template Tn&gt; class application
   {
     application();
     void configure_intermodule_connections(Seq &amp;sequence);
@@ -758,10 +762,12 @@ asciidoc.install(2);
 <div class="paragraph"><p>Distributed under the Boost Software License, Version 1.0. (See accompanying file <a href="http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt">LICENSE_1_0.txt</a> or copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>).</p></div>
 </div>
 </div>
+</div>
+</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-16 20:59:18 Eur
+Last updated 2013-02-18 21:08:34 Eur
 </div>
 </div>
 </body>

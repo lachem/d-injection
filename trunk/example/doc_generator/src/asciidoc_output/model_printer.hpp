@@ -14,6 +14,7 @@
 #include "asciidoc_output/grouper.hpp"
 #include "asciidoc_output/synopsis.hpp"
 #include "asciidoc_output/reference.hpp"
+#include "asciidoc_output/introduction.hpp"
 #include "model/model.hpp"
 
 namespace asciidoc_output {
@@ -46,6 +47,8 @@ private:
             std::stringstream sstream;
 
             addHeader(sstream,cls);
+            sstream << std::endl << std::endl;
+            sstream << Introduction(&cls) << std::endl;
             sstream << std::endl << std::endl;
             sstream << Synopsis(&cls);
             sstream << std::endl << std::endl;

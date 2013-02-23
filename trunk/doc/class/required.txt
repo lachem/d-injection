@@ -2,13 +2,20 @@
 ========================================================================
 
 
+Class required
+--------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct required : public nonallocatable
+  template<typename T> struct required : public detail::injection< T, ordinary< T > >, public nonallocatable
   {
     required();
     required(const required< T > &source);

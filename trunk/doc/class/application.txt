@@ -2,13 +2,19 @@
 ==============================================================================
 
 
+Class application
+-----------------
+
+Modules that depend on each other need a way to exchange services. Application class has been designed in such a way, which supports easy and convinient module handling. The class itself requires a list of module definitions each of which containing two lists of services first defines the needed services wheras the second provided services. Application class derives from list of module<M>, where M is perviously mentioned module definition. At instantiation the application object connects each module's provided and required service lists with its own container (where services are held). Each service in the context of a singular application object is required to be represented by one and only one instance. The number of application objects is not bound, though modules that belong to different application objects cannot exchange service. 
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T1, typename T2, ..., template Tn> class application : public inherit_modules< BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)>
+  template<typename T1, typename T2, ..., template Tn> class application
   {
     application();
     void configure_intermodule_connections(Seq &sequence);

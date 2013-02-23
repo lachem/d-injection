@@ -12,7 +12,7 @@
 namespace di {
 
 /**
- * @brief generic_builder is a convient facility to build objects with injections. It does not require the subject to be
+ * Generic Builder is a convient facility to build objects with injections. It does not require the subject to be
  * of any specific type, but to define which injections are to be handled by generic_builder. Therefore using 
  * generic_builder< subject<T1,T2> > is perfectly fine. The drawback of generic_builder is that it does not support
  * abstraction i.e. build and build_part methods cannot be mocked nor can build or build_part be used to perform injections

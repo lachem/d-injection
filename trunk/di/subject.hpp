@@ -39,10 +39,10 @@ struct set_of_unique_types {
 } // namespace detail
 
 /**
- * @brief Subject class is a base class for all classes that are inteded do have objects injected to it.
- *        All injection types are to be listed in subject's variadic template parameter list. To support
- *        multiple instances of the same types a number of operations on the list of types are performed.
- *        In result a list of for example <T,T,Y,Z,Y> is transformed into <<T,2>,<T,2>,<Z>>.
+ * Subject is a base class for all classes that are inteded do have objects injected to it.
+ * All injection types are to be listed in subject's variadic template parameter list. To support
+ * multiple instances of the same types a number of operations on the list of types are performed.
+ * In result a list of for example <T,T,Y,Z,Y> is transformed into <<T,2>,<T,2>,<Z>>.
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename T, =detail::void_ BOOST_PP_INTERCEPT)> \
 class subject : public detail::subject_base {	

@@ -2,13 +2,20 @@
 ======================================================================================
 
 
+Class service
+-------------
+
+
+    
+
+
 Synopsis
 ~~~~~~~~
 
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct service : 
+  template<typename T> struct service
   {
     service();
     service(T *an_object);
