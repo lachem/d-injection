@@ -7,7 +7,7 @@
 #define CLASS_HPP
 
 #include <string>
-#include <model/method.hpp>
+#include "model/method.hpp"
 
 namespace model {
 

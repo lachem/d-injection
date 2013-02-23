@@ -6,6 +6,8 @@
 #ifndef DOCUMENT_ELEMENT_HPP
 #define DOCUMENT_ELEMENT_HPP
 
+#define CODE_DELIMETER "---------------------------------------------------------------------"
+
 #include <ostream>
 
 namespace asciidoc_output {

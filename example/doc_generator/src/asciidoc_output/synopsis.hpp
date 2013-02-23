@@ -17,12 +17,10 @@ public:
 
 private:
     void print(std::ostream& stream) const {
-        static std::string codeDelimeter = "---------------------------------------------------------------------\n";
-
         std::string indentation;
         std::string synopsis =  "Synopsis";
         stream << synopsis + "\n" + std::string(synopsis.length(),'~') + "\n\n";
-        stream << codeDelimeter;
+        stream << CODE_DELIMETER  << "\n";
         if(!cls->space.empty()) {
             stream << indentation + "namespace " + cls->space + "\n";
             stream << indentation + "{\n";
@@ -42,7 +40,7 @@ private:
             decrease(indentation);
             stream << indentation + "}\n";
         }
-        stream << codeDelimeter;
+        stream << CODE_DELIMETER << "\n";
     }
 
     void increase(std::string& indentation) const {

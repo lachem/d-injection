@@ -13,6 +13,7 @@ namespace model {
 struct Method {
 	enum kind {constructor, destructor, function};
 
+    std::string description;
 	std::string name;
 	std::string signature;
 };

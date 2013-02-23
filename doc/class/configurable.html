@@ -762,10 +762,143 @@ asciidoc.install(2);
   };
 }</code></pre>
 </div></div>
+</div>
+<div class="sect2">
+<h3 id="_functions">Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>BOOST_MPL_ASSERT_MSG((boost::is_base_of&lt; detail::subject_base, T &gt;::value), ProvidedTypeDoesNotDeriveFromSubject,)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>void do_usage(U &amp;object)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>void do_replacement(U &amp;object, size_t at)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>void do_removal(size_t at)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>virtual void out_of_bounds()</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>configurable&lt;T&gt;&amp; use(U &amp;object)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>configurable&lt;T&gt;&amp; use(const SPtr&lt; U &gt; &amp;object)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>configurable&lt;T&gt;&amp; replace(U &amp;object, size_t at=0)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>configurable&lt;T&gt;&amp; replace(const SPtr&lt; U &gt; &amp;object, size_t at=0)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>configurable&lt;T&gt;&amp; remove(size_t at=0)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> no<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
 <br />
 <br />
 <hr />
-<div class="paragraph"><p>Copyright &#169; 2012 <a href="mailto:salvage@o2.pl">Adam Lach</a></p></div>
+<div class="paragraph"><p>Copyright &#169; 2013 <a href="mailto:salvage@o2.pl">Adam Lach</a></p></div>
 <div class="paragraph"><p>Distributed under the Boost Software License, Version 1.0. (See accompanying file <a href="http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt">LICENSE_1_0.txt</a> or copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>).</p></div>
 </div>
 </div>
@@ -774,7 +907,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-18 20:35:14 Eur
+Last updated 2013-02-23 17:27:20 Eur
 </div>
 </div>
 </body>

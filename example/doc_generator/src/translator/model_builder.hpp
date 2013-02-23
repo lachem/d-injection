@@ -42,7 +42,7 @@ private:
 
     model::Class readClass(doxygen_input::XmlNode& xmlNode) {
         model::Class cls;
-        cls.description = xmlNode.getChild("detaileddescription.para").getValue();
+        cls.description = readDescription(xmlNode);
         cls.filename = xmlNode.getChild("includes").getValue();
         std::string qualifiedName = xmlNode.getChild("compoundname").getValue();
         cls.space = readNamespace(qualifiedName);
@@ -55,6 +55,17 @@ private:
             cls.signature += " : " + inheritance;
         }
         return std::move(cls);
+    }
+
+    std::string readDescription(doxygen_input::XmlNode& xmlNode) {
+        std::string description;
+        if(xmlNode.hasChild("briefdescription.para")) {
+            description  = xmlNode.getChild("briefdescription.para").getValue() + "\n\n";
+        }
+        if(xmlNode.hasChild("detaileddescription.para")) {
+            description += xmlNode.getChild("detaileddescription.para").getValue();
+        }
+        return std::move(description);
     }
 
     std::string readNamespace(const std::string& qualifiedName) {
@@ -122,6 +133,7 @@ private:
             for(auto&& node : parent.getChildren("memberdef")) {
                 if(node.getAttribute("kind") == "function") {
                     model::Method method;
+                    method.description = readDescription(node);
                     method.name = node.getChild("name").getValue();
                     method.signature =  node.getChild("definition").getValue();
                     method.signature += node.getChild("argsstring").getValue();
