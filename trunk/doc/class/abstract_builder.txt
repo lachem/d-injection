@@ -2,6 +2,7 @@
 ========================================================================================
 
 
+
 Class abstract_builder
 ----------------------
 
@@ -26,6 +27,109 @@ namespace di
   };
 }
 ---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+virtual T* build()=0
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+virtual void build(T &instance)=0
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& use(U &object)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& use(const SPtr< U > &object)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& replace(U &object, size_t at=0)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& replace(const SPtr< U > &object, size_t at=0)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& remove(size_t at=0)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
 
 
 include::../footer.txt[]

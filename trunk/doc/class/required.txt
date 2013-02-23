@@ -2,11 +2,11 @@
 ========================================================================
 
 
+
 Class required
 --------------
 
 
-    
 
 
 Synopsis
@@ -25,6 +25,81 @@ namespace di
   };
 }
 ---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+required()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+required(const required< T > &source)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+required<T>& operator=(const required< T > &source)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+operator T *()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+operator T const *() const 
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
 
 
 include::../footer.txt[]

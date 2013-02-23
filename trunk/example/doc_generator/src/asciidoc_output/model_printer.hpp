@@ -12,9 +12,11 @@
 #include <di/subject.hpp>
 
 #include "asciidoc_output/grouper.hpp"
+#include "asciidoc_output/header.hpp"
 #include "asciidoc_output/synopsis.hpp"
 #include "asciidoc_output/reference.hpp"
 #include "asciidoc_output/introduction.hpp"
+#include "asciidoc_output/functions.hpp"
 #include "model/model.hpp"
 
 namespace asciidoc_output {
@@ -46,23 +48,19 @@ private:
 
             std::stringstream sstream;
 
-            addHeader(sstream,cls);
+            sstream << Header(&cls) << std::endl;
             sstream << std::endl << std::endl;
             sstream << Introduction(&cls) << std::endl;
             sstream << std::endl << std::endl;
             sstream << Synopsis(&cls);
+            sstream << std::endl << std::endl;
+            sstream << Functions(&cls);
             sstream << std::endl << std::endl;
             addFooter(sstream);
                 
             file.content = sstream.str();
             classDirectory.addFile(file);
         }
-    }
-
-    void addHeader(std::ostream& stream, const model::Class& cls) {
-        std::string heading = "Dependency Injection - Header link:../../di/" + cls.filename + "[<"+cls.filename+">]";
-        stream << heading << std::endl 
-               << std::string(heading.length(),'=') << std::endl;
     }
 
     void addFooter(std::ostream& stream) {

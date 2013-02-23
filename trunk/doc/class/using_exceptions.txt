@@ -2,11 +2,11 @@
 ==============================================================================
 
 
+
 Class using_exceptions
 ----------------------
 
 
-    
 
 
 Synopsis
@@ -23,6 +23,53 @@ namespace di
   };
 }
 ---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+static void out_of_bounds()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+static void build_unsatisfied_requirement(T *instance)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+static void delegate_unsatisfied_requirement(void *instance)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* no +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
 
 
 include::../footer.txt[]
