@@ -27,6 +27,10 @@ struct ordinary {
 	typedef T* representation;
 	
 	explicit ordinary(T* an_object) : object(an_object) {}
+    
+    T* get_object() const {
+        return object;
+    }
 
 	static T* extract(representation* rep) {
 		return *rep;
@@ -38,6 +42,7 @@ struct ordinary {
 		*rep = NULL;
 	}
 
+private:
 	T* object;
 };
 
@@ -51,6 +56,10 @@ struct unique {
 	explicit unique(T* an_object) : object(an_object) {}
 	explicit unique(representation an_object) : object(an_object) {}
 
+    T* get_object() const {
+        return object;
+    }
+
 	static T* extract(representation* rep) {
 		return rep->get();
 	}
@@ -61,6 +70,7 @@ struct unique {
 		rep->reset(NULL_PTR(T));
 	}
 
+private:
 	T* object;
 };
 
@@ -74,6 +84,13 @@ struct shared {
 	explicit shared(T* an_object) : object(an_object) {}
 	explicit shared(const representation& an_object) : object(an_object) {}
 
+    operator representation() {
+		return object;
+	}
+    representation get_object() const {
+        return object;
+    }
+
 	static T* extract(representation* rep) {
 		return rep->get();
 	}
@@ -84,6 +101,7 @@ struct shared {
 		rep->reset(NULL_PTR(T));
 	}
 
+private:
 	representation object;
 };
 
@@ -97,12 +115,15 @@ struct service {
     typedef boost::shared_ptr<non_const_type> storage;
 
 	service() : object(NULL_PTR(non_const_type)) {}
-	explicit service(T* an_object) : object(an_object) {}
+	explicit service(T* an_object) : object(const_cast<non_const_type*>(an_object)) {}
 	explicit service(const representation& an_object) : object(an_object) {}
 
 	operator representation() {
 		return representation(object);
 	}
+    representation get_object() const {
+        return representation(object);
+    }
 
 	static T* extract(representation* rep) {
 		return rep->get();
@@ -114,6 +135,7 @@ struct service {
 		rep->reset(NULL_PTR(T));
 	}
 
+private:
 	storage object;
 };
 

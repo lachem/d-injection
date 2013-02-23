@@ -39,8 +39,8 @@ template<class U>
 struct injection_source_imp : public injection_source<typename U::type> {
 	typedef injection_source<typename U::type> base;
 
-	explicit injection_source_imp(const U& inj) : object(inj.object), base(U::id) {
-		base::is_empty = (inj.object == NULL);
+	explicit injection_source_imp(const U& inj) : object(inj.get_object()), base(U::id) {
+		base::is_empty = (inj.get_object() == NULL);
 	}
 
 	injection_source_imp() : base(U::id) {
