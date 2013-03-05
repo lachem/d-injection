@@ -383,8 +383,8 @@ di::module<UI>& uiModule = application;
 
 This way +controllerModule+, +infrastructureModule+ and +uiModule+ can be fed up seperately.
 
-Access Control
---------------
+Restricting Access
+------------------
 
 
 
