@@ -24,7 +24,7 @@ public:
 
 	template<typename FilenameType, typename PtreeType>
 	XmlFile(FilenameType&& aFilename, PtreeType&& aPtree) : XmlNode(aPtree), filename(aFilename) {}
-	XmlFile(XmlFile&& other) : XmlNode(other.ptree), filename(std::move(other.filename)) {}
+	XmlFile(const XmlFile& other) : XmlNode(other.ptree), filename(std::move(other.filename)) {}
 
 	const XmlFile& operator=(const XmlFile& other) {
 		filename = std::move(other.filename);
