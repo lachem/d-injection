@@ -46,7 +46,7 @@ public:
 			boost::is_same< SPtr<U>,ordinary<U> >::value ||
 			boost::is_same< SPtr<U>,service<U> >::value),
 			ProvidedTypeIsUnsupported,);
-		assert(object.object);
+		assert(object.get_object());
 
 		do_usage(object);
 		return *this;

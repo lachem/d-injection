@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="asciidoc_output">
+      <UniqueIdentifier>{7896343e-556d-47fd-ac24-ad52308162a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="doxygen_input">
+      <UniqueIdentifier>{fd18a45f-8a69-4a76-bc71-4086d67cbbd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filesystem">
+      <UniqueIdentifier>{bc9e8a29-b7ed-45d4-9e8f-bc575b58aede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{3a64fe8e-d793-47bc-bab5-2375cbf66171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="translator">
+      <UniqueIdentifier>{272da7a9-dca1-4340-a563-7cb8737f8e63}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\example\doc_generator\src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\document_element.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\functions.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\grouper.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\introduction.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\model_printer.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\module.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\reference.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\asciidoc_output\synopsis.hpp">
+      <Filter>asciidoc_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\doxygen_input\module.hpp">
+      <Filter>doxygen_input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\doxygen_input\xml_file.hpp">
+      <Filter>doxygen_input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\doxygen_input\xml_node.hpp">
+      <Filter>doxygen_input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\doxygen_input\xml_reader.hpp">
+      <Filter>doxygen_input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\doxygen_input\xml_repository.hpp">
+      <Filter>doxygen_input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\filesystem\directory.hpp">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\filesystem\file.hpp">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\model\class.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\model\method.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\model\model.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\translator\class_builder.hpp">
+      <Filter>translator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\translator\method_builder.hpp">
+      <Filter>translator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\translator\model_builder.hpp">
+      <Filter>translator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\translator\module.hpp">
+      <Filter>translator</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

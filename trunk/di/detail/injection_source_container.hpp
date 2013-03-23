@@ -79,7 +79,7 @@ public:
 
 	template<template <typename> class SPtr, typename U>
 	bool push(const SPtr<U>& elem) {
-		assert(elem.object);
+		assert(elem.get_object());
 
 		if(current >= capacity) {
 			return false;
@@ -91,7 +91,7 @@ public:
 
 	template<template <typename> class SPtr, typename U>
 	bool replace(const SPtr<U>& elem, size_t at) {
-		assert(elem.object);
+		assert(elem.get_object());
 
 		if(at >= capacity) {
 			return false;

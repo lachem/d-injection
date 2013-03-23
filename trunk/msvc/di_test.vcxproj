@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\di\abstract_builder.hpp" />
+    <ClInclude Include="..\di\application.hpp" />
+    <ClInclude Include="..\di\builder.hpp" />
+    <ClInclude Include="..\di\configurable.hpp" />
+    <ClInclude Include="..\di\configuration.hpp" />
+    <ClInclude Include="..\di\custom\atomic.hpp" />
+    <ClInclude Include="..\di\custom\lock_guard.hpp" />
+    <ClInclude Include="..\di\custom\spinlock.hpp" />
+    <ClInclude Include="..\di\custom\synchronization.hpp" />
+    <ClInclude Include="..\di\detail\injection.hpp" />
+    <ClInclude Include="..\di\detail\injection_destination.hpp" />
+    <ClInclude Include="..\di\detail\injection_destination_container.hpp" />
+    <ClInclude Include="..\di\detail\injection_source.hpp" />
+    <ClInclude Include="..\di\detail\injection_source_container.hpp" />
+    <ClInclude Include="..\di\detail\memory_pool.hpp" />
+    <ClInclude Include="..\di\detail\perform_injection.hpp" />
+    <ClInclude Include="..\di\detail\utility.hpp" />
+    <ClInclude Include="..\di\detail\variadics.hpp" />
+    <ClInclude Include="..\di\di.hpp" />
+    <ClInclude Include="..\di\diagnostics.hpp" />
+    <ClInclude Include="..\di\generic_builder.hpp" />
+    <ClInclude Include="..\di\injection_types.hpp" />
+    <ClInclude Include="..\di\module.hpp" />
+    <ClInclude Include="..\di\optional.hpp" />
+    <ClInclude Include="..\di\required.hpp" />
+    <ClInclude Include="..\di\service_list.hpp" />
+    <ClInclude Include="..\di\subject.hpp" />
+    <ClInclude Include="..\test\abstract_builder_should.hpp" />
+    <ClInclude Include="..\test\application_should.hpp" />
+    <ClInclude Include="..\test\detail\injection_destination_container_should.hpp" />
+    <ClInclude Include="..\test\detail\injection_should.hpp" />
+    <ClInclude Include="..\test\detail\injection_source_container_should.hpp" />
+    <ClInclude Include="..\test\diagnostics\builder_diagnostics_should.hpp" />
+    <ClInclude Include="..\test\generic_builder_should.hpp" />
+    <ClInclude Include="..\test\integration\builders_should.hpp" />
+    <ClInclude Include="..\test\multithread\thread_agnostic_injections_should.hpp" />
+    <ClInclude Include="..\test\performance\builder_performance_should.hpp" />
+    <ClInclude Include="..\test\performance\performance_counter.hpp" />
+    <ClInclude Include="..\test\test_types.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\lib\gmock-1.6.0\fused-src\gmock-gtest-all.cc" />
+    <ClCompile Include="..\test\main.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8FDCEA13-893E-4CE5-BE34-F326D5CB6F48}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>di_test</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/$(Configuration)Test/</OutDir>
+    <IntDir>$(SolutionDir)../bin/$(Configuration)Test/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/$(Configuration)Test/</OutDir>
+    <IntDir>$(SolutionDir)../bin/$(Configuration)Test/</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;../../..//lib/gmock-1.6.0/fused-src;../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D_VARIADIC_MAX=10 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../../lib/boost_1_53_0/stage/lib</AdditionalLibraryDirectories>
+    </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)../bin/$(Configuration)Test/build.log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;../../..//lib/gmock-1.6.0/fused-src;../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D_VARIADIC_MAX=10 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../../lib/boost_1_53_0/stage/lib</AdditionalLibraryDirectories>
+    </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)../bin/$(Configuration)Test/build.log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

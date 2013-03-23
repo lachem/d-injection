@@ -112,10 +112,10 @@ private:
 		void operator()(di::service<T>*& element) const {
             //The user might want define services to be read only for some modules and read/write for others. 
             //Therefore a service may be non const onprovided services list and const ond required.
-            typedef boost::mpl::eval_if_c< 
+            typedef typename boost::mpl::eval_if_c< 
                 boost::mpl::contains<Seq, di::service<T> >::type::value,
                     boost::mpl::identity< di::service<T> >, 
-                    boost::mpl::identity< di::service<boost::remove_const<T>::type> > >::type contained;
+                    boost::mpl::identity< di::service<typename boost::remove_const<T>::type> > >::type contained;
 
 			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq, contained >::type::value), NoModuleProvidesTheNeededService,);
 
