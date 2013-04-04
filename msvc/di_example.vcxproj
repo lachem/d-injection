@@ -111,6 +111,7 @@
     <ClInclude Include="..\example\doc_generator\src\model\method.hpp" />
     <ClInclude Include="..\example\doc_generator\src\model\model.hpp" />
     <ClInclude Include="..\example\doc_generator\src\translator\class_builder.hpp" />
+    <ClInclude Include="..\example\doc_generator\src\translator\common_tags.hpp" />
     <ClInclude Include="..\example\doc_generator\src\translator\method_builder.hpp" />
     <ClInclude Include="..\example\doc_generator\src\translator\model_builder.hpp" />
     <ClInclude Include="..\example\doc_generator\src\translator\module.hpp" />

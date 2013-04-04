@@ -67,15 +67,14 @@ namespace join_all {
 } // namespace detail
 
 /**
- * Modules that depend on each other need a way to exchange services. Application class has been 
- * designed in such a way, which supports easy and convinient module handling. The class itself requires 
- * a list of module definitions each of which containing two lists of services first defines the needed 
- * services wheras the second provided services. Application class derives from list of module<M>, where 
- * M is perviously mentioned module definition. At instantiation the application object connects each 
+ * Modules that depend on each other need a way to exchange services. Application enables convinient module 
+ * handling. The class itself requires a list of module definitions. Each module has to define two lists 
+ * of services i.e. needed and provided services. Application class derives from list of modules (di::module<M>, 
+ * where M is perviously mentioned module definition). At instantiation the application object connects each 
  * module's provided and required service lists with its own container (where services are held). Each 
  * service in the context of a singular application object is required to be represented by one and only 
- * one instance. The number of application objects is not bound, though modules that belong to different 
- * application objects cannot exchange service.
+ * one instance. The number of application objects is not limited, though modules that belong to different 
+ * application objects cannot exchange services.
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 class application : public detail::inherit_modules<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> {

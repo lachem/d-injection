@@ -40,5 +40,5 @@ run_doc_generator: doc_generator
 	./example/doc_generator/doc_generator ./example/doc_generator/input ./doc
 
 generate_asciidoc:
-	$(foreach doc,$(DOC),python asciidoc.py -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
+	$(foreach doc,$(DOC),asciidoc.py -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
 
