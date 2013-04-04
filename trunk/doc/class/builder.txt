@@ -49,7 +49,7 @@ builder()
 virtual I* build()
 ---------------------------------------------------------------------
 
-Creates the object of type C, performs injections and calls constructed() on subject. 
+Creates an object of type C, performs injections and calls constructed() on subject. 
 
 
 
@@ -59,9 +59,9 @@ Creates the object of type C, performs injections and calls constructed() on sub
 
 *Requires:* Injections required by the object under construction were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
+*Postconditions:* All provided injections have been injected, subject<T...>constucted() has been called.  +
 *Returns:* New instance of subject type.  +
-*Throws:* none +
+*Throws:* requirement_not_satisfied Depending on diagnostics method chosen.  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -81,9 +81,9 @@ Performs injections and calls constructed() on subject.
 
 *Requires:* Injections required by the instance object were provided to the builder.  +
 *Effects:* none +
-*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
+*Postconditions:* All provided injections have been injected, subject<T...>constucted() has been called.  +
 *Returns:* none +
-*Throws:* none +
+*Throws:* requirement_not_satisfied Depending on diagnostics method chosen.  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

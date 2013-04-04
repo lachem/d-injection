@@ -87,5 +87,8 @@
     <ClInclude Include="..\example\doc_generator\src\translator\module.hpp">
       <Filter>translator</Filter>
     </ClInclude>
+    <ClInclude Include="..\example\doc_generator\src\translator\common_tags.hpp">
+      <Filter>translator</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

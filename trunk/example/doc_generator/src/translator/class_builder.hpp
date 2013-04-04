@@ -7,6 +7,7 @@
 #define CLASS_BUILDER_HPP
 
 #include "doxygen_input/xml_node.hpp"
+#include "translator/common_tags.hpp"
 #include "model/class.hpp"
 
 namespace translator {
@@ -31,11 +32,11 @@ public:
 private:
     std::string readDescription(doxygen_input::XmlNode& classNode) {
         std::string description;
-        if(classNode.hasChild("briefdescription.para")) {
-            description  = classNode.getChild("briefdescription.para").getValue() + "\n\n";
+        if(classNode.hasChild(BRIEF)) {
+            description  = classNode.getChild(BRIEF).getValue() + "\n\n";
         }
-        if(classNode.hasChild("detaileddescription.para")) {
-            description += classNode.getChild("detaileddescription.para").getValue();
+        if(classNode.hasChild(DETAIL)) {
+            description += classNode.getChild(DETAIL).getValue();
         }
         return std::move(description);
     }

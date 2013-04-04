@@ -7,6 +7,7 @@
 #define METHOD_BUILDER_HPP
 
 #include "doxygen_input/xml_node.hpp"
+#include "translator/common_tags.hpp"
 #include "model/method.hpp"
 
 namespace translator {
@@ -23,12 +24,12 @@ public:
 private:
     model::Method::Description readDescription(doxygen_input::XmlNode& xmlNode) {
         model::Method::Description description;
-        if(xmlNode.hasChild("briefdescription.para")) {
-            description.brief = xmlNode.getChild("briefdescription.para").getValue();
+        if(xmlNode.hasChild(BRIEF)) {
+            description.brief = xmlNode.getChild(BRIEF).getValue();
         }
-        if(xmlNode.hasChild("detaileddescription.para")) {
-            description.detailed = xmlNode.getChild("detaileddescription.para").getValue();
-            for(auto&& childNode : xmlNode.getChildren("detaileddescription.para.simplesect")) {
+        if(xmlNode.hasChild(DETAIL)) {
+            description.detailed = xmlNode.getChild(DETAIL).getValue();
+            for(auto&& childNode : xmlNode.getChildren(std::string(DETAIL) + ".simplesect")) {
                 std::string kind = std::move(childNode.getAttribute("kind"));
                 if(kind == "pre") {
                     description.precondition = childNode.getChild("para").getValue();
@@ -39,13 +40,25 @@ private:
                 else if(kind == "return") {
                      description.returns = childNode.getChild("para").getValue();
                 }
-                else if(kind == "exception") {
-                    description.throws = childNode.getChild("para").getValue();
-                }
             }
+			description.throws = readThrows(xmlNode);
         }
         return std::move(description);
     }
+
+	std::string readThrows(doxygen_input::XmlNode& xmlNode) {
+		if(xmlNode.hasChild(std::string(DETAIL) + ".parameterlist")) {
+			std::string throws;
+			doxygen_input::XmlNode childNode = xmlNode.getChild(std::string(DETAIL) + ".parameterlist");
+			std::string kind = std::move(childNode.getAttribute("kind"));
+			if(kind == "exception") {
+				throws += childNode.getChild("parameteritem.parameternamelist.parametername").getValue() + " ";
+				throws += childNode.getChild("parameteritem.parameterdescription.para").getValue();
+			}
+			return std::move(throws);
+		}
+		return "none";
+	}
 };
 
 } //namespace translator

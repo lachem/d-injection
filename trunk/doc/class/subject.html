@@ -741,7 +741,7 @@ asciidoc.install(2);
 <div class="sect1">
 <h2 id="_class_subject">Class subject</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Subject is a base class for all classes that are inteded do have objects injected to it. All injection types are to be listed in subject&#8217;s variadic template parameter list. To support multiple instances of the same types a number of operations on the list of types are performed. In result a list of for example &lt;T,T,Y,Z,Y&gt; is transformed into <a href="#T">2&gt;</a>.</p></div>
+<div class="paragraph"><p>Subject is a base class for all classes that are inteded do have objects injected to it. All injection types are to be listed in subject&#8217;s variadic template parameter list. To support multiple instances of the same types a number of operations on the list of types are performed. In result a list of for example &lt;T,T,Y,Z,Y&gt; is transformed into &lt; &lt;T,2&gt;, &lt;T,2&gt;, &lt;Z,1&gt; &gt;.</p></div>
 <div class="sect2">
 <h3 id="_synopsis">Synopsis</h3>
 <div class="listingblock">
@@ -798,7 +798,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-23 21:56:55 Eur
+Last updated 2013-04-04 21:44:52 CEST
 </div>
 </div>
 </body>
