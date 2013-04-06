@@ -57,11 +57,27 @@ struct module {
 		return *boost::fusion::at_key<di::service<T>*>(needed);
 	}
 	
+	/**
+	 * @brief Creates a builder preconfigured with applicable services.
+	 */
+	template<typename C>
+	std::auto_ptr< di::builder<C> > builder() {
+		di::builder<C>* abuilder = new di::builder<C>();
+		boost::fusion::for_each(needed,builder_feeder< di::builder<C> >(*abuilder));
+		return std::auto_ptr< di::builder<C> >(abuilder);
+	}
+
+	/**
+	 * @brief Creates an abstract_builder preconfigured with applicable services.
+	 */
 	template<typename C>
 	std::auto_ptr< di::abstract_builder<C> > abstract_builder() {
 		return this->abstract_builder<C,C>();
 	}
 
+	/**
+	 * @brief Creates an abstract_builder preconfigured with applicable services.
+	 */
 	template<typename I,typename C>
 	std::auto_ptr< di::abstract_builder<I> > abstract_builder() {
 		di::abstract_builder<I>* abuilder = new di::builder<C,I>();
@@ -69,6 +85,9 @@ struct module {
 		return std::auto_ptr< di::abstract_builder<I> >(abuilder);
 	}
 
+	/**
+	 * @brief Creates a generic_builder preconfigured with applicable services.
+	 */
 	template<typename C>
 	std::auto_ptr< di::generic_builder<C> > generic_builder() {
 		di::generic_builder<C>* abuilder = new di::generic_builder<C>();

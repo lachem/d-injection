@@ -105,7 +105,8 @@ protected:
 TEST_F(AbstractBuilderShould, injectObjectsToInjectionsBeingOfOnePointerSize) {
 	givenDifferent4TypesBuilder();
 
-	diff4types = diff4typesBuilder->build();
+	diff4types = new Different4Types();
+	diff4typesBuilder->build(*diff4types);
 
 	EXPECT_EQ(sizeof(diff4types->some_var.get()), sizeof(diff4types->some_var));
 }
@@ -113,7 +114,8 @@ TEST_F(AbstractBuilderShould, injectObjectsToInjectionsBeingOfOnePointerSize) {
 TEST_F(AbstractBuilderShould, injectObjectsOfDifferentTypes) {
 	givenDifferent4TypesBuilder();
 
-	diff4types = diff4typesBuilder->build();
+	diff4types = new Different4Types();
+	diff4typesBuilder->build(*diff4types);
 
 	EXPECT_EQ(diff4types->some_var.get(),  &d1);
 	EXPECT_EQ(diff4types->some_var2.get(), &d2);
@@ -122,15 +124,18 @@ TEST_F(AbstractBuilderShould, injectObjectsOfDifferentTypes) {
 
 TEST_F(AbstractBuilderShould, buildAbstractClasses) {
 	givenAbstractDifferent4TypesBuilder();
+	
+	abstractDiff4types = new Different4Types();
+	abstractDiff4typesBuilder->build(*abstractDiff4types);
 
-	abstractDiff4types = abstractDiff4typesBuilder->build();
 	EXPECT_NE(dynamic_cast<Different4Types*>(abstractDiff4types), NULL_PTR(Different4Types));
 }
 
 TEST_F(AbstractBuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 	givenAbstractDifferent4TypesBuilder();
 
-	diff4types = dynamic_cast<Different4Types*>(abstractDiff4typesBuilder->build());
+	diff4types = new Different4Types();
+	abstractDiff4typesBuilder->build(*diff4types);
 
 	EXPECT_EQ(diff4types->some_var.get(),  &d1);
 	EXPECT_EQ(diff4types->some_var2.get(), &d2);
@@ -140,7 +145,8 @@ TEST_F(AbstractBuilderShould, injectObjectsOfDifferentTypesToAbstractClass) {
 TEST_F(AbstractBuilderShould, injectObjectsOfAbstractTypesToAbstractClass) {
 	givenAbstractSame3TypesBuilder();
 
-	same3AbstractTypes = dynamic_cast<Same3AbstractTypes*>(abstractSame3typesBuilder->build());
+	same3AbstractTypes = new Same3AbstractTypes();
+	abstractSame3typesBuilder->build(*same3AbstractTypes);
 
 	D1* actual_some_var  = dynamic_cast<D1*>(same3AbstractTypes->some_var.get());
 	D2* actual_some_var2 = dynamic_cast<D2*>(same3AbstractTypes->some_var2.get());
@@ -155,7 +161,8 @@ TEST_F(AbstractBuilderShould, supportReplacementOfObjectsPreviouslyUsed) {
 	givenDifferent4TypesBuilder();
 
 	diff4typesBuilder->replace<const D3>(d3_2);
-	diff4types = diff4typesBuilder->build();
+	diff4types = new Different4Types();
+	diff4typesBuilder->build(*diff4types);
 
 	EXPECT_NE(diff4types->some_var3.get(), &d3);
 	EXPECT_EQ(diff4types->some_var3.get(), &d3_2);
@@ -165,7 +172,8 @@ TEST_F(AbstractBuilderShould, supportReplacementOfObjectsPreviouslyUsed2) {
 	givenSame3TypesBuilder();
 
 	same3typesBuilder->replace(d3_3,2);
-	same3types = same3typesBuilder->build();
+	same3types = new testing::NiceMock<Same3Types>();
+	same3typesBuilder->build(*same3types);
 
 	EXPECT_NE(same3types->some_var3.get(), &d3_2);
 	EXPECT_EQ(same3types->some_var3.get(), &d3_3);
@@ -174,7 +182,8 @@ TEST_F(AbstractBuilderShould, supportReplacementOfObjectsPreviouslyUsed2) {
 TEST_F(AbstractBuilderShould, injectObjectsOfSameTypes) {
 	givenSame3TypesBuilder();
 
-	same3types = same3typesBuilder->build();
+	same3types = new testing::NiceMock<Same3Types>();
+	same3typesBuilder->build(*same3types);
 
 	EXPECT_EQ(same3types->some_var.operator ->(),  &d3);
 	EXPECT_EQ(same3types->some_var2.operator ->(), &d3_2);
@@ -192,7 +201,8 @@ TEST_F(AbstractBuilderShould, callConstructedAfterBuildingIsFinished) {
 TEST_F(AbstractBuilderShould, injectObjectsOfSame2Types) {
 	givenSame2TypesBuilder();
 
-	same2types = same2typesBuilder->build();
+	same2types = new Same2Types();
+	same2typesBuilder->build(*same2types);
 
 	EXPECT_EQ(same2types->some_var.get(),  &d3);
 	EXPECT_EQ(same2types->some_var2.get(), &d3_2);
@@ -201,7 +211,8 @@ TEST_F(AbstractBuilderShould, injectObjectsOfSame2Types) {
 TEST_F(AbstractBuilderShould, beEmptyWhenNoInjectionProvided) {
 	givenSame3TypesBuilderWithoutThirdElement();
 
-	same3types = same3typesBuilder->build();
+	same3types = new testing::NiceMock<Same3Types>();
+	same3typesBuilder->build(*same3types);
 
 	ASSERT_TRUE(same3types->some_var3.empty());
 }
@@ -273,7 +284,8 @@ TEST_F(AbstractBuilderShould, notRemoveSharedInjectionsWhileProvidedSharedPtrExi
 
 	abuilder->use(t1);
 	abuilder->use(di::shared<TestType2>(shared_mock));
-	CopyableClassReq* instance = abuilder->build();
+	CopyableClassReq* instance = new CopyableClassReq();
+	abuilder->build(*instance);
 	delete abuilder;
 
 	EXPECT_EQ(shared_mock.get(),instance->var_shared.get());

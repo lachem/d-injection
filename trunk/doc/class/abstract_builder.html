@@ -750,7 +750,6 @@ asciidoc.install(2);
 {
   template&lt;typename T&gt; class abstract_builder : public di::configurable&lt; T &gt;
   {
-    virtual T* build()=0;
     virtual void build(T &amp;instance)=0;
     abstract_builder&lt;T&gt;&amp; use(U &amp;object);
     abstract_builder&lt;T&gt;&amp; use(const SPtr&lt; U &gt; &amp;object);
@@ -763,20 +762,6 @@ asciidoc.install(2);
 </div>
 <div class="sect2">
 <h3 id="_functions">Functions</h3>
-<div class="listingblock">
-<div class="content">
-<pre><code>virtual T* build()=0</code></pre>
-</div></div>
-<div class="paragraph"><p>Creates an object of type C, performs injections and calls constructed() on subject.</p></div>
-<div class="paragraph"><p><strong>Requires:</strong> Injections required by the object under construction were provided to the builder. <br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> All provided injections have been injected, subject&lt;T&#8230;&gt;constucted() has been called. <br />
-<strong>Returns:</strong> New instance of subject type. <br />
-<strong>Throws:</strong> requirement_not_satisfied Depending on diagnostics method chosen. <br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>virtual void build(T &amp;instance)=0</code></pre>
@@ -868,7 +853,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-04-06 14:38:59 CEST
+Last updated 2013-04-06 20:41:18 CEST
 </div>
 </div>
 </body>

@@ -20,15 +20,6 @@ template<typename T>
 class abstract_builder : public di::configurable<T> {	
 public:
 	/**
-	 * @brief Creates an object of type C, performs injections and calls constructed() on subject.
-	 * @pre Injections required by the object under construction were provided to the builder.
-	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
-     * @throw requirement_not_satisfied Depending on diagnostics method chosen.
-	 * @return New instance of subject type.
-	 */
-	virtual T* build() = 0;
-
-	/**
 	 * @brief Performs injections and calls constructed() on subject.
 	 * @pre Injections required by the instance object were provided to the builder.
 	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.

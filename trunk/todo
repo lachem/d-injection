@@ -19,3 +19,5 @@
 - the ability for builders to feed other builders
 - dependency cycle detection in di::application
 - make di::optional cast to safe bool
+- unify tests in application_should
+- add build methods with many paramaters (passed to instantiated objects constructor)

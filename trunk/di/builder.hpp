@@ -20,7 +20,14 @@ class builder : public di::abstract_builder<I>, di::detail::noncopyable {
 public:
 	builder() {}
 
-	virtual I* build() {
+	/**
+	 * @brief Creates an object of type C, performs injections and calls constructed() on subject.
+	 * @pre Injections required by the object under construction were provided to the builder.
+	 * @post All provided injections have been injected, subject<T...>::constucted() has been called.
+     * @throw requirement_not_satisfied Depending on diagnostics method chosen.
+	 * @return New instance of subject type.
+	 */
+	I* build() {
 		C* instance = new C;
 		build_inject(instance);
 		instance->constructed();

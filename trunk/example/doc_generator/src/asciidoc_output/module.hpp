@@ -24,7 +24,7 @@ struct Module {
         module(aModule), outputDirectory(anOutputDirectory) {}
 
     void start() {
-        auto builder = module->abstract_builder<ModelPrinter>();
+        auto builder = module->builder<ModelPrinter>();
         builder->use(di::unique<filesystem::Directory>(new filesystem::Directory(outputDirectory)));
         builder->use(di::unique<asciidoc_output::Grouper>(new asciidoc_output::Grouper()));
         builder->build()->run();

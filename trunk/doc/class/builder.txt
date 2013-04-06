@@ -16,7 +16,7 @@ namespace di
   template<typename C, typename I> class builder : public abstract_builder< I >, private noncopyable
   {
     builder();
-    virtual I* build();
+    I* build();
     virtual void build(I &instance);
     abstract_builder<I >& use(U &object);
     abstract_builder<I >& use(const SPtr< U > &object);
@@ -46,7 +46,7 @@ builder()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-virtual I* build()
+I* build()
 ---------------------------------------------------------------------
 
 Creates an object of type C, performs injections and calls constructed() on subject. 
