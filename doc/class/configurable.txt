@@ -59,7 +59,7 @@ Inserts object at first unoccupied position matching given type.
 *Effects:* none +
 *Postconditions:* Injection has been saved inside the container.  +
 *Returns:* self  +
-*Throws:*  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -96,7 +96,7 @@ Replaces nth injection of given type.
 *Effects:* none +
 *Postconditions:* Injection has been saved inside the container.  +
 *Returns:* self  +
-*Throws:*  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -118,7 +118,7 @@ Removes nth injection of given type, where n == at.
 *Effects:* none +
 *Postconditions:* Injection of requested type has been removed.  +
 *Returns:* self  +
-*Throws:*  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +

@@ -26,15 +26,15 @@ private:
             stream << CODE_DELIMETER << std::endl;
             stream << std::endl;
             stream << Description(&function);
-            stream << "*Requires:* " << function.description.precondition << " +" << std::endl;
-            stream << "*Effects:* none +" << std::endl;
+            stream << "*Requires:* "       << function.description.precondition  << " +" << std::endl;
+			stream << "*Effects:* "        << function.description.effects       << " +" << std::endl;
             stream << "*Postconditions:* " << function.description.postcondition << " +" << std::endl;
-            stream << "*Returns:* " << function.description.returns << " +" << std::endl;
-            stream << "*Throws:* " << function.description.throws << " +" << std::endl;
-            stream << "*Complexity:* no info +" << std::endl;
-            stream << "*Note:* none +" << std::endl;
-            stream << "*Danger:* none +" << std::endl;
-            stream << "*Rationale:* none +" << std::endl;
+            stream << "*Returns:* "        << function.description.returns       << " +" << std::endl;
+            stream << "*Throws:* "         << function.description.throws        << " +" << std::endl;
+			stream << "*Complexity:* "     << function.description.complexity    << " +" << std::endl;
+            stream << "*Note:* "           << function.description.note          << " +" << std::endl;
+            stream << "*Danger:* "         << function.description.danger        << " +" << std::endl;
+			stream << "*Rationale:* "      << function.description.rationale     << " +" << std::endl;
             stream << std::endl;
         }
     }

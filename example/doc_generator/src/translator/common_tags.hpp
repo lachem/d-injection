@@ -8,5 +8,6 @@
 
 #define BRIEF "briefdescription.para"
 #define DETAIL "detaileddescription.para"
+#define PARAMS "detaileddescription.para.parameterlist"
 
 #endif // COMMON_TAGS_HPP

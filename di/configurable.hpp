@@ -34,7 +34,7 @@ public:
 	 * @param object Reference to injection type.
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.
-     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
+     * @throw out_of_bounds Depending on diagnostics method chosen
 	 * @post Injection has been saved inside the container.
      * @return self
 	 */
@@ -64,7 +64,7 @@ public:
 	 * @pre Injection's type is known.
 	 * @pre Injection contents are not null.
 	 * @post Injection has been saved inside the container.
-     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
+     * @throw out_of_bounds Depending on diagnostics method chosen
      * @return self
 	 */
 	template<template <typename> class SPtr, typename U>
@@ -84,7 +84,7 @@ public:
 	 * @brief Removes nth injection of given type, where n == at.
 	 * @param at Position at which the removal is to be performed.
 	 * @post Injection of requested type has been removed.
-     * @throw Depending on diagnostics method chosen may throw out_of_bounds exception
+     * @throw out_of_bounds Depending on diagnostics method chosen
      * @return self
 	 */
 	template<typename U>

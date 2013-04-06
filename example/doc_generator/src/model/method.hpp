@@ -8,20 +8,30 @@
 
 #include <string>
 
+#define NOTHING "none"
+
 namespace model {
 
 struct Method {
 	enum kind {constructor, destructor, function};
 
     struct Description {
-        Description() : precondition("none"), postcondition("none"), throws("none"), returns("none") {}
+        Description() : 
+			precondition(NOTHING), effects(NOTHING), postcondition(NOTHING), 
+			returns(NOTHING), throws(NOTHING), complexity("no info"),
+			note(NOTHING), danger(NOTHING), rationale(NOTHING) {}
 
         std::string brief;
         std::string detailed;
         std::string precondition;
+		std::string effects;
         std::string postcondition;
-        std::string throws;
         std::string returns;
+		std::string throws;
+		std::string complexity;
+		std::string note;
+		std::string danger;
+		std::string rationale;
     };
 
     Description description;

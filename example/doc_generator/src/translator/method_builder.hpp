@@ -15,15 +15,14 @@ namespace translator {
 class MethodBuilder {
 public:
     void assemble(model::Method& method, doxygen_input::XmlNode& node) {
-        method.description = readDescription(node);
+        method.description = readDescription(method.description, node);
         method.name = node.getChild("name").getValue();
         method.signature =  node.getChild("definition").getValue();
         method.signature += node.getChild("argsstring").getValue();
     }
 
 private:
-    model::Method::Description readDescription(doxygen_input::XmlNode& xmlNode) {
-        model::Method::Description description;
+    model::Method::Description readDescription(model::Method::Description& description, doxygen_input::XmlNode& xmlNode) {
         if(xmlNode.hasChild(BRIEF)) {
             description.brief = xmlNode.getChild(BRIEF).getValue();
         }
@@ -41,23 +40,21 @@ private:
                      description.returns = childNode.getChild("para").getValue();
                 }
             }
-			description.throws = readThrows(xmlNode);
+			readThrows(description, xmlNode);
         }
         return std::move(description);
     }
 
-	std::string readThrows(doxygen_input::XmlNode& xmlNode) {
-		if(xmlNode.hasChild(std::string(DETAIL) + ".parameterlist")) {
-			std::string throws;
-			doxygen_input::XmlNode childNode = xmlNode.getChild(std::string(DETAIL) + ".parameterlist");
-			std::string kind = std::move(childNode.getAttribute("kind"));
-			if(kind == "exception") {
-				throws += childNode.getChild("parameteritem.parameternamelist.parametername").getValue() + " ";
-				throws += childNode.getChild("parameteritem.parameterdescription.para").getValue();
+	void readThrows(model::Method::Description& description, doxygen_input::XmlNode& xmlNode) {
+		if(xmlNode.hasChild(PARAMS)) {
+			for(auto&& childNode : xmlNode.getChildren(PARAMS)) {
+				std::string kind = std::move(childNode.getAttribute("kind"));
+				if(kind == "exception") {
+					description.throws =  childNode.getChild("parameteritem.parameternamelist.parametername").getValue() + " ";
+					description.throws += childNode.getChild("parameteritem.parameterdescription.para").getValue();
+				}
 			}
-			return std::move(throws);
 		}
-		return "none";
 	}
 };
 

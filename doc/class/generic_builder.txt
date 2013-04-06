@@ -46,7 +46,7 @@ Allows building of any object that needs injections specified by generic_builder
 *Effects:* none +
 *Postconditions:* All injections which where provided to generic_builder are injectied into instance  +
 *Returns:* none +
-*Throws:*  +
+*Throws:* requirement_not_satisfied Depending on diagnostics method chosen.  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -67,7 +67,7 @@ Allows building part of an object. What follows is that neither requirements are
 *Effects:* none +
 *Postconditions:* All injections which where provided to generic_builder are injectied into instance  +
 *Returns:* none +
-*Throws:*  +
+*Throws:* none +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
