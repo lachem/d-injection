@@ -26,7 +26,7 @@ struct Module {
 	}
 
 	void start() {
-        auto builder = module->abstract_builder<translator::ModelBuilder>();
+        auto builder = module->builder<translator::ModelBuilder>();
 		builder->use(di::shared<model::Model>(model));
         builder->build()->assemble();
 	}

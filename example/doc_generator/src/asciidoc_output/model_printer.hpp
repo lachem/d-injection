@@ -40,7 +40,7 @@ class Footer : public DocumentElement {
     }
 };
 
-class ModelPrinter : public di::subject<const model::Model,filesystem::Directory,asciidoc_output::Grouper> {
+class ModelPrinter : public di::subject<int, const model::Model,filesystem::Directory,asciidoc_output::Grouper> {
 public:
 	void run() {
 		storeReferenceFile();

@@ -1,6 +1,6 @@
 Dependency Injection Acknowledgments
 ====================================
 
-I would like to thank Pawel Stopinski for reviewing DI.
+I would like to thank Pawel Stopinski for reviewing DI, Piotr Szeplik for mentoring, my wife for her patience
 
 include::footer.txt[]

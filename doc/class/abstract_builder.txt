@@ -15,7 +15,6 @@ namespace di
 {
   template<typename T> class abstract_builder : public di::configurable< T >
   {
-    virtual T* build()=0;
     virtual void build(T &instance)=0;
     abstract_builder<T>& use(U &object);
     abstract_builder<T>& use(const SPtr< U > &object);
@@ -29,28 +28,6 @@ namespace di
 
 Functions
 ~~~~~~~~~
-
----------------------------------------------------------------------
-virtual T* build()=0
----------------------------------------------------------------------
-
-Creates an object of type C, performs injections and calls constructed() on subject. 
-
-
-
-
-
-
-
-*Requires:* Injections required by the object under construction were provided to the builder.  +
-*Effects:* none +
-*Postconditions:* All provided injections have been injected, subject<T...>constucted() has been called.  +
-*Returns:* New instance of subject type.  +
-*Throws:* requirement_not_satisfied Depending on diagnostics method chosen.  +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
 
 ---------------------------------------------------------------------
 virtual void build(T &instance)=0

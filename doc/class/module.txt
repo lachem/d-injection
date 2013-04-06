@@ -18,6 +18,7 @@ namespace di
     module<M>& use(const boost::shared_ptr< T > &element);
     module<M>& use(const di::service< T > &element);
     boost::shared_ptr<T> get();
+    std::auto_ptr< di::builder<C> > builder();
     std::auto_ptr< di::abstract_builder<C> > abstract_builder();
     std::auto_ptr< di::abstract_builder<I> > abstract_builder();
     std::auto_ptr< di::generic_builder<C> > generic_builder();
@@ -72,8 +73,26 @@ boost::shared_ptr<T> get()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
+std::auto_ptr< di::builder<C> > builder()
+---------------------------------------------------------------------
+
+Creates a builder preconfigured with applicable services. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
 std::auto_ptr< di::abstract_builder<C> > abstract_builder()
 ---------------------------------------------------------------------
+
+Creates an abstract_builder preconfigured with applicable services. 
 
 *Requires:* none +
 *Effects:* none +
@@ -89,6 +108,8 @@ std::auto_ptr< di::abstract_builder<C> > abstract_builder()
 std::auto_ptr< di::abstract_builder<I> > abstract_builder()
 ---------------------------------------------------------------------
 
+Creates an abstract_builder preconfigured with applicable services. 
+
 *Requires:* none +
 *Effects:* none +
 *Postconditions:* none +
@@ -102,6 +123,8 @@ std::auto_ptr< di::abstract_builder<I> > abstract_builder()
 ---------------------------------------------------------------------
 std::auto_ptr< di::generic_builder<C> > generic_builder()
 ---------------------------------------------------------------------
+
+Creates a generic_builder preconfigured with applicable services. 
 
 *Requires:* none +
 *Effects:* none +
