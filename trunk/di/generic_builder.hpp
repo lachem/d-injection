@@ -28,7 +28,7 @@ public:
 	 * @post All injections which where provided to generic_builder are injectied into instance
 	 * @post constructed has been called on instance
 	 * @param instance Instance of type C that needs injections specified by template S
-     * @throw Depending on diagnostics method chosen may throw requirement_not_satisfied exception
+     * @throw requirement_not_satisfied Depending on diagnostics method chosen.
 	 */
 	template<typename C>
 	void build(C& instance) {
