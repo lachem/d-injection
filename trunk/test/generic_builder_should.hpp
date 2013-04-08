@@ -22,7 +22,7 @@ protected:
 		typedef di::using_exceptions<subject_type> diagnostics;
 	};
 	generic_builder<subject_part> builder;
-
+	generic_builder< subject<D3> > builder2;
 	D3 d3_1, d3_2, d3_3;
 };
 
@@ -37,6 +37,28 @@ TEST_F(GenericBuilderShould, buildObjectsByDelegation) {
 
 	EXPECT_EQ(&d3_1,instance.some_var.get());
 	EXPECT_EQ(&d3_2,instance.some_var2.get());
+}
+
+TEST_F(GenericBuilderShould, buildPartsOfObjectsByDelegation) {
+	::testing::NiceMock<Same3Types> instance;
+	builder.use(d3_1).use(d3_2);
+	builder.build_part(instance);
+
+	EXPECT_EQ(&d3_1,instance.some_var.get());
+	EXPECT_EQ(&d3_2,instance.some_var2.get());
+}
+
+TEST_F(GenericBuilderShould, buildWholeObjectsInPartsByDelegation) {
+	::testing::NiceMock<Same3Types> instance;
+	builder.use(d3_1).use(d3_2);
+	builder.build_part(instance);
+
+	builder2.use(d3_3);
+	builder2.build_part(instance);
+
+	EXPECT_EQ(&d3_1,instance.some_var.get());
+	EXPECT_EQ(&d3_2,instance.some_var2.get());
+	EXPECT_EQ(&d3_3,instance.some_var3.get());
 }
 
 TEST_F(GenericBuilderShould, reportErrorsWhenNormalBuildUsed) {

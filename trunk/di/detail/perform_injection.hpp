@@ -15,8 +15,11 @@ namespace detail {
 
 template<typename T>
 struct perform_injection {
+	// bool passed by pointer to return diagnostics information from a functor in an efficient manner
 	perform_injection(T* a_subject, bool* a_succeeded) : 
 		subject(a_subject), succeeded(a_succeeded) {*succeeded = true;}
+
+	perform_injection(T* a_subject) : subject(a_subject), succeeded(NULL) {}
 
 	template<typename V>
 	void operator()(V& v) const {
@@ -31,7 +34,9 @@ struct perform_injection {
 				destination.transfer_from(const_cast<injection_source<bare_type>*>(*it));
 			}
 		}
-		diagnose<V>();
+		if(succeeded != NULL) {
+			diagnose<V>();
+		}
 	}
 
 	template<typename V>
