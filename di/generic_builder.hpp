@@ -49,7 +49,7 @@ public:
 	 */
 	template<typename C>
 	void build_part(C& instance) {
-		(void) build_inject(&instance);
+		build_part_inject(&instance);
 	}
 
     /**
@@ -105,6 +105,12 @@ private:
 			di::detail::perform_injection<C>(instance,&succeeded));
 		
 		return succeeded;
+	}
+
+	template<typename C>
+	void build_part_inject(C* instance) {
+		boost::fusion::for_each(di::configurable<S>::injections,
+			di::detail::perform_injection<C>(instance));
 	}
 };
 

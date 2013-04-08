@@ -5,6 +5,7 @@ Dependency Injection
 link:overview.html[Overview]::
 include::reference.txt[]
 link:configuration.html[Configuration Information]::
+link:performance.html[Performance Note]::
 link:rationale.html[Rationale]::
 link:faq.html[Frequently Asked Questions (FAQs)]::
 link:bibliography.html[Bibliography]::
