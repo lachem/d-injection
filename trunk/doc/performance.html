@@ -746,18 +746,18 @@ asciidoc.install(2);
 <div class="sect1">
 <h2 id="_avoid_postponed_building">Avoid postponed building</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Objects should be built immiedietely after they are instatiated. This is due to the fact that injectable class attributes are written into global containers after object instantiation. Those global containers (which are traversed during building) are optimized for a small number of simultanously awaiting injections (see DI_MAX_INJECTIONS_PER_TYPE). Thus deferring building may cause a decrease in efficiency.</p></div>
+<div class="paragraph"><p>Objects should be built immediately after they are instatiated. This is due to the fact that injectable class attributes are written into global containers after object instantiation. Those global containers (which are traversed during building) are optimized for a small number of simultanously awaiting injections (see DI_MAX_INJECTIONS_PER_TYPE). Thus deferring building may cause a decrease in efficiency.</p></div>
 <div class="listingblock">
 <div class="title">Inefficient</div>
 <div class="content">
 <pre><code>std::vector&lt;TypeWithInjections&gt; container;
 ...
 for(int i=0; i&lt;100000; i++) {
-        container.push_back(TypeWithInjections());
+    container.push_back(TypeWithInjections());
 }
 ...
 for(int i=0; i&lt;100000; i++) {
-        builder.build(container[i]);
+    builder.build(container[i]);
 }</code></pre>
 </div></div>
 <div class="listingblock">
@@ -766,8 +766,8 @@ for(int i=0; i&lt;100000; i++) {
 <pre><code>std::vector&lt;TypeWithInjections&gt; container;
 ...
 for(int i=0; i&lt;100000; i++) {
-        container.push_back(TypeWithInjections());
-        builder.build(container[i]);
+    container.push_back(TypeWithInjections());
+    builder.build(container[i]);
 }</code></pre>
 </div></div>
 <div class="listingblock">
@@ -775,7 +775,7 @@ for(int i=0; i&lt;100000; i++) {
 <div class="content">
 <pre><code>std::vector&lt;TypeWithInjections&gt; container(100000);
 for(int i=0; i&lt;100000; i++) {
-        builder.build(container[i]);
+    builder.build(container[i]);
 }</code></pre>
 </div></div>
 <div class="listingblock">
@@ -790,13 +790,15 @@ std::vector&lt;TypeWithInjections&gt; container(100000,prototype);</code></pre>
 <div class="sect1">
 <h2 id="_prefer_build_to_build_part">Prefer build to build_part</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>It is correct in terms of functionality to use build_part instead of build. However as it comes to build_part it does not check the requirements. Because of that any spare injections, even if optional, will remain in the global container thus decreasing the efficiency of other builders.</p></div>
+<div class="paragraph"><p>When many generic_builders are to be used with one object the last call for building should be build in contradiction to build_part.</p></div>
 </div>
 </div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-04-08 22:24:07 CEST
+Last updated 2013-04-11 21:17:21 CEST
 </div>
 </div>
 </body>
