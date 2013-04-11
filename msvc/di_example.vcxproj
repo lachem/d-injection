@@ -65,7 +65,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
-      <Path>$(SolutionDir)../bin/$(Configuration)Example/build.log</Path>
+      <Path>$(SolutionDir)/../bin/$(Configuration)Example/build.log</Path>
     </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -87,6 +87,9 @@
       <AdditionalLibraryDirectories>../../../lib/boost_1_53_0/stage/lib/</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <BuildLog>
+      <Path>$(SolutionDir)/../bin/$(Configuration)Example/build.log</Path>
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\example\doc_generator\src\main.cpp" />
