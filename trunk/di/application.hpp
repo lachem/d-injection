@@ -110,7 +110,7 @@ private:
 		template<typename T>
 		void operator()(di::service<T>*& element) const {
             //The user might want define services to be read only for some modules and read/write for others. 
-            //Therefore a service may be non const onprovided services list and const ond required.
+            //Therefore a service may be non const on provided services list and const on required.
             typedef typename boost::mpl::eval_if_c< 
                 boost::mpl::contains<Seq, di::service<T> >::type::value,
                     boost::mpl::identity< di::service<T> >, 
@@ -118,7 +118,7 @@ private:
 
 			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq, contained >::type::value), NoModuleProvidesTheNeededService,);
 
-            //TODO: perhaps there is a better way to that, without using reinterpret_cast
+            //TODO: perhaps there is a better way achieve that, without using reinterpret_cast
 			element = reinterpret_cast<di::service<T>*>(&boost::fusion::at_key<contained>(sequence));
 		}
 		Seq& sequence;
