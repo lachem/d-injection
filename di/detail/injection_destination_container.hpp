@@ -24,12 +24,6 @@ class injection_destination_container {
 			return item.matches(key);
 		}
 
-		template<size_t arity> 
-		static memory_pool<arity>& allocator() {
-			static memory_pool<arity> mem_pool;
-			return mem_pool;
-		}
-
 		void* operator new(size_t) {
 			return allocator<sizeof(node)>().malloc();
 		}
@@ -40,6 +34,13 @@ class injection_destination_container {
 	
 		injection_destination<T> item;
 		node* next;
+
+	private:
+		template<size_t arity> 
+		inline static memory_pool<arity>& allocator() {
+			static memory_pool<arity> mem_pool;
+			return mem_pool;
+		}
 	};
 
 public:
