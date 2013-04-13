@@ -765,7 +765,7 @@ IoC
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>This library is header only. To use it just include di/di.hpp in your project.</p></div>
-<div class="paragraph"><p>Dependency injection is an implementation of <a href="http://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control</a> known from java frameworks such as <a href="http://en.wikipedia.org/wiki/Spring_Framework">Spring</a> or <a href="http://www.qi4j.org/">Qi4j</a>. Still C++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on <a href="http://www.boost.org/">boost</a> (and in future in pure C++11).</p></div>
+<div class="paragraph"><p>Dependency injection is an implementation of <a href="http://en.wikipedia.org/wiki/Inversion_of_control">Inversion of Control</a> known from java frameworks such as <a href="http://en.wikipedia.org/wiki/Spring_Framework">Spring</a> or <a href="http://www.qi4j.org/">Qi4j</a>. Still C\++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on <a href="http://www.boost.org/">boost</a>.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -1143,18 +1143,16 @@ struct UI
 <div class="content">
 <pre><code>// Controller module code
 di::module&lt;Controller&gt;&amp; controllerModule;
-ActionHandler handler;
-controllerModule.use(di::service&lt;ActionHandler&gt;(handler));
+controllerModule.use(di::service&lt;ActionHandler&gt;(new ActionHandler));
 ...
 //Infrastructure module code
 di::module&lt;Infrastructure&gt;&amp; infrastructureModule;
-Logger logger;
-Database db;
-infrastructureModule.use(di::service&lt;Logger&gt;(logger)).use(di::service&lt;Database&gt;(db));</code></pre>
+infrastructureModule.use(di::service&lt;Logger&gt;(new Logger));
+infrastructureModule.use(di::service&lt;Database&gt;(new Database));</code></pre>
 </div></div>
 <div class="paragraph"><p>Modules are connected to each other. Therefore all Modules should firstly provide their services by calling the <code>di::module&lt;Module&gt;::use</code> method before any of them could obtain any of the needed services.</p></div>
-<div class="paragraph"><p>Modules work in terms services. Only one instance per service type is supported. That is neither one module nor two different
-modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which provider should be connected to which needer.</p></div>
+<div class="paragraph"><p>Modules work in terms of services. Only one instance per service type is supported. That is neither one module nor two different
+modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which "provider" should be connected to which "needer".</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -1172,12 +1170,73 @@ modules can provide two services of the same type. Although if required user mig
 di::module&lt;Infrastructure&gt;&amp; infrastructureModule = application;
 di::module&lt;UI&gt;&amp; uiModule = application;</code></pre>
 </div></div>
-<div class="paragraph"><p>This way <code>controllerModule</code>, <code>infrastructureModule</code> and <code>uiModule</code> can be fed up seperately.</p></div>
+<div class="paragraph"><p>This way <code>controllerModule</code>, <code>infrastructureModule</code> and <code>uiModule</code> can be fed seperately.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>// Controller module code
+boost::shared_ptr&lt;ActionHandler&gt; actionHandler(new ActionHandler);
+controllerModule.use(actionHandler);
+...
+//Infrastructure module code
+infrastructureModule.use(di::service&lt;Logger&gt;(new Logger));
+infrastructureModule.use(di::service&lt;Database&gt;(new Database));</code></pre>
+</div></div>
+<div class="paragraph"><p>Modules are connected and filled with services. It is now possible to create a preconfigured builder from it.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>//Infrastructure module code
+class Command : public di::subject&lt;ActionHandler, Database, Logger&gt; {
+private:
+    di::required&lt;ActionHandler&gt; handler;
+    di::required&lt;Database&gt; db;
+    di::required&lt;Logger&gt; logger;
+};
+...
+std::auto_ptr&lt; di::builder&lt;Command&gt; &gt; builder = controllerModule.builder&lt;Command&gt;();
+builder.use(actionHandler);    // action handler needs to be passed seperately see warning note below
+Command* c = builder.build();  // we can build - module has passed Database and Logger to the builder</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img alt="Warning" src="data:image/png;base64,
+" />
+</td>
+<td class="content">di::module and di::application have been designed solely for the purpose of exchanging services <strong>between</strong> modules. Therefore mentioning
+the same service on both provided and needed service lists does not make di::module pass it to the builders. This is a concious limitation introduced
+to ensure that users will not use di::modules for intra module depedency exchanging.</td>
+</tr></table>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_restricting_access">Restricting Access</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>In addition to the dependency exchange mechanism di::modules also provide the capability of defining service access policy. It is possible
+to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without
+a possiblity to alter it. "const" before service type on needed service list enforces that.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>struct Controller
+{
+    di::service_list&lt;ActionHandler&gt; provided;
+    di::service_list&lt;Logger,const Database&gt; needed;
+};</code></pre>
+</div></div>
+<div class="paragraph"><p>Moreover it is also possible to restrict access from the provider side, so that no other module has write access to a specific service.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>struct Controller
+{
+    di::service_list&lt;ActionHandler&gt; provided;
+    di::service_list&lt;Logger,const Database&gt; needed;
+};
+struct Infrastructure
+{
+    di::service_list&lt;Logger,const Database&gt; provided;
+    di::service_list&lt;&gt; needed;
+};</code></pre>
+</div></div>
 <br />
 <br />
 <hr />
@@ -1189,7 +1248,7 @@ di::module&lt;UI&gt;&amp; uiModule = application;</code></pre>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-03-14 20:29:05 CET
+Last updated 2013-04-13 13:07:18 CEST
 </div>
 </div>
 </body>

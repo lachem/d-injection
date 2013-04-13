@@ -8,6 +8,8 @@
 
 #include <memory>
 #include <boost/shared_ptr.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_const.hpp>
 #include <di/detail/utility.hpp>
 
 namespace di {
@@ -105,6 +107,9 @@ private:
 	representation object;
 };
 
+// di::service casts away constnes for its private storage to enable dependency matching between same
+// const and non-cost services in di::application. This happens when one module provides a read/write 
+// service and the second module needs it as read only.
 template<typename T>
 struct service {
 	enum{id=detail::injection_id::service};
@@ -116,7 +121,7 @@ struct service {
 
 	service() : object(NULL_PTR(non_const_type)) {}
 	explicit service(T* an_object) : object(const_cast<non_const_type*>(an_object)) {}
-	explicit service(const representation& an_object) : object(an_object) {}
+	explicit service(const representation& an_object) : object(boost::const_pointer_cast<non_const_type>(an_object)) {}
 
 	operator representation() {
 		return representation(object);

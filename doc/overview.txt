@@ -18,7 +18,7 @@ Introduction
 
 This library is header only. To use it just include di/di.hpp in your project.
 
-Dependency injection is an implementation of http://en.wikipedia.org/wiki/Inversion_of_control[Inversion of Control] known from java frameworks such as http://en.wikipedia.org/wiki/Spring_Framework[Spring] or http://www.qi4j.org/[Qi4j]. Still C\++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on http://www.boost.org/[boost] (and in future in pure C++11).
+Dependency injection is an implementation of http://en.wikipedia.org/wiki/Inversion_of_control[Inversion of Control] known from java frameworks such as http://en.wikipedia.org/wiki/Spring_Framework[Spring] or http://www.qi4j.org/[Qi4j]. Still C\++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on http://www.boost.org/[boost].
 
 Injection subject
 -----------------
@@ -349,20 +349,18 @@ The implementer of each module is responsible for providing pointers to those se
 ---------------------------------------------------------------------
 // Controller module code 
 di::module<Controller>& controllerModule; 
-ActionHandler handler; 
-controllerModule.use(di::service<ActionHandler>(handler)); 
+controllerModule.use(di::service<ActionHandler>(new ActionHandler)); 
 ... 
 //Infrastructure module code 
 di::module<Infrastructure>& infrastructureModule; 
-Logger logger; 
-Database db; 
-infrastructureModule.use(di::service<Logger>(logger)).use(di::service<Database>(db)); 
+infrastructureModule.use(di::service<Logger>(new Logger));
+infrastructureModule.use(di::service<Database>(new Database)); 
 ---------------------------------------------------------------------
 
 Modules are connected to each other. Therefore all Modules should firstly provide their services by calling the +di::module<Module>::use+ method before any of them could obtain any of the needed services.
       
-Modules work in terms services. Only one instance per service type is supported. That is neither one module nor two different
-modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which provider should be connected to which needer.
+Modules work in terms of services. Only one instance per service type is supported. That is neither one module nor two different
+modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which "provider" should be connected to which "needer".
   
 Application
 -----------
@@ -381,11 +379,66 @@ di::module<Infrastructure>& infrastructureModule = application;
 di::module<UI>& uiModule = application; 
 ---------------------------------------------------------------------
 
-This way +controllerModule+, +infrastructureModule+ and +uiModule+ can be fed up seperately.
+This way +controllerModule+, +infrastructureModule+ and +uiModule+ can be fed seperately.
+
+---------------------------------------------------------------------
+// Controller module code
+boost::shared_ptr<ActionHandler> actionHandler(new ActionHandler);
+controllerModule.use(actionHandler); 
+... 
+//Infrastructure module code 
+infrastructureModule.use(di::service<Logger>(new Logger));
+infrastructureModule.use(di::service<Database>(new Database));
+---------------------------------------------------------------------
+
+Modules are connected and filled with services. It is now possible to create a preconfigured builder from it.
+
+---------------------------------------------------------------------
+//Infrastructure module code 
+class Command : public di::subject<ActionHandler, Database, Logger> {
+private:
+    di::required<ActionHandler> handler;
+    di::required<Database> db;
+    di::required<Logger> logger;
+};
+...
+std::auto_ptr< di::builder<Command> > builder = controllerModule.builder<Command>();
+builder.use(actionHandler);    // action handler needs to be passed seperately see warning note below
+Command* c = builder.build();  // we can build - module has passed Database and Logger to the builder
+---------------------------------------------------------------------
+
+WARNING: di::module and di::application have been designed solely for the purpose of exchanging services *between* modules. Therefore mentioning
+the same service on both provided and needed service lists does not make di::module pass it to the builders. This is a concious limitation introduced
+to ensure that users will not use di::modules for intra module depedency exchanging.
 
 Restricting Access
 ------------------
 
+In addition to the dependency exchange mechanism di::modules also provide the capability of defining service access policy. It is possible
+to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without
+a possiblity to alter it. "const" before service type on needed service list enforces that.
 
+---------------------------------------------------------------------
+struct Controller 
+{ 
+    di::service_list<ActionHandler> provided; 
+    di::service_list<Logger,const Database> needed; 
+}; 
+---------------------------------------------------------------------
+
+Moreover it is also possible to restrict access from the provider side, so that no other module has write access to a specific service.
+
+---------------------------------------------------------------------
+struct Controller 
+{ 
+    di::service_list<ActionHandler> provided; 
+    di::service_list<Logger,const Database> needed; 
+}; 
+struct Infrastructure 
+{ 
+    di::service_list<Logger,const Database> provided; 
+    di::service_list<> needed; 
+}; 
+---------------------------------------------------------------------
 
 include::footer.txt[]

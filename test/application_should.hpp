@@ -89,13 +89,23 @@ TEST_F(ApplicationShould, allowFeedingModuleItDerivesFromInCascadicManner) {
 	mod1.use(di::service<TestType1>(new TestType1)).use(di::service<TestType2>(new TestType2));
 }
 
-TEST_F(ApplicationShould, returnElementsProvidedByAnotherModule) {
+TEST_F(ApplicationShould, connectElementsProvidedByAnotherModule) {
 	di::module<Module1>& mod1 = giventwoModuleApplication();
 	boost::shared_ptr<TestType1> t1(new TestType1);
 	mod1.use(di::service<TestType1>(t1));
 	di::module<Module2>& mod2 = giventwoModuleApplication();
 
 	EXPECT_EQ(t1,mod2.get<TestType1>());
+}
+
+TEST_F(ApplicationShould, connectElementsProvidedByAnotherModuleSoThatModuleCopyWorks) {
+	di::module<Module1>& mod1 = giventwoModuleApplication();
+	boost::shared_ptr<TestType1> t1(new TestType1);
+	mod1.use(di::service<TestType1>(t1));
+	di::module<Module2>& mod2 = giventwoModuleApplication();
+	di::module<Module2> mod2Copy = mod2;
+
+	EXPECT_EQ(t1,mod2Copy.get<TestType1>());
 }
 
 TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithtwoModuleApplication) {

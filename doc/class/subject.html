@@ -776,7 +776,8 @@ asciidoc.install(2);
 <div class="content">
 <pre><code>virtual void constructed()</code></pre>
 </div></div>
-<div class="paragraph"><p>There are cases when a user wants could invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections.</p></div>
+<div class="paragraph"><p>Override this method to perform actions after building is completed.</p></div>
+<div class="paragraph"><p>There are situations when a user may need invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections or otherwise stated.</p></div>
 <div class="paragraph"><p><strong>Requires:</strong> none<br />
 <strong>Effects:</strong> none<br />
 <strong>Postconditions:</strong> none<br />
@@ -798,7 +799,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-04-06 20:41:18 CEST
+Last updated 2013-04-13 13:07:55 CEST
 </div>
 </div>
 </body>
