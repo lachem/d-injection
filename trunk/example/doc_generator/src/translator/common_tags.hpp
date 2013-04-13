@@ -6,8 +6,11 @@
 #ifndef COMMON_TAGS_HPP
 #define COMMON_TAGS_HPP
 
+#define MAIN "doxygen.compounddef"
+#define KIND "kind"
 #define BRIEF "briefdescription.para"
 #define DETAIL "detaileddescription.para"
 #define PARAMS "detaileddescription.para.parameterlist"
+#define VISIBILITY "prot"
 
 #endif // COMMON_TAGS_HPP

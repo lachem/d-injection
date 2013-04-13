@@ -22,8 +22,8 @@ class ModelBuilder : public di::subject<doxygen_input::XmlRepository,model::Mode
 public:
     void assemble() {
         for(auto&& xmlFile : *xmlRepository) {
-            if(xmlFile.hasChild("doxygen.compounddef")) {
-                doxygen_input::XmlNode elementNode = xmlFile.getChild("doxygen.compounddef");
+            if(xmlFile.hasChild(MAIN)) {
+                doxygen_input::XmlNode elementNode = xmlFile.getChild(MAIN);
                 if(isStructOrClass(elementNode)) {
                     model::Class cls = readClass(elementNode);
                     cls.methods = readMethods(elementNode);
@@ -35,7 +35,7 @@ public:
 
 private:
     bool isStructOrClass (doxygen_input::XmlNode& elementNode) {
-        std::string kind = elementNode.getAttribute("kind");
+        std::string kind = elementNode.getAttribute(KIND);
         return kind == "class" || kind == "struct";
     }
 
@@ -61,8 +61,8 @@ private:
     }
 
     bool isPublicFunction(doxygen_input::XmlNode& memberNode) {
-        return memberNode.getAttribute("kind") == "function" && 
-               memberNode.getAttribute("prot") == "public";
+        return memberNode.getAttribute(KIND) == "function" && 
+               memberNode.getAttribute(VISIBILITY) == "public";
     }
 
     di::required<di::service<doxygen_input::XmlRepository>> xmlRepository;

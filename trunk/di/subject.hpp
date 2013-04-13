@@ -63,9 +63,11 @@ public:
 	virtual ~subject() {}
 
 	/**
-	 * @brief There are cases when a user wants could invoke actions on injected objects right after the injection
-	 *        procedure has finished. Overriding this method provides such possiblity. Each builder calls this
-	 *        method after successfuly performing injections.
+	 * @brief Override this method to perform actions after building is completed.
+	 * 
+	 * There are situations when a user may need invoke actions on injected objects right after the injection
+	 * procedure has finished. Overriding this method provides such possiblity. Each builder calls this
+	 * method after successfuly performing injections or otherwise stated.
 	 */
 	virtual void constructed() {}
 };
