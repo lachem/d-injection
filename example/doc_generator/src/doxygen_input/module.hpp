@@ -14,16 +14,18 @@
 
 namespace doxygen_input {
 
-struct Module {
+struct Dependencies {
 	typedef di::service_list<doxygen_input::XmlRepository> provided;
 	typedef di::service_list<> needed;
+};
 
-	Module(di::module<Module>* aModule, const std::string& anInputDirectory) : 
+struct Module {
+	Module(di::module<Dependencies>& aModule, const std::string& anInputDirectory) : 
 		module(aModule), inputDirectory(anInputDirectory) {}
 
 	void build() {
 		xmlRepository.reset(new XmlRepository());
-		module->use(xmlRepository);
+		module.use(xmlRepository);
 	}
 
 	void start() {
@@ -32,7 +34,7 @@ struct Module {
 
 private:
 	std::string inputDirectory;
-	di::module<Module>* module;
+	di::module<Dependencies>& module;
 	boost::shared_ptr<XmlRepository> xmlRepository;
 };
 

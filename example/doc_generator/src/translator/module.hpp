@@ -14,25 +14,27 @@
 
 namespace translator {
 
-struct Module {
+struct Dependencies {
 	typedef di::service_list<model::Model> provided;
 	typedef di::service_list<doxygen_input::XmlRepository> needed;
+};
 
-	Module(di::module<Module>* aModule) : module(aModule) {}
+struct Module {
+	Module(di::module<Dependencies>& aModule) : module(aModule) {}
 
 	void build() {
 		model.reset(new model::Model);
-		module->use(model);
+		module.use(model);
 	}
 
 	void start() {
-        auto builder = module->builder<translator::ModelBuilder>();
+		auto builder = module.builder<translator::ModelBuilder>();
 		builder->use(di::shared<model::Model>(model));
-        builder->build()->assemble();
+		builder->build()->assemble();
 	}
 
 private:
-	di::module<Module>* module;
+	di::module<Dependencies>& module;
 	boost::shared_ptr<model::Model> model;
 };
 
