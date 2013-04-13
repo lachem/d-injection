@@ -15,7 +15,7 @@
 namespace translator {
 
 struct Dependencies {
-	typedef di::service_list<model::Model> provided;
+	typedef di::service_list<const model::Model> provided;
 	typedef di::service_list<doxygen_input::XmlRepository> needed;
 };
 
@@ -24,7 +24,7 @@ struct Module {
 
 	void build() {
 		model.reset(new model::Model);
-		module.use(model);
+		module.use<const model::Model>(model);
 	}
 
 	void start() {

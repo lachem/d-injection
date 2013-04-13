@@ -45,7 +45,9 @@ Classes with injections derive publicly from subject, therefore virtual destruct
 virtual void constructed()
 ---------------------------------------------------------------------
 
-There are cases when a user wants could invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections. 
+Override this method to perform actions after building is completed. 
+
+There are situations when a user may need invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections or otherwise stated. 
 
 *Requires:* none +
 *Effects:* none +
