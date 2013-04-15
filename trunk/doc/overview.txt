@@ -217,16 +217,8 @@ one might write
 
 ---------------------------------------------------------------------
 di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>(); 
-Vehicle* porshe = vehicle_builder->build();
----------------------------------------------------------------------
-
-or
-
----------------------------------------------------------------------
-di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>() 
-... 
-Car porshe(...); 
-vehicle_builder->build(porshe); 
+Vehicle* porshe = new Porshe();
+vehicle_builder->build(*porshe);
 ---------------------------------------------------------------------
   
 NOTE: It is the class which is the template parameter of +di::abstract_builder+ is the one that needs to derive (publicly) from di::subject. Unfortunately this is a necessary limitation.
@@ -408,8 +400,8 @@ Command* c = builder.build();  // we can build - module has passed Database and 
 ---------------------------------------------------------------------
 
 WARNING: di::module and di::application have been designed solely for the purpose of exchanging services *between* modules. Therefore mentioning
-the same service on both provided and needed service lists does not make di::module pass it to the builders. This is a concious limitation introduced
-to ensure that users will not use di::modules for intra module depedency exchanging.
+the same service on both provided and needed service lists of the same module will not work as expected. This is a concious limitation introduced 
+to ensure di::modules will not be used for intra module depedency exchanging.
 
 Restricting Access
 ------------------
