@@ -85,7 +85,7 @@ private:
             for(auto&& node : classNode.getChildren("basecompoundref")) {
                 std::string base = std::move(node.getValue());
                 if(base.find("inherit_modules") == std::string::npos) {
-                    inheritance += node.getAttribute("prot") + " " + base + ", ";
+                    inheritance += node.getAttribute(VISIBILITY) + " " + base + ", ";
                 }
             }
             if(!inheritance.empty()) {
