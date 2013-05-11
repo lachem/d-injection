@@ -6,6 +6,7 @@
 #ifndef DI_INJECTION_DESTINATION_CONTAINER_HPP
 #define DI_INJECTION_DESTINATION_CONTAINER_HPP
 
+#include <di/detail/injection_destination.hpp>
 #include <di/detail/memory_pool.hpp>
 #include <di/custom/synchronization.hpp>
 #include <di/detail/utility.hpp>

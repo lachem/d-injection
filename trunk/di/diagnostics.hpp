@@ -7,6 +7,7 @@
 #define DI_DIAGNOSTICS_HPP
 
 #include <stdexcept>
+#include <sstream>
 
 namespace di {
 
