@@ -37,7 +37,7 @@ struct set_of_unique_types {
 } // namespace detail
 
 /**
- * Subject is a base class for all classes that are inteded do have objects injected to it.
+ * Subject is a base class for all classes that are intended do have objects injected to it.
  * All injection types are to be listed in subject's variadic template parameter list. To support
  * multiple instances of the same types a number of operations on the list of types is performed.
  * In the result a template list of <T,T,Y,Z,Y> is transformed into < <T,2>, <T,2>, <Z,1> >.

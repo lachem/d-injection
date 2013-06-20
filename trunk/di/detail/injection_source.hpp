@@ -15,7 +15,7 @@ template<typename T>
 struct injection_source {
 	typedef T type;
 
-	explicit injection_source(short an_id) : id(an_id) {}
+	explicit injection_source(short an_id) : id(an_id), is_empty(true) {}
 	virtual ~injection_source() {}
 
 	template<typename Y>

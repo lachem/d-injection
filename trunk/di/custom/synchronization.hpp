@@ -6,6 +6,8 @@
 #ifndef DI_SYNCHRONIZATION_HPP
 #define DI_SYNCHRONIZATION_HPP
 
+#include <boost/version.hpp>
+
 #include <di/custom/lock_guard.hpp>
 #include <di/custom/spinlock.hpp>
 
