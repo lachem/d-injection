@@ -28,6 +28,10 @@ public:
 		}
 	}
 
+	~memory_pool() {
+		delete [] available_mem;
+	}
+
 	void* malloc() {
 		return empty() ? ::malloc(sizeof(mem_block<size>)) : stack[--head];
 	}

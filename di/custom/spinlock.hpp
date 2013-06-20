@@ -6,10 +6,16 @@
 #ifndef DI_SPIN_LOCK_HPP
 #define DI_SPIN_LOCK_HPP
 
-#include <di/custom/atomic.hpp>
+#if BOOST_VERSION < 105300
+#	include <di/custom/atomic.hpp>
+#else
+#	include <boost/atomic.hpp>
+#endif
 
 namespace di {
 namespace custom {
+
+#if BOOST_VERSION < 105300
 
 class spinlock {	
 	spinlock(const spinlock&);
@@ -29,6 +35,33 @@ public:
 private:
 	uint32_t lock_var;
 };
+
+#else
+
+class spinlock {
+	spinlock(const spinlock&);	
+	spinlock& operator=(const spinlock&);
+
+	typedef enum {Locked, Unlocked} LockState;
+
+public:
+	spinlock() : state_(Unlocked) {}
+
+	void lock()
+	{
+		while (state_.exchange(Locked, boost::memory_order_acquire) == Locked) {}
+	}
+
+	void unlock()
+	{
+		state_.store(Unlocked, boost::memory_order_release);
+	}
+	
+private:
+	boost::atomic<LockState> state_;
+};
+
+#endif
 
 } // namespace custom
 } // namespace di

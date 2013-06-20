@@ -10,6 +10,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <di/detail/utility.hpp>
 
 namespace di {
@@ -143,6 +144,26 @@ struct service {
 private:
 	storage object;
 };
+
+template<typename T>
+di::shared<T> as_ordinary(T* object) {
+	return di::ordinary<T>(object);
+}
+
+template<typename T>
+di::shared<T> as_unique(T* object) {
+	return di::unique<T>(object);
+}
+
+template<typename T>
+di::shared<T> as_shared(T* object) {
+	return di::shared<T>(object);
+}
+
+template<typename T>
+di::shared<T> as_service(T* object) {
+	return di::service<T>(object);
+}
 
 } // namespace di
 

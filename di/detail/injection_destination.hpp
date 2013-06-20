@@ -25,10 +25,10 @@ struct injection_destination_key {
 
 template<typename T>
 struct injection_destination {
-	injection_destination() : address(NULL), injection_type_id(injection_id::invalid), required(false) {}
+	injection_destination() : address(NULL), injection_type_id(injection_id::invalid), required(false), do_assignement(empty) {}
 
 	injection_destination(void* an_address, short an_injection_type_id, bool a_required) :
-		address(an_address), required(a_required), injection_type_id(an_injection_type_id) {}
+		address(an_address), required(a_required), injection_type_id(an_injection_type_id), do_assignement(empty) {}
 
 	void transfer_from(di::detail::injection_source<T>* inj) {
 		do_assignement(address,inj);
@@ -49,6 +49,8 @@ struct injection_destination {
 	}
 
 protected:
+	static void empty(void*, injection_source<T>*) {}
+
 	void* address;
 	bool  required;
 	short injection_type_id;
