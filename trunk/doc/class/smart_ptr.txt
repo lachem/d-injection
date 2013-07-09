@@ -1,9 +1,9 @@
- Dependency Injection - Header link:../../di/optional.hpp[<optional.hpp>]
-========================================================================
+ Dependency Injection - Header link:../../di/injection_types.hpp[<injection_types.hpp>]
+======================================================================================
 
 
-Class optional
---------------
+Class smart_ptr
+---------------
 
 
 
@@ -13,13 +13,11 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct optional
+  template<typename T> struct smart_ptr
   {
-    optional();
-    optional(const optional< T > &source);
-    optional<T>& operator=(const optional< T > &source);
-    operator T *();
-    operator T const *() const ;
+    static void assign(T *&dest, T *&src);
+    static void assign(shared_ptr &dest, shared_ptr &src);
+    static void assign(single_ptr &dest, single_ptr &src);
   };
 }
 ---------------------------------------------------------------------
@@ -29,7 +27,7 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-optional()
+static void assign(T *&dest, T *&src)
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -43,7 +41,7 @@ optional()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-optional(const optional< T > &source)
+static void assign(shared_ptr &dest, shared_ptr &src)
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -57,35 +55,7 @@ optional(const optional< T > &source)
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-optional<T>& operator=(const optional< T > &source)
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* none +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-operator T *()
----------------------------------------------------------------------
-
-*Requires:* none +
-*Effects:* none +
-*Postconditions:* none +
-*Returns:* none +
-*Throws:* none +
-*Complexity:* no info +
-*Note:* none +
-*Danger:* none +
-*Rationale:* none +
-
----------------------------------------------------------------------
-operator T const *() const 
+static void assign(single_ptr &dest, single_ptr &src)
 ---------------------------------------------------------------------
 
 *Requires:* none +

@@ -73,7 +73,7 @@ private:
 	static void assignement(void* address, injection_source<type>* object) {
 		assert(object->template holds<P>());
 		injection_source_imp<P>* source = static_cast<injection_source_imp<P>* >(object);
-		*reinterpret_cast<representation*>(address) = source->object;
+		smart_ptr<type>::assign(*reinterpret_cast<representation*>(address), source->object);
 	}
 };
 

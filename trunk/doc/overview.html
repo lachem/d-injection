@@ -1001,15 +1001,8 @@ struct Car: public Vehicle
 <div class="listingblock">
 <div class="content">
 <pre><code>di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;();
-Vehicle* porshe = vehicle_builder-&gt;build();</code></pre>
-</div></div>
-<div class="paragraph"><p>or</p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;()
-...
-Car porshe(...);
-vehicle_builder-&gt;build(porshe);</code></pre>
+Vehicle* porshe = new Porshe();
+vehicle_builder-&gt;build(*porshe);</code></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1203,8 +1196,8 @@ Command* c = builder.build();  // we can build - module has passed Database and 
 " />
 </td>
 <td class="content">di::module and di::application have been designed solely for the purpose of exchanging services <strong>between</strong> modules. Therefore mentioning
-the same service on both provided and needed service lists does not make di::module pass it to the builders. This is a concious limitation introduced
-to ensure that users will not use di::modules for intra module depedency exchanging.</td>
+the same service on both provided and needed service lists of the same module will not work as expected. This is a concious limitation introduced
+to ensure di::modules will not be used for intra module depedency exchanging.</td>
 </tr></table>
 </div>
 </div>
@@ -1248,7 +1241,7 @@ struct Infrastructure
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-04-13 13:07:18 CEST
+Last updated 2013-05-11 14:01:15 CEST
 </div>
 </div>
 </body>

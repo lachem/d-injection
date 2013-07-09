@@ -9,6 +9,7 @@
 #include <boost/type_traits/remove_pointer.hpp>
 #include <di/detail/variadics.hpp>
 #include <di/generic_builder.hpp>
+#include <di/configuration.hpp>
 #include <di/builder.hpp>
 
 namespace di {
@@ -61,17 +62,17 @@ struct module {
 	 * @brief Creates a builder preconfigured with applicable services.
 	 */
 	template<typename C>
-	std::auto_ptr< di::builder<C> > builder() {
+	typename smart_ptr< di::builder<C> >::single_ptr builder() {
 		di::builder<C>* abuilder = new di::builder<C>();
 		boost::fusion::for_each(needed,builder_feeder< di::builder<C> >(*abuilder));
-		return std::auto_ptr< di::builder<C> >(abuilder);
+		return typename smart_ptr< di::builder<C> >::single_ptr(abuilder);
 	}
 
 	/**
 	 * @brief Creates an abstract_builder preconfigured with applicable services.
 	 */
 	template<typename C>
-	std::auto_ptr< di::abstract_builder<C> > abstract_builder() {
+	typename smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder() {
 		return this->abstract_builder<C,C>();
 	}
 
@@ -79,20 +80,20 @@ struct module {
 	 * @brief Creates an abstract_builder preconfigured with applicable services.
 	 */
 	template<typename I,typename C>
-	std::auto_ptr< di::abstract_builder<I> > abstract_builder() {
+	typename smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder() {
 		di::abstract_builder<I>* abuilder = new di::builder<C,I>();
 		boost::fusion::for_each(needed,builder_feeder< di::abstract_builder<I> >(*abuilder));
-		return std::auto_ptr< di::abstract_builder<I> >(abuilder);
+		return typename smart_ptr< di::abstract_builder<I> >::single_ptr(abuilder);
 	}
 
 	/**
 	 * @brief Creates a generic_builder preconfigured with applicable services.
 	 */
 	template<typename C>
-	std::auto_ptr< di::generic_builder<C> > generic_builder() {
+	typename smart_ptr< di::generic_builder<C> >::single_ptr generic_builder() {
 		di::generic_builder<C>* abuilder = new di::generic_builder<C>();
 		boost::fusion::for_each(needed,builder_feeder< di::generic_builder<C> >(*abuilder));
-		return std::auto_ptr< di::generic_builder<C> >(abuilder);
+		return typename smart_ptr< di::generic_builder<C> >::single_ptr(abuilder);
 	}
 
 private:

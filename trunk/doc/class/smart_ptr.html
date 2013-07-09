@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title>Dependency Injection Frequently Asked Questions</title>
+<title> Dependency Injection - Header <a href="../../di/injection_types.hpp">&lt;injection_types.hpp&gt;</a></title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -731,16 +731,72 @@ asciidoc.install(2);
 </head>
 <body class="article" style="max-width:60em">
 <div id="header">
-<h1>Dependency Injection Frequently Asked Questions</h1>
+<h1> Dependency Injection - Header <a href="../../di/injection_types.hpp">&lt;injection_types.hpp&gt;</a></h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_class_smart_ptr">Class smart_ptr</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>No questions asked yet :)</p></div>
+<div class="sect2">
+<h3 id="_synopsis">Synopsis</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>namespace di
+{
+  template&lt;typename T&gt; struct smart_ptr
+  {
+    static void assign(T *&amp;dest, T *&amp;src);
+    static void assign(shared_ptr &amp;dest, shared_ptr &amp;src);
+    static void assign(single_ptr &amp;dest, single_ptr &amp;src);
+  };
+}</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_functions">Functions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>static void assign(T *&amp;dest, T *&amp;src)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>static void assign(shared_ptr &amp;dest, shared_ptr &amp;src)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>static void assign(single_ptr &amp;dest, single_ptr &amp;src)</code></pre>
+</div></div>
+<div class="paragraph"><p><strong>Requires:</strong> none<br />
+<strong>Effects:</strong> none<br />
+<strong>Postconditions:</strong> none<br />
+<strong>Returns:</strong> none<br />
+<strong>Throws:</strong> none<br />
+<strong>Complexity:</strong> no info<br />
+<strong>Note:</strong> none<br />
+<strong>Danger:</strong> none<br />
+<strong>Rationale:</strong> none<br /></p></div>
 <br />
 <br />
 <hr />
@@ -749,10 +805,11 @@ asciidoc.install(2);
 </div>
 </div>
 </div>
+</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-05-11 14:01:15 CEST
+Last updated 2013-07-09 20:40:55 CEST
 </div>
 </div>
 </body>

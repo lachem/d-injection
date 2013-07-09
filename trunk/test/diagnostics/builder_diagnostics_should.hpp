@@ -56,7 +56,7 @@ TEST_F(BuilderDiagnosticsShould, notCallConstructedWhenExceptionIsThrownWhenDele
 TEST_F(BuilderDiagnosticsShould, notIndicateErrorsWhenOptionalIsNotInjected) {
 	builder< ::testing::NiceMock<Mixed5Types> > mixed5typesBuilder;
 	mixed5typesBuilder.use(d1).use(d2).use(d3).use(d3_2);
-	EXPECT_NO_THROW(delete mixed5typesBuilder.build(););
+	EXPECT_NO_THROW(mixed5typesBuilder.build(););
 }
 
 }  // namespace diagnostics

@@ -124,7 +124,7 @@ protected:
 		for(int i=0; i<times ; ++i) {
 			builder<Injection10different> abuilder;
 			abuilder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
-			delete abuilder.build();
+			abuilder.build();
 		}
 	}
 
@@ -132,7 +132,7 @@ protected:
 		for(int i=0; i<times ; ++i) {
 			builder<InjectionMixedTypes> abuilder;
 			abuilder.use(t0_0).use(t0_1).use(t0_2).use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
-			delete abuilder.build();
+			abuilder.build();
 		}
 	}
 
@@ -150,7 +150,7 @@ protected:
 			abuilder.use(t8);
 			abuilder.use(t9);
 
-			delete abuilder.build();
+			abuilder.build();
 		}
 	}
 
@@ -163,7 +163,7 @@ protected:
 			abuilder.use(t8);
 			abuilder.use(t9);
 			
-			delete abuilder.build();
+			abuilder.build();
 		}
 	}
 

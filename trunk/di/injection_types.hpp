@@ -7,20 +7,50 @@
 #define DI_INJECTION_TYPES_HPP
 
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/shared_ptr.hpp>
 #include <di/detail/utility.hpp>
 
 namespace di {
 namespace detail {
+
 namespace injection_id {
 
 enum injection_id {invalid,ordinary,unique,shared,service,any};
 
 } // injection_id
 } // namespace detail
+
+template<typename T>
+struct smart_ptr {
+	typedef boost::shared_ptr<T> shared_ptr;
+
+#if !defined(BOOST_NO_CXX11_SMART_PTR)
+	typedef std::unique_ptr<T> single_ptr;
+#elif defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_AUTO_PTR)
+	typedef std::auto_ptr<T> single_ptr;
+#else
+	typedef boost::shared_ptr<T> single_ptr;
+#endif
+
+	static void assign(T*& dest, T*& src) {
+		dest = src;
+	}
+
+	static void assign(shared_ptr& dest, shared_ptr& src) {
+		dest = src;
+	}
+
+	static void assign(single_ptr& dest, single_ptr& src) {
+#if !defined(BOOST_NO_CXX11_SMART_PTR)
+		dest = std::move(src);
+#elif defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_AUTO_PTR)
+		dest = src;
+#endif
+	}
+};
 
 template<typename T>
 struct ordinary {
@@ -54,7 +84,7 @@ struct unique {
 	enum{id=detail::injection_id::unique};
 
 	typedef T type;
-	typedef std::auto_ptr<T> representation;
+	typedef typename smart_ptr<T>::single_ptr representation;
 
 	explicit unique(T* an_object) : object(an_object) {}
 	explicit unique(representation an_object) : object(an_object) {}
@@ -82,7 +112,7 @@ struct shared {
 	enum{id=detail::injection_id::shared};
 
 	typedef T type;
-	typedef boost::shared_ptr<T> representation;
+	typedef typename smart_ptr<T>::shared_ptr representation;
 
 	explicit shared(T* an_object) : object(an_object) {}
 	explicit shared(const representation& an_object) : object(an_object) {}
@@ -117,8 +147,8 @@ struct service {
 
 	typedef T type;
 	typedef typename boost::remove_const<T>::type non_const_type;
-	typedef boost::shared_ptr<T> representation;
-	typedef boost::shared_ptr<non_const_type> storage;
+	typedef typename smart_ptr<T>::shared_ptr representation;
+	typedef typename smart_ptr<non_const_type>::shared_ptr storage;
 
 	service() : object(NULL_PTR(non_const_type)) {}
 	explicit service(T* an_object) : object(const_cast<non_const_type*>(an_object)) {}

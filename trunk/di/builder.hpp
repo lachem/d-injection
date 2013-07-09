@@ -27,11 +27,11 @@ public:
      * @throw requirement_not_satisfied Depending on diagnostics method chosen.
 	 * @return New instance of subject type.
 	 */
-	I* build() {
+	typename smart_ptr<I>::single_ptr build() {
 		C* instance = new C;
 		build_inject(instance);
 		instance->constructed();
-		return instance;
+		return typename smart_ptr<I>::single_ptr(instance);
 	}
 
 	virtual void build(I& instance) {
