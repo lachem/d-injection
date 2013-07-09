@@ -13,7 +13,7 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  struct out_of_range : public exception
+  struct out_of_range
   {
     ~out_of_range();
     virtual const char* what() const ;

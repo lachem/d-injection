@@ -18,10 +18,10 @@ namespace di
     module<M>& use(const boost::shared_ptr< T > &element);
     module<M>& use(const di::service< T > &element);
     boost::shared_ptr<T> get();
-    std::auto_ptr< di::builder<C> > builder();
-    std::auto_ptr< di::abstract_builder<C> > abstract_builder();
-    std::auto_ptr< di::abstract_builder<I> > abstract_builder();
-    std::auto_ptr< di::generic_builder<C> > generic_builder();
+    smart_ptr< di::builder<C> >::single_ptr builder();
+    smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder();
+    smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder();
+    smart_ptr< di::generic_builder<C> >::single_ptr generic_builder();
   };
 }
 ---------------------------------------------------------------------
@@ -73,7 +73,7 @@ boost::shared_ptr<T> get()
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-std::auto_ptr< di::builder<C> > builder()
+smart_ptr< di::builder<C> >::single_ptr builder()
 ---------------------------------------------------------------------
 
 Creates a builder preconfigured with applicable services. 
@@ -89,10 +89,10 @@ Creates a builder preconfigured with applicable services.
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-std::auto_ptr< di::abstract_builder<C> > abstract_builder()
+smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder()
 ---------------------------------------------------------------------
 
-Creates an abstract_builder preconfigured with applicable services. 
+Creates an  preconfigured with applicable services. 
 
 *Requires:* none +
 *Effects:* none +
@@ -105,10 +105,10 @@ Creates an abstract_builder preconfigured with applicable services.
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-std::auto_ptr< di::abstract_builder<I> > abstract_builder()
+smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder()
 ---------------------------------------------------------------------
 
-Creates an abstract_builder preconfigured with applicable services. 
+Creates an  preconfigured with applicable services. 
 
 *Requires:* none +
 *Effects:* none +
@@ -121,10 +121,10 @@ Creates an abstract_builder preconfigured with applicable services.
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-std::auto_ptr< di::generic_builder<C> > generic_builder()
+smart_ptr< di::generic_builder<C> >::single_ptr generic_builder()
 ---------------------------------------------------------------------
 
-Creates a generic_builder preconfigured with applicable services. 
+Creates a  preconfigured with applicable services. 
 
 *Requires:* none +
 *Effects:* none +

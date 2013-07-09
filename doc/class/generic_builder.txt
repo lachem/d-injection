@@ -5,7 +5,7 @@
 Class generic_builder
 ---------------------
 
-Generic Builder is a convient facility to build objects with injections. It does not require the subject to be of any specific type, but to define which injections are to be handled by generic_builder. Therefore using generic_builder< subject<T1,T2> > is perfectly fine. The drawback of generic_builder is that it does not support abstraction i.e. build and build_part methods cannot be mocked nor can build or build_part be used to perform injections through interfaces. 
+Generic Builder is a convient facility to build objects with injections. It does not require the subject to be of any specific type, but to define which injections are to be handled by . Therefore using < subject<T1,T2> > is perfectly fine. The drawback of  is that it does not support abstraction i.e. build and build_part methods cannot be mocked nor can build or build_part be used to perform injections through interfaces. 
 
 Synopsis
 ~~~~~~~~
@@ -34,7 +34,7 @@ Functions
 void build(C &instance)
 ---------------------------------------------------------------------
 
-Allows building of any object that needs injections specified by generic_builder template type parameter. 
+Allows building of any object that needs injections specified by  template type parameter. 
 
 
 
@@ -44,9 +44,9 @@ Allows building of any object that needs injections specified by generic_builder
 
 *Requires:* C is a type that contains injections specified by template S  +
 *Effects:* none +
-*Postconditions:* All injections which where provided to generic_builder are injectied into instance  +
+*Postconditions:* All injections which where provided to  are injectied into instance  +
 *Returns:* none +
-*Throws:* requirement_not_satisfied Depending on diagnostics method chosen.  +
+*Throws:*  Depending on diagnostics method chosen.  +
 *Complexity:* no info +
 *Note:* none +
 *Danger:* none +
@@ -65,7 +65,7 @@ Allows building part of an object. What follows is that neither requirements are
 
 *Requires:* C is a type that contains injections specified by template S  +
 *Effects:* none +
-*Postconditions:* All injections which where provided to generic_builder are injectied into instance  +
+*Postconditions:* All injections which where provided to  are injectied into instance  +
 *Returns:* none +
 *Throws:* none +
 *Complexity:* no info +

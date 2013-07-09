@@ -9,7 +9,7 @@
 #include <di/detail/injection_source_container.hpp>
 #include <di/detail/variadics.hpp>
 #include <di/detail/utility.hpp>
-#include <di/configuration.hpp>
+#include <di/injection_types.hpp>
 #include <exception>
 #include <sstream>
 #include <string>

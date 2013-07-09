@@ -74,7 +74,7 @@ public:
 		for(int i=0; i<times ; ++i) {
 			builder<Injection10different> builder;
 			builder.use(t0_0).use(t1).use(t2).use(t3).use(t4_0).use(t5).use(t6).use(t7).use(t8).use(t9);
-			Injection10different* inj10Different = builder.build();
+			smart_ptr<Injection10different>::single_ptr inj10Different(builder.build());
 			
 			VisualCompilerGuard guard(lock);
 			EXPECT_EQ(inj10Different->var0.operator ->(),&t0_0);
@@ -87,8 +87,6 @@ public:
 			EXPECT_EQ(inj10Different->var7.operator ->(),&t7);
 			EXPECT_EQ(inj10Different->var8.operator ->(),&t8);
 			EXPECT_EQ(inj10Different->var9.operator ->(),&t9);
-
-			delete inj10Different;
 		}
 	}
 
@@ -101,7 +99,7 @@ public:
 			builder.use(di::shared<T0>(dynt0_1));
 			builder.use(di::unique<T0>(dynt0_2));
 			builder.use(t0_3).use(t4_0).use(t4_1).use(t4_2).use(t7).use(t8).use(t9);
-			InjectionMixedTypes* inj10Mixed = builder.build();
+			smart_ptr<InjectionMixedTypes>::single_ptr inj10Mixed(builder.build());
 
 			VisualCompilerGuard guard(lock);
 			EXPECT_EQ(inj10Mixed->var0.operator ->(),&t0_0);
@@ -114,8 +112,6 @@ public:
 			EXPECT_EQ(inj10Mixed->var7.operator ->(),&t7);
 			EXPECT_EQ(inj10Mixed->var8.operator ->(),&t8);
 			EXPECT_EQ(inj10Mixed->var9.operator ->(),&t9);
-
-			delete inj10Mixed;
 		}
 	}
 };

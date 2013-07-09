@@ -13,7 +13,7 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  struct requirement_not_satisfied : public exception
+  struct requirement_not_satisfied
   {
     requirement_not_satisfied(void *subject_address);
     ~requirement_not_satisfied();

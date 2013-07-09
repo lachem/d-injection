@@ -13,7 +13,7 @@ Synopsis
 ---------------------------------------------------------------------
 namespace di
 {
-  template<typename T> struct required : public detail::injection< T, ordinary< T > >, public nonallocatable
+  template<typename T> struct required
   {
     required();
     required(const required< T > &source);
