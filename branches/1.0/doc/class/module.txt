@@ -1,0 +1,141 @@
+ Dependency Injection - Header link:../../di/module.hpp[<module.hpp>]
+====================================================================
+
+
+Class module
+------------
+
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename M> struct module
+  {
+    module<M>& use(const boost::shared_ptr< T > &element);
+    module<M>& use(const di::service< T > &element);
+    boost::shared_ptr<T> get();
+    smart_ptr< di::builder<C> >::single_ptr builder();
+    smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder();
+    smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder();
+    smart_ptr< di::generic_builder<C> >::single_ptr generic_builder();
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+module<M>& use(const boost::shared_ptr< T > &element)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+module<M>& use(const di::service< T > &element)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+boost::shared_ptr<T> get()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+smart_ptr< di::builder<C> >::single_ptr builder()
+---------------------------------------------------------------------
+
+Creates a builder preconfigured with applicable services. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder()
+---------------------------------------------------------------------
+
+Creates an  preconfigured with applicable services. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder()
+---------------------------------------------------------------------
+
+Creates an  preconfigured with applicable services. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+smart_ptr< di::generic_builder<C> >::single_ptr generic_builder()
+---------------------------------------------------------------------
+
+Creates a  preconfigured with applicable services. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]

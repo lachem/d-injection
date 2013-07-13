@@ -1,0 +1,69 @@
+Dependency Injection Rationale
+==============================
+
+Introduction
+------------
+
+Much of todays engineering work in big system is focused on managing dependencies between entities. Amongst it a great deal of work is being put in a proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on.
+Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the right approach as it imposes unwanted constraints and limitations.
+
+Inversion of Control Containers
+-------------------------------
+
+Inversion of Control Container is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the caller's shoulders. The result of such an approach is reduced coupling.
+
+.Example
+---------------------------------------------------------------------
+struct Timer
+{
+    Timer(long long timeInMilis, boost::function<void ()> callback, 
+          Clock& clock, ThreadPool& pool);
+};
+---------------------------------------------------------------------
+
+Timer is a class that is meant to wait for a specified amount of time and then execute a callback. There are however other parameters than time and callback that are necessary for the Timer to work, those are thread pool and clock. This of course might not be the best timer specification, but for the sake of this example it is just fine.
+
+---------------------------------------------------------------------
+struct Poller
+{
+    void run()
+    {
+        while(state == working)
+        {
+            boost::function<void ()> callback = boost::bind(&Poller::indicateFailure,this);
+            timer = new Timer(100,callback,clock,threadpool);
+            //make a query, await response and delete timer
+        }
+    }
+};
+---------------------------------------------------------------------
+
+Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, nor it needs the clock to carry out it's task, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
+
+---------------------------------------------------------------------
+struct TimerFactory
+{
+    TimerFactory(Clock& clock, ThreadPool& threadPool);<br>
+    Timer* createTimer(long long timeInMilis, boost::function<void ()> callback)
+    {
+        return new Timer(timeInMilis, callback, clock, threadpool);
+    }
+};
+---------------------------------------------------------------------
+
+the Poller needs only to call createTimer from TimerFactory, instead of creating the Timer by itself, to get rid of the necessity of obtaining clock and threadpool. The body of Poller::run might be altered to look like:
+ 
+---------------------------------------------------------------------
+while(state == working)
+{
+    boost::function<void ()> callback = boost::bind(&Poller::indicateFailure,this);
+    timer = new timerFactory->createTimer(100,callback);
+    //make a query, await response and delete timer
+}
+---------------------------------------------------------------------    
+  
+Dependency Injection
+--------------------
+IoC is simple yet it gives good benefits. Of course implementing a new factory every time when there is a need to "invert control" seems a bit discouraging. Therefore Dependency Injection is a "generic" implementation of IoC. It provides all the benefits of IoC in a convient manner.
+  
+include::footer.txt[]

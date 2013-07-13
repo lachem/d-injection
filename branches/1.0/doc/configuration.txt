@@ -1,0 +1,23 @@
+Dependency Injection Configuration
+==================================
+
+Introduction
+------------
+
+Dependency Injection uses several configuration macros in <di/configuration.hpp>, as well as configuration macros meant to be supplied by the application. These macros are documented here.</p>
+
+Application Defined Macros
+--------------------------
+
+These are the macros that may be defined by an application using Dependency Injection.
+
+[options="header"]
+[grid="none"]
+|=======================
+|Macro|Meaning
+|DI_NO_MULTITHREADING       |if defined all di::builders are considered to be running on the same thread, improving performance by a factor of 3
+|DI_MAX_NUM_INJECTIONS      |maximum number of injections per subject, default 10
+|DI_MAX_INJECTIONS_PER_TYPE |maximum number of injections of repeating types per subject, specifies the size of allocation per type used in di, default: DI_MAX_NUM_INJECTIONS
+|=======================
+
+include::footer.txt[]

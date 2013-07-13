@@ -1,0 +1,28 @@
+ Reference::
+	Required:::
+		link:class/required.html[Class required]::::
+	Injection types:::
+		link:class/ordinary.html[Class ordinary]::::
+		link:class/service.html[Class service]::::
+		link:class/shared.html[Class shared]::::
+		link:class/smart_ptr.html[Class smart_ptr]::::
+		link:class/unique.html[Class unique]::::
+	Diagnostics:::
+		link:class/out_of_range.html[Class out_of_range]::::
+		link:class/requirement_not_satisfied.html[Class requirement_not_satisfied]::::
+		link:class/using_assertions.html[Class using_assertions]::::
+		link:class/using_exceptions.html[Class using_exceptions]::::
+	Optional:::
+		link:class/optional.html[Class optional]::::
+	Subject:::
+		link:class/subject.html[Class subject]::::
+	Application:::
+		link:class/application.html[Class application]::::
+		link:class/module.html[Class module]::::
+		link:class/service_list.html[Class service_list]::::
+	Building:::
+		link:class/abstract_builder.html[Class abstract_builder]::::
+		link:class/builder.html[Class builder]::::
+		link:class/configurable.html[Class configurable]::::
+		link:class/generic_builder.html[Class generic_builder]::::
+
