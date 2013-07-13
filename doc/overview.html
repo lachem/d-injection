@@ -811,13 +811,13 @@ IoC
     }
 };</code></pre>
 </div></div>
-<div class="paragraph"><p><code>di::required</code> class is defined in di/required.hpp and <code>di::optional</code> class is defined in di/optional.hpp header. Both <code>di::required</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of their template arguments. The injection process is performed right after leaving the constructor in case of build() method or on demmand in case of build(&#8230;) or build_part(&#8230;). Therefore using any of the required/optional class attributes inside constructor is equivalent to using an uninitialized pointer, in fact it is exactly the same.</p></div>
+<div class="paragraph"><p><code>di::required</code> class is defined in di/required.hpp and <code>di::optional</code> class is defined in di/optional.hpp header. Both <code>di::required</code> and <code>di::optional</code> have pointer semantics and are convertible to pointer or reference of their template arguments. The injection process is performed right after leaving the constructor in case of build() method or on demmand in case of build(&#8230;) or build_part(&#8230;). Therefore using any of the required/optional class attributes inside constructor is equivalent to using an uninitialized pointer.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_types_of_injections">Types of injections</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>There are situtations when it is impossible to determine which part of a system is responsible for releasing some object. In such cases some kinds of smart pointers can be used. Also di provides means of handling pointers in different ways. There are four distinct types of injections. All of them have pointer semantics.</p></div>
+<div class="paragraph"><p>There are situtations when it is impossible to determine which part of a system is responsible for releasing some object. In such situations it is advised to use smart pointers. DI therefore provides means of handling pointers in different ways. Four distinct types of injections are available. All of them provide pointer semantics.</p></div>
 <div class="ulist"><ul>
 <li>
 <p>
@@ -870,7 +870,7 @@ di::service
 </div>
 <div class="sect2">
 <h3 id="_di_shared">di::shared</h3>
-<div class="paragraph"><p>Indicates that the injection is represented as a shared_ptr. Therefore object will be released when there are no more associations to it. Due to its internal represantation <code>di::shared</code> injections can be converted to <code>boost::shared_ptr</code>.</p></div>
+<div class="paragraph"><p>Indicates that the injection is represented as a shared_ptr. The object will be released when there are no more associations to it. Due to its internal represantation <code>di::shared</code> injections can be converted to <code>boost::shared_ptr</code>.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct Car: public di::subject&lt;Wheel&gt;
@@ -881,7 +881,7 @@ di::service
 </div>
 <div class="sect2">
 <h3 id="_di_unique">di::unique</h3>
-<div class="paragraph"><p>Indicates that the injection will be represented as <code>auto_ptr</code> (or <code>unique_ptr</code> when C+<code>11 will be used). Obviously, injection subject which requires an injection of type +di::unique</code> will become noncopyable.</p></div>
+<div class="paragraph"><p>Indicates that the injection will be represented as <code>unique_ptr</code> if available or as auto_ptr. Injection subject which requires an injection of type <code>di::unique</code> will become noncopyable.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>// Car is noncopyable bacause wheel injection is of type di::unique
@@ -908,7 +908,7 @@ struct Car: public di::subject&lt;Wheel&gt;
 <h2 id="_builder">Builder</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The most basic form of building a dependency injection subject is by utilizing <code>builder</code> defined in di/builder.hpp.<code>di::builder</code> is a class with two template paramters from which only the first is obligatory as it names the real type <code>builder</code> is able to build.</p></div>
-<div class="paragraph"><p>Having a <code>Car</code> class which derives from <code>subject</code> and a <code>builder&lt;Car&gt;</code> an instance of <code>Car</code> may be created. Before that could happen however, <code>builder&lt;Car&gt;</code> needs to know the objects it is supposed to inject to Car.</p></div>
+<div class="paragraph"><p>Having a <code>Car</code> class which derives from <code>subject</code> and a <code>builder&lt;Car&gt;</code> an instance of <code>Car</code> may be created. However before that could happen, <code>builder&lt;Car&gt;</code> needs to know the objects it is supposed to inject to Car.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>di::builder&lt;Car&gt; builder;
@@ -920,7 +920,8 @@ Seat s1,s2;
 HandBrake hb;
 builder.use(s1).use(s2).use(hb);
 
-Car* car = builder.build();
+//if available returns unique_ptr otherwise auto_ptr or shared_ptr
+unique_ptr&lt;Car&gt; car = builder.build();
 
 assert(&amp;w1 == car-&gt;frontLeftWheel);
 assert(&amp;w2 == car-&gt;frontRightWheel);
@@ -932,7 +933,7 @@ assert( 0  == car-&gt;backSeat);
 assert(&amp;hb == car-&gt;handBrake);</code></pre>
 </div></div>
 <div class="paragraph"><p>In contradiction to subject&#8217;s template parameters, the order of use calls is strictly bound to the order in which
-requireds and optionals are declared. This relies to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code>car-&gt;frontLeftWheel == &amp;w4</code> and <code>car-&gt;rearRightWheel == &amp;w1</code>. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user&#8217;s choice), because the third second seat passed to builder would be injected into <code>optional</code>, thus leaving the last <code>required&lt;Seat&gt;</code> unsatisfied.</p></div>
+requireds and optionals are declared. This is bound to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to <code>builder.use(w4).use(w2).use(w3).use(w1);</code> would result in <code>car-&gt;frontLeftWheel == &amp;w4</code> and <code>car-&gt;rearRightWheel == &amp;w1</code>. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user&#8217;s choice), because the third second seat passed to builder would be injected into <code>optional</code>, thus leaving the last <code>required&lt;Seat&gt;</code> unsatisfied. By the rule of thumb always put optionals after requireds.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct Car: public di::subject&lt;Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel&gt;
@@ -976,7 +977,7 @@ requireds and optionals are declared. This relies to the order of requireds and 
 <div class="sect1">
 <h2 id="_abstract_builder">Abstract builder</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>In many cases it may be impractical to use raw <code>builder&lt;T&gt;</code> due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of <code>class Car</code> but pass an object of <code>class Vehicle</code> (base of Car) to be able to change, at any given point of develepment, the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of mocking <code>builder::build()</code> and <code>builder::build(T&amp;)</code> methods to build/inject mocks/stubs instead of real objects. To get all these benefits <code>di::abstract_builder</code> is provided. <code>di::abstract_builder</code> is the base class of <code>di::builder</code>, hence the name.</p></div>
+<div class="paragraph"><p>In many cases it may be impractical to use raw <code>builder&lt;T&gt;</code> due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of <code>class Car</code> while passing a handle to <code>class Vehicle</code> (base of Car). Furthermore it is reasonable to expect to have the possibility of mocking <code>builder::build(T&amp;)</code> method to build/inject mocks/stubs instead of real objects.</p></div>
 <div class="paragraph"><p>Considering:</p></div>
 <div class="listingblock">
 <div class="content">
@@ -1010,7 +1011,7 @@ vehicle_builder-&gt;build(*porshe);</code></pre>
 <img alt="Note" src="data:image/png;base64,
 " />
 </td>
-<td class="content">It is the class which is the template parameter of <code>di::abstract_builder</code> is the one that needs to derive (publicly) from di::subject. Unfortunately this is a necessary limitation.</td>
+<td class="content">The class which is the template parameter of <code>di::abstract_builder</code> is the one that needs to derive (publicly) from di::subject. This is a necessary limitation.</td>
 </tr></table>
 </div>
 </div>
@@ -1018,7 +1019,7 @@ vehicle_builder-&gt;build(*porshe);</code></pre>
 <div class="sect1">
 <h2 id="_building_families_of_objects">Building families of objects</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Aforementioned <code>di::abstract_builder::build(T&amp;)</code> method allows for building families of objects. In the provided example all the classes which are subclasses of <code>Construct</code> are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).</p></div>
+<div class="paragraph"><p>Aforementioned <code>di::abstract_builder::build(T&amp;)</code> method allows building families of objects. In the provided example all classes which are subclasses of <code>Construct</code> are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>class Construct : public di::subject&lt;Logger,Database,ConversionTools&gt; {};
@@ -1046,6 +1047,7 @@ Garage garage1,garage2;
 
 di:abstract_builder&lt;Vehicle&gt;* vehicle_builder = new di::builder&lt;Car,Vehicle&gt;()
 di:abstract_builder&lt;Construct&gt;* construct_builder = new di::builder&lt;Construct,ConstructImp&gt;()
+
 //setup both builders
 
 ...
@@ -1112,7 +1114,7 @@ gbuilder.build_part(garage2);
 <div class="sect1">
 <h2 id="_modules">Modules</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by logicaly dividing an application into modules. Each module defines a list of services it provides and a list of services it needs in following manner:</p></div>
+<div class="paragraph"><p>Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by logicaly dividing an application into modules. Each module defines a list of services it provides and a list of services it needs in the following manner:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct Controller
@@ -1185,9 +1187,10 @@ private:
     di::required&lt;Logger&gt; logger;
 };
 ...
-std::auto_ptr&lt; di::builder&lt;Command&gt; &gt; builder = controllerModule.builder&lt;Command&gt;();
+
+unique_ptr&lt; di::builder&lt;Command&gt; &gt; builder = controllerModule.builder&lt;Command&gt;();
 builder.use(actionHandler);    // action handler needs to be passed seperately see warning note below
-Command* c = builder.build();  // we can build - module has passed Database and Logger to the builder</code></pre>
+unique_ptr&lt;Command&gt; c = builder.build();  // we can build - module has passed Database and Logger to the builder</code></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1205,7 +1208,7 @@ to ensure di::modules will not be used for intra module depedency exchanging.</t
 <div class="sect1">
 <h2 id="_restricting_access">Restricting Access</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>In addition to the dependency exchange mechanism di::modules also provide the capability of defining service access policy. It is possible
+<div class="paragraph"><p>In addition to the dependency exchange mechanism di::modules also provides means of defining service access policy. It is possible
 to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without
 a possiblity to alter it. "const" before service type on needed service list enforces that.</p></div>
 <div class="listingblock">
@@ -1241,7 +1244,7 @@ struct Infrastructure
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-05-11 14:01:15 CEST
+Last updated 2013-07-13 17:58:31 CEST
 </div>
 </div>
 </body>
