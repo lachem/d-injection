@@ -61,12 +61,12 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Seat,Wheel>
 };
 ---------------------------------------------------------------------
   
-+di::required+ class is defined in di/required.hpp and +di::optional+ class is defined in di/optional.hpp header. Both +di::required+ and +di::optional+ have pointer semantics and are convertible to pointer or reference of their template arguments. The injection process is performed right after leaving the constructor in case of build() method or on demmand in case of build(...) or build_part(...). Therefore using any of the required/optional class attributes inside constructor is equivalent to using an uninitialized pointer, in fact it is exactly the same.
++di::required+ class is defined in di/required.hpp and +di::optional+ class is defined in di/optional.hpp header. Both +di::required+ and +di::optional+ have pointer semantics and are convertible to pointer or reference of their template arguments. The injection process is performed right after leaving the constructor in case of build() method or on demmand in case of build(...) or build_part(...). Therefore using any of the required/optional class attributes inside constructor is equivalent to using an uninitialized pointer.
 
 Types of injections
 -------------------
 
-There are situtations when it is impossible to determine which part of a system is responsible for releasing some object. In such cases some kinds of smart pointers can be used. Also di provides means of handling pointers in different ways. There are four distinct types of injections. All of them have pointer semantics.
+There are situtations when it is impossible to determine which part of a system is responsible for releasing some object. In such situations it is advised to use smart pointers. DI therefore provides means of handling pointers in different ways. Four distinct types of injections are available. All of them provide pointer semantics.
 
 * di::ordinary
 * di::shared
@@ -95,7 +95,7 @@ struct Car: public di::subject<Wheel>
 
 di::shared
 ~~~~~~~~~~
-Indicates that the injection is represented as a shared_ptr. Therefore object will be released when there are no more associations to it. Due to its internal represantation +di::shared+ injections can be converted to +boost::shared_ptr+.
+Indicates that the injection is represented as a shared_ptr. The object will be released when there are no more associations to it. Due to its internal represantation +di::shared+ injections can be converted to +boost::shared_ptr+.
 
 ---------------------------------------------------------------------
 struct Car: public di::subject<Wheel> 
@@ -106,7 +106,7 @@ struct Car: public di::subject<Wheel>
  
 di::unique
 ~~~~~~~~~~
-Indicates that the injection will be represented as +auto_ptr+ (or +unique_ptr+ when C++11 will be used). Obviously, injection subject which requires an injection of type +di::unique+ will become noncopyable.
+Indicates that the injection will be represented as +unique_ptr+ if available or as auto_ptr. Injection subject which requires an injection of type +di::unique+ will become noncopyable.
 
 ---------------------------------------------------------------------
 // Car is noncopyable bacause wheel injection is of type di::unique 
@@ -131,7 +131,7 @@ Builder
 -------
 The most basic form of building a dependency injection subject is by utilizing +builder+ defined in di/builder.hpp.+di::builder+ is a class with two template paramters from which only the first is obligatory as it names the real type +builder+ is able to build. 
 
-Having a +Car+ class which derives from +subject+ and a +builder<Car>+ an instance of +Car+ may be created. Before that could happen however, +builder<Car>+ needs to know the objects it is supposed to inject to Car.
+Having a +Car+ class which derives from +subject+ and a +builder<Car>+ an instance of +Car+ may be created. However before that could happen, +builder<Car>+ needs to know the objects it is supposed to inject to Car.
 
 ---------------------------------------------------------------------
 di::builder<Car> builder;
@@ -142,8 +142,9 @@ builder.use(w1).use(w2).use(w3).use(w4);
 Seat s1,s2;
 HandBrake hb;
 builder.use(s1).use(s2).use(hb);
-  
-Car* car = builder.build();
+
+//if available returns unique_ptr otherwise auto_ptr or shared_ptr
+unique_ptr<Car> car = builder.build();
   
 assert(&w1 == car->frontLeftWheel);
 assert(&w2 == car->frontRightWheel);
@@ -155,7 +156,7 @@ assert( 0  == car->backSeat);
 assert(&hb == car->handBrake);
 ---------------------------------------------------------------------
 In contradiction to subject's template parameters, the order of use calls is strictly bound to the order in which 
-requireds and optionals are declared. This relies to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to +builder.use(w4).use(w2).use(w3).use(w1);+ would result in +car\->frontLeftWheel == &w4+ and +car\->rearRightWheel == &w1+. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user's choice), because the third second seat passed to builder would be injected into +optional+, thus leaving the last +required<Seat>+ unsatisfied.
+requireds and optionals are declared. This is bound to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to +builder.use(w4).use(w2).use(w3).use(w1);+ would result in +car\->frontLeftWheel == &w4+ and +car\->rearRightWheel == &w1+. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user's choice), because the third second seat passed to builder would be injected into +optional+, thus leaving the last +required<Seat>+ unsatisfied. By the rule of thumb always put optionals after requireds.
 
 ---------------------------------------------------------------------
 struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
@@ -190,7 +191,7 @@ NOTE: All builders are injection type aware i.e. +builder.use(di::shared<Wheel>(
   
 Abstract builder
 ----------------
-In many cases it may be impractical to use raw +builder<T>+ due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of +class Car+ but pass an object of +class Vehicle+ (base of Car) to be able to change, at any given point of develepment, the Car object to some other type of Vehicle e.g. a bicycle. Furthermore it is reasonable to expect to have the possibility of mocking +builder::build()+ and +builder::build(T&)+ methods to build/inject mocks/stubs instead of real objects. To get all these benefits +di::abstract_builder+ is provided. +di::abstract_builder+ is the base class of +di::builder+, hence the name.
+In many cases it may be impractical to use raw +builder<T>+ due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of +class Car+ while passing a handle to +class Vehicle+ (base of Car). Furthermore it is reasonable to expect to have the possibility of mocking +builder::build(T&)+ method to build/inject mocks/stubs instead of real objects.
 
 Considering:
 
@@ -221,11 +222,11 @@ Vehicle* porshe = new Porshe();
 vehicle_builder->build(*porshe);
 ---------------------------------------------------------------------
   
-NOTE: It is the class which is the template parameter of +di::abstract_builder+ is the one that needs to derive (publicly) from di::subject. Unfortunately this is a necessary limitation.
+NOTE: The class which is the template parameter of +di::abstract_builder+ is the one that needs to derive (publicly) from di::subject. This is a necessary limitation.
           
 Building families of objects
 ----------------------------
-Aforementioned +di::abstract_builder::build(T&)+ method allows for building families of objects. In the provided example all the classes which are subclasses of +Construct+ are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).
+Aforementioned +di::abstract_builder::build(T&)+ method allows building families of objects. In the provided example all classes which are subclasses of +Construct+ are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).
 
 ---------------------------------------------------------------------
 class Construct : public di::subject<Logger,Database,ConversionTools> {};
@@ -253,6 +254,7 @@ Garage garage1,garage2;
   
 di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>() 
 di:abstract_builder<Construct>* construct_builder = new di::builder<Construct,ConstructImp>() 
+
 //setup both builders 
   
 ... 
@@ -316,7 +318,7 @@ The difference between +di::generic_builder<...>::build_part+ and +di::generic_b
 
 Modules
 -------
-Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by logicaly dividing an application into modules. Each module defines a list of services it provides and a list of services it needs in following manner:
+Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by logicaly dividing an application into modules. Each module defines a list of services it provides and a list of services it needs in the following manner:
 
 ---------------------------------------------------------------------
 struct Controller 
@@ -394,9 +396,10 @@ private:
     di::required<Logger> logger;
 };
 ...
-std::auto_ptr< di::builder<Command> > builder = controllerModule.builder<Command>();
+
+unique_ptr< di::builder<Command> > builder = controllerModule.builder<Command>();
 builder.use(actionHandler);    // action handler needs to be passed seperately see warning note below
-Command* c = builder.build();  // we can build - module has passed Database and Logger to the builder
+unique_ptr<Command> c = builder.build();  // we can build - module has passed Database and Logger to the builder
 ---------------------------------------------------------------------
 
 WARNING: di::module and di::application have been designed solely for the purpose of exchanging services *between* modules. Therefore mentioning
@@ -406,7 +409,7 @@ to ensure di::modules will not be used for intra module depedency exchanging.
 Restricting Access
 ------------------
 
-In addition to the dependency exchange mechanism di::modules also provide the capability of defining service access policy. It is possible
+In addition to the dependency exchange mechanism di::modules also provides means of defining service access policy. It is possible
 to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without
 a possiblity to alter it. "const" before service type on needed service list enforces that.
 
