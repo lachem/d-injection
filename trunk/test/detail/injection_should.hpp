@@ -7,6 +7,7 @@
 #define DI_INJECTION_TESTS_HPP_
 
 #include "gtest/gtest.h"
+#include "test_types.hpp"
 
 #include <di/di.hpp>
 #include <di/optional.hpp>
@@ -240,6 +241,63 @@ TYPED_TEST(InjectionShould, castToBarePointerWhenDeclaredAsBarePointer) {
 	TestType1* casted_injection = this->copyableClassInstance->var;
 
 	EXPECT_EQ(&this->t1,casted_injection);
+}
+
+/*
+TYPED_TEST(InjectionShould, beMoveConstructible) {
+	TestType2* t2 = new TestType2;
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance,t2);
+	typename TypeParam::CopyableClass movableClassInstance = std::move(*this->copyableClassInstance);
+
+	EXPECT_EQ(&this->t1,movableClassInstance.var.get());
+	EXPECT_EQ(t2,movableClassInstance.var_shared.get());
+	EXPECT_TRUE(this->copyableClassInstance->var.empty());
+	EXPECT_TRUE(this->copyableClassInstance->var_shared.empty());
+}*/
+
+class OptionalInjectionShould : public ::testing::Test {
+protected:
+	typedef OptionalTrait::CopyableClass CopyableClass;
+
+	CopyableClass* copyableClassInstance;
+	TestType1 t1;
+
+	virtual void SetUp() {
+		copyableClassInstance = new CopyableClass();
+	}
+
+	virtual void TearDown() {
+		delete copyableClassInstance;
+	}
+
+	void givenNotFullyBuiltCopyableClassInstance(CopyableClass* copyableClassInstance) {
+		di::builder<CopyableClass> builder;
+		builder.build(*copyableClassInstance);
+	}
+
+	void givenFullyBuiltCopyableInstance(CopyableClass* copyableClassInstance, TestType2* t2 = new TestType2) {
+		di::builder<CopyableClass> builder;
+		builder.use(t1);
+		builder.use(di::shared<TestType2>(t2));
+		builder.build(*copyableClassInstance);
+	}
+
+};
+
+TEST_F(OptionalInjectionShould, beCopiedProperlyBeforeBuilding) {
+	EXPECT_NO_THROW({
+		CopyableClass copyableClassCopy(*this->copyableClassInstance);
+		givenNotFullyBuiltCopyableClassInstance(&copyableClassCopy);
+	});
+}
+
+TEST_F(OptionalInjectionShould, beAssignedProperlyBeforeBuilding) {
+	EXPECT_NO_THROW({
+		CopyableClass copyableClassCopy;
+		givenFullyBuiltCopyableInstance(&copyableClassCopy);
+		copyableClassCopy.operator=(*this->copyableClassInstance);
+		givenNotFullyBuiltCopyableClassInstance(&copyableClassCopy);
+	});
 }
 
 }  // namespace injection
