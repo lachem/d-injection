@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/config.hpp>
+#include <boost/version.hpp>
 #include <boost/shared_ptr.hpp>
 
 #ifndef DI_CONFIGURATION_HPP
@@ -28,7 +29,7 @@
 /**
  * @brief Sets the representation of di::unique to unique_ptr 
  */
-#if !defined(BOOST_NO_CXX11_SMART_PTR)
+#if (BOOST_VERSION > 104900) && !defined(BOOST_NO_CXX11_SMART_PTR)
 #define DI_HAS_UNIQUE_PTR
 #endif
 
