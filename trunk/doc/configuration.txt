@@ -15,9 +15,11 @@ These are the macros that may be defined by an application using Dependency Inje
 [grid="none"]
 |=======================
 |Macro|Meaning
-|DI_NO_MULTITHREADING       |if defined all di::builders are considered to be running on the same thread, improving performance by a factor of 3
-|DI_MAX_NUM_INJECTIONS      |maximum number of injections per subject, default 10
+|DI_NO_MULTITHREADING       |if defined all di::builders are considered to be running on the same thread, improving performance by a factor of 3, default: not defined
+|DI_MAX_NUM_INJECTIONS      |maximum number of injections per subject, default: 10
 |DI_MAX_INJECTIONS_PER_TYPE |maximum number of injections of repeating types per subject, specifies the size of allocation per type used in di, default: DI_MAX_NUM_INJECTIONS
+|DI_HAS_UNIQUE_PTR			|if set di will use unique pointer to represent unique injections, default: defined when boost version is 1.50.0+ and BOOST_NO_CXX11_SMART_PTR is not defined, not defined otherwise
+|DI_NO_AUTO_PTR				|if set and DI_HAS_UNIQUE_PTR is not defined unique injections will be represented with boost shared pointer, default: defined when BOOST_NO_AUTO_PTR is defined, not defined otherwise
 |=======================
 
 include::footer.txt[]

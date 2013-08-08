@@ -1,0 +1,73 @@
+:doctype: book
+
+++++++++++++++++++++++++++++++++++++++
+<h1 class="float">
+Dependency Injection &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<a href="https://sourceforge.net/projects/d-injection/files" style="text-decoration:none;font-weight:normal;color:blue">downloads</a>|<a href="doc/index.html" style="text-decoration:none;font-weight:normal;color:blue">documentation</a>|<a href="https://sourceforge.net/projects/d-injection/reviews" style="text-decoration:none;font-weight:normal;color:blue">reviews</a>|
+</h1>
+++++++++++++++++++++++++++++++++++++++
+
+Much of todays engineering work is focused on managing dependencies between entities. Amongst it a great deal of work is being put in proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on. This library aims at providing facilities that support easier and more flexible dependency management in both simple and complex applications. See link:doc/rationale.html[].
+
+This is a header only library built on boost supporting both C\+\+98 and C++11.
+
+[float]
+Object Injection
+~~~~~~~~~~~~~~~~
+
+Dependency injection outside constructor with lifetime and requirements control.
+
+---------------------------------------------------------------------
+struct Buildable : di::subject<Dep1,Dep2,Dep3> {
+  di::required<di::unique<Dep1>> attr1;
+  di::required<di::shared<Dep2>> attr2;
+  di::optional<di::unique<Dep3>> attr3;
+};
+
+di::builder<Buildable> builder;
+builder.use(di::unique<Dep1>(new Dep1));
+builder.use(di::shared<Dep2>(new Dep2));
+
+std::unique_ptr<Buildable> object = builder.build();
+---------------------------------------------------------------------
+
+[float]
+Dependency Grouping
+~~~~~~~~~~~~~~~~~~~
+
+Grouping common dependencies for families of types with on demand requirements control.
+
+---------------------------------------------------------------------
+di::generic_builder<di::subject<Dep1,Dep2>> builder1;
+builder.use(di::unique<Dep1>(new Dep1));
+builder.use(di::shared<Dep2>(new Dep2));
+
+di::generic_builder<di::subject<Dep3>> builder2;
+builder.use(di::unique<Dep3>(new Dep3));
+
+Buildable object;
+builder1.build_part(object);
+builder2.build_part(object);
+---------------------------------------------------------------------
+
+[float]
+Module Management
+~~~~~~~~~~~~~~~~~
+
+Flexible and easy to use service grouping into modules with access control.
+
+---------------------------------------------------------------------
+struct Module1 {
+  di::service_list<Service1, Service2> provided;
+  di::service_list<const Service3, Service4> needed;
+};
+
+struct Module2 {
+  di::service_list<const Service3, Service4> provided;
+  di::service_list<const Service2> needed;
+};
+
+di::application<Module1, Module2> application;
+---------------------------------------------------------------------
+
+include::footer.txt[]
+
