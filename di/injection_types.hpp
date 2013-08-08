@@ -12,6 +12,7 @@
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/shared_ptr.hpp>
 #include <di/detail/utility.hpp>
+#include <di/configuration.hpp>
 
 namespace di {
 namespace detail {
@@ -27,12 +28,12 @@ template<typename T>
 struct smart_ptr {
 	typedef boost::shared_ptr<T> shared_ptr;
 
-#if !defined(BOOST_NO_CXX11_SMART_PTR)
+#ifdef DI_HAS_UNIQUE_PTR
 	typedef std::unique_ptr<T> single_ptr;
-#elif defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_AUTO_PTR)
-	typedef std::auto_ptr<T> single_ptr;
-#else
+#elif  DI_NO_AUTO_PTR
 	typedef boost::shared_ptr<T> single_ptr;
+#else
+	typedef std::auto_ptr<T> single_ptr;
 #endif
 
 	static void assign(T*& dest, T*& src) {
@@ -44,9 +45,9 @@ struct smart_ptr {
 	}
 
 	static void assign(single_ptr& dest, single_ptr& src) {
-#if !defined(BOOST_NO_CXX11_SMART_PTR)
+#ifdef DI_HAS_UNIQUE_PTR
 		dest = std::move(src);
-#elif defined(BOOST_NO_CXX11_SMART_PTR) && !defined(BOOST_NO_AUTO_PTR)
+#else
 		dest = src;
 #endif
 	}

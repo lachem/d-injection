@@ -764,15 +764,23 @@ cellspacing="0" cellpadding="4">
 <tbody>
 <tr>
 <td align="left" valign="top"><p class="table">DI_NO_MULTITHREADING</p></td>
-<td align="left" valign="top"><p class="table">if defined all di::builders are considered to be running on the same thread, improving performance by a factor of 3</p></td>
+<td align="left" valign="top"><p class="table">if defined all di::builders are considered to be running on the same thread, improving performance by a factor of 3, default: not defined</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table">DI_MAX_NUM_INJECTIONS</p></td>
-<td align="left" valign="top"><p class="table">maximum number of injections per subject, default 10</p></td>
+<td align="left" valign="top"><p class="table">maximum number of injections per subject, default: 10</p></td>
 </tr>
 <tr>
 <td align="left" valign="top"><p class="table">DI_MAX_INJECTIONS_PER_TYPE</p></td>
 <td align="left" valign="top"><p class="table">maximum number of injections of repeating types per subject, specifies the size of allocation per type used in di, default: DI_MAX_NUM_INJECTIONS</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">DI_HAS_UNIQUE_PTR</p></td>
+<td align="left" valign="top"><p class="table">if set di will use unique pointer to represent unique injections, default: defined when boost version is 1.50.0+ and BOOST_NO_CXX11_SMART_PTR is not defined, not defined otherwise</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">DI_NO_AUTO_PTR</p></td>
+<td align="left" valign="top"><p class="table">if set and DI_HAS_UNIQUE_PTR is not defined unique injections will be represented with boost shared pointer, default: defined when BOOST_NO_AUTO_PTR is defined, not defined otherwise</p></td>
 </tr>
 </tbody>
 </table>
@@ -788,7 +796,7 @@ cellspacing="0" cellpadding="4">
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-05-11 14:01:15 CEST
+Last updated 2013-08-06 23:05:44 CEST
 </div>
 </div>
 </body>

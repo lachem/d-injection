@@ -20,10 +20,10 @@ struct optional :
 
 	optional() : base(false) {}
 	optional(const optional<T>& source) : base(source) {
-		base::do_copy(source,true);
+		base::do_copy(source,false);
 	}
 	optional<T>& operator=(const optional<T>& source) {
-		base::do_assignement(source,true);
+		base::do_assignement(source,false);
 		return *this;
 	}
 	operator T*() {
@@ -45,10 +45,10 @@ struct optional< shared<T> > :
 
 	optional() : base(false) {}
 	optional(const optional< shared<T> >& source) : base(source) {
-		base::do_copy(source,true);
+		base::do_copy(source,false);
 	}
 	optional< shared<T> >& operator=(const optional< shared<T> >& source) {
-		base::do_assignement(source,true);
+		base::do_assignement(source,false);
 		return *this;
 	}
 	operator typename shared<T>::representation () {
@@ -79,10 +79,10 @@ struct optional< service<T> > :
 
 	optional() : base(false) {}
 	optional(const optional< service<T> >& source) : base(source) {
-		base::do_copy(source,true);
+		base::do_copy(source,false);
 	}
 	optional< service<T> >& operator=(const optional< service<T> >& source) {
-		base::do_assignement(source,true);
+		base::do_assignement(source,false);
 		return *this;
 	}
 	operator typename service<T>::representation () {

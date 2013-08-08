@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.8" />
-<title> Dependency Injection - Header <a href="../../di/optional.hpp">&lt;optional.hpp&gt;</a></title>
+<title></title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -729,115 +729,76 @@ asciidoc.install(2);
 /*]]>*/
 </script>
 </head>
-<body class="article" style="max-width:60em">
+<body class="book" style="max-width:60em">
 <div id="header">
-<h1> Dependency Injection - Header <a href="../../di/optional.hpp">&lt;optional.hpp&gt;</a></h1>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_class_optional">Class optional</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_synopsis">Synopsis</h3>
+<h1 class="float">
+Dependency Injection &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<a href="https://sourceforge.net/projects/d-injection/files" style="text-decoration:none;font-weight:normal;color:blue">downloads</a>|<a href="doc/index.html" style="text-decoration:none;font-weight:normal;color:blue">documentation</a>|<a href="https://sourceforge.net/projects/d-injection/reviews" style="text-decoration:none;font-weight:normal;color:blue">reviews</a>|
+</h1>
+<div class="paragraph"><p>Much of todays engineering work is focused on managing dependencies between entities. Amongst it a great deal of work is being put in proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on. This library aims at providing facilities that support easier and more flexible dependency management in both simple and complex applications. See <a href="doc/rationale.html">doc/rationale.html</a>.</p></div>
+<div class="paragraph"><p>This is a header only library built on boost supporting both C++98 and C++11.</p></div>
+<h3 id="_object_injection" class="float">Object Injection</h3>
+<div class="paragraph"><p>Dependency injection outside constructor with lifetime and requirements control.</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>namespace di
-{
-  template&lt;typename T&gt; struct optional
-  {
-    optional();
-    optional(const optional&lt; T &gt; &amp;source);
-    optional&lt;T&gt;&amp; operator=(const optional&lt; T &gt; &amp;source);
-    operator T *();
-    operator T const *() const ;
-  };
-}</code></pre>
+<pre><code>struct Buildable : di::subject&lt;Dep1,Dep2,Dep3&gt; {
+  di::required&lt;di::unique&lt;Dep1&gt;&gt; attr1;
+  di::required&lt;di::shared&lt;Dep2&gt;&gt; attr2;
+  di::optional&lt;di::unique&lt;Dep3&gt;&gt; attr3;
+};
+
+di::builder&lt;Buildable&gt; builder;
+builder.use(di::unique&lt;Dep1&gt;(new Dep1));
+builder.use(di::shared&lt;Dep2&gt;(new Dep2));
+
+std::unique_ptr&lt;Buildable&gt; object = builder.build();</code></pre>
 </div></div>
-</div>
-<div class="sect2">
-<h3 id="_functions">Functions</h3>
+<h3 id="_dependency_grouping" class="float">Dependency Grouping</h3>
+<div class="paragraph"><p>Grouping common dependencies for families of types with on demand requirements control.</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>optional()</code></pre>
+<pre><code>di::generic_builder&lt;di::subject&lt;Dep1,Dep2&gt;&gt; builder1;
+builder.use(di::unique&lt;Dep1&gt;(new Dep1));
+builder.use(di::shared&lt;Dep2&gt;(new Dep2));
+
+di::generic_builder&lt;di::subject&lt;Dep3&gt;&gt; builder2;
+builder.use(di::unique&lt;Dep3&gt;(new Dep3));
+
+Buildable object;
+builder1.build_part(object);
+builder2.build_part(object);</code></pre>
 </div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> none<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
+<h3 id="_module_management" class="float">Module Management</h3>
+<div class="paragraph"><p>Flexible and easy to use service grouping into modules with access control.</p></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>optional(const optional&lt; T &gt; &amp;source)</code></pre>
+<pre><code>struct Module1 {
+  di::service_list&lt;Service1, Service2&gt; provided;
+  di::service_list&lt;const Service3, Service4&gt; needed;
+};
+
+struct Module2 {
+  di::service_list&lt;const Service3, Service4&gt; provided;
+  di::service_list&lt;const Service2&gt; needed;
+};
+
+di::application&lt;Module1, Module2&gt; application;</code></pre>
 </div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> none<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>optional&lt;T&gt;&amp; operator=(const optional&lt; T &gt; &amp;source)</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> none<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>operator T *()</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> none<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
-<div class="listingblock">
-<div class="content">
-<pre><code>operator T const *() const</code></pre>
-</div></div>
-<div class="paragraph"><p><strong>Requires:</strong> none<br />
-<strong>Effects:</strong> none<br />
-<strong>Postconditions:</strong> none<br />
-<strong>Returns:</strong> none<br />
-<strong>Throws:</strong> none<br />
-<strong>Complexity:</strong> no info<br />
-<strong>Note:</strong> none<br />
-<strong>Danger:</strong> none<br />
-<strong>Rationale:</strong> none<br /></p></div>
 <br />
 <br />
 <hr />
 <div class="paragraph"><p>Copyright &#169; 2013 <a href="mailto:salvage@o2.pl">Adam Lach</a></p></div>
 <div class="paragraph"><p>Distributed under the Boost Software License, Version 1.0. (See accompanying file <a href="http://www.boost.org/doc/libs/1_46_1/LICENSE_1_0.txt">LICENSE_1_0.txt</a> or copy at <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>).</p></div>
 </div>
-</div>
-</div>
-</div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-08-07 00:08:26 CEST
+Last updated 2013-07-20 11:50:36 CEST
 </div>
 </div>
 </body>

@@ -5,12 +5,12 @@ Introduction
 ------------
 
 Much of todays engineering work in big system is focused on managing dependencies between entities. Amongst it a great deal of work is being put in a proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on.
-Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the right approach as it imposes unwanted constraints and limitations.
+Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables or global access functions. This is of course not the right approach as it imposes unwanted constraints and limitations.
 
 Inversion of Control Containers
 -------------------------------
 
-Inversion of Control Container is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the caller's shoulders. The result of such an approach is reduced coupling.
+Inversion of Control Container is a simple concept that addresses the problem of unnecessary dependencies. IoC focuses on encapsulating objects inside factories, builders etc. and passing them to created objects, at the same time taking this burden off the caller's shoulders. The result of such an approach is reduced coupling.
 
 .Example
 ---------------------------------------------------------------------
@@ -38,7 +38,7 @@ struct Poller
 };
 ---------------------------------------------------------------------
 
-Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, nor it needs the clock to carry out it's task, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
+Not going too deep into specifics of this implementation the problem is that although Poller doesn't need threadpool, nor it needs the clock to carry out its tasks, it has to obtain them somehow to pass to Timer's constructor. IoC gives a remedy for that problem. Given :
 
 ---------------------------------------------------------------------
 struct TimerFactory
