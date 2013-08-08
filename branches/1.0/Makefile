@@ -4,7 +4,7 @@ BOOST_INC = ../../lib/boost_1_53_0
 BOOST_LIB = ../../lib/boost_1_53_0/stage/lib
 
 SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc $(GMOCK_INC)/src/gmock-all.cc
-INC = ./ $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
+INC = ./ ./test $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
 LIB = $(BOOST_LIB)/libboost_thread.a $(BOOST_LIB)/libboost_chrono.a $(BOOST_LIB)/libboost_system.a -lpthread -lrt
 DOC = $(shell find doc/ -name "*.txt")
 

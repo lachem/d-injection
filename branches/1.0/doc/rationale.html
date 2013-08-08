@@ -742,13 +742,13 @@ asciidoc.install(2);
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>Much of todays engineering work in big system is focused on managing dependencies between entities. Amongst it a great deal of work is being put in a proper object passing, making implicit dependencies explicit ones, forcing necessary access constraints and so on.
-Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object and so on. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables, global access functions an so on. This is of course not the right approach as it imposes unwanted constraints and limitations.</p></div>
+Moreover vast majority of developers working with object oriented langauges were probably many time forced to add an argument to a constructor which was not required by the functionality of a given class, but instead by the one which was instatiated/used inside it e.g. a database access object. Also it is a common problem of passing "objects used everywhere" like loggers, utilities, service handles etc. Too often in such cases developers decide to use singletons, global variables or global access functions. This is of course not the right approach as it imposes unwanted constraints and limitations.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_inversion_of_control_containers">Inversion of Control Containers</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Inversion of Control Container is a simple concept that addresses exactly the problems introduced in previous chapter. IoC focuses on encapsulating objects inside factories, builders etc., and passing them to created objects, at the same time taking this burden off the caller&#8217;s shoulders. The result of such an approach is reduced coupling.</p></div>
+<div class="paragraph"><p>Inversion of Control Container is a simple concept that addresses the problem of unnecessary dependencies. IoC focuses on encapsulating objects inside factories, builders etc. and passing them to created objects, at the same time taking this burden off the caller&#8217;s shoulders. The result of such an approach is reduced coupling.</p></div>
 <div class="listingblock">
 <div class="title">Example</div>
 <div class="content">
@@ -774,7 +774,7 @@ Moreover vast majority of developers working with object oriented langauges were
     }
 };</code></pre>
 </div></div>
-<div class="paragraph"><p>Not going too deep into specifics of this implementation the problem is that although Poller doesn&#8217;t need threadpool, nor it needs the clock to carry out it&#8217;s task, it has to obtain them somehow to pass to Timer&#8217;s constructor. IoC gives a remedy for that problem. Given :</p></div>
+<div class="paragraph"><p>Not going too deep into specifics of this implementation the problem is that although Poller doesn&#8217;t need threadpool, nor it needs the clock to carry out its tasks, it has to obtain them somehow to pass to Timer&#8217;s constructor. IoC gives a remedy for that problem. Given :</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct TimerFactory
@@ -813,7 +813,7 @@ Moreover vast majority of developers working with object oriented langauges were
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-05-11 14:01:15 CEST
+Last updated 2013-07-20 11:26:52 CEST
 </div>
 </div>
 </body>

@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/config.hpp>
+#include <boost/version.hpp>
 #include <boost/shared_ptr.hpp>
 
 #ifndef DI_CONFIGURATION_HPP
@@ -22,6 +23,21 @@
  */
 #ifndef DI_MAX_INJECTIONS_PER_TYPE
 #define DI_MAX_INJECTIONS_PER_TYPE DI_MAX_NUM_INJECTIONS
+#endif
+
+
+/**
+ * @brief Sets the representation of di::unique to unique_ptr 
+ */
+#if (BOOST_VERSION > 104900) && !defined(BOOST_NO_CXX11_SMART_PTR)
+#define DI_HAS_UNIQUE_PTR
+#endif
+
+/**
+ * @brief Sets the representation of di::unique to shared_ptr
+ */
+#if defined(BOOST_NO_AUTO_PTR)
+#define DI_NO_AUTO_PTR
 #endif
 
 #endif //DI_CONFIGURATION_HPP
