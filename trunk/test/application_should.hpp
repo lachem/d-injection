@@ -152,7 +152,6 @@ TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleA
 	mod4.abstract_builder<CopyableClassWithServicesReq>()->
 		use(di::shared<TestType2>(tempT2)).use(di::shared<TestType1>(t1_shared)).build(builtClass);
 
-
 	EXPECT_EQ(t1_shared.get(),builtClass.var_service.get());
 	EXPECT_EQ(t2,builtClass.var_service2.get());
 }

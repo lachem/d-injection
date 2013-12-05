@@ -11,16 +11,17 @@
 #include <iostream>
 #include <string>
 
+#include <di/generic_builder.hpp>
 #include <di/required.hpp>
 #include <di/optional.hpp>
 #include <di/subject.hpp>
 
 using namespace di;
 
-struct D {virtual void vtable() = 0;};
-struct D1:public D{virtual void vtable(){}};
-struct D2:public D{virtual void vtable(){}};
-struct D3:public D{virtual void vtable(){}};
+struct D { virtual void vtable() = 0; };
+struct D1 : public D { virtual void vtable(){} };
+struct D2 : public D { virtual void vtable(){} };
+struct D3 : public D { virtual void vtable(){} };
 
 template<typename T>
 struct D4 {};
@@ -88,6 +89,7 @@ struct TestType2 {
 private:
 	TestType2(const TestType2&);
 };
+
 struct TestType3{};
 struct TestType4{};
 struct TestType5{};
@@ -95,6 +97,14 @@ struct TestType6{};
 struct TestType7{};
 struct TestType8{};
 struct TestType9{};
+
+struct TestType2Mock : public TestType2 {
+	TestType2Mock() {}
+	MOCK_METHOD0(die, void());
+	virtual ~TestType2Mock() { die(); }
+private:
+	TestType2Mock(const TestType2Mock&);
+};
 
 struct TestClassReq : public di::subject<TestType1,TestType2,TestType2> {
 	typedef di::using_exceptions<subject_type> diagnostics;
@@ -132,12 +142,10 @@ struct CopyableClassOpt : public di::subject<TestType1,TestType2> {
 	di::optional< di::shared<TestType2> > var_shared;
 };
 
-struct TestType2Mock : public TestType2 {
-	TestType2Mock() {}
-	MOCK_METHOD0(die, void());
-	virtual ~TestType2Mock() { die(); }
-private:
-	TestType2Mock(const TestType2Mock&);
-};
+struct CopyableClassWithBuilderInjection : public di::subject<TestType1,TestType2> {
+	di::required<TestType1> var;
+	di::optional< di::shared<TestType2> > var_shared;
+	di::optional< di::generic_builder<subject_type> >  var_builder;
+}; 
 
 #endif //DI_TEST_TYPES_HPP_

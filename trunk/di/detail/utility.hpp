@@ -17,6 +17,14 @@
 namespace di {
 namespace detail {
 
+struct safe_bool
+{
+	typedef int safe_bool::* type;
+
+    int true_;
+	static const int false_ = 0;
+};
+
 class noncopyable {
 	noncopyable(const noncopyable&);
 	noncopyable& operator=(const noncopyable&);

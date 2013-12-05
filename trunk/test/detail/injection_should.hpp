@@ -243,6 +243,12 @@ TYPED_TEST(InjectionShould, castToBarePointerWhenDeclaredAsBarePointer) {
 	EXPECT_EQ(&this->t1,casted_injection);
 }
 
+TYPED_TEST(InjectionShould, beTestable) {
+	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance);
+	EXPECT_TRUE(this->copyableClassInstance->var_shared);
+}
+
+
 /*
 TYPED_TEST(InjectionShould, beMoveConstructible) {
 	TestType2* t2 = new TestType2;
@@ -299,6 +305,7 @@ TEST_F(OptionalInjectionShould, beAssignedProperlyBeforeBuilding) {
 		givenNotFullyBuiltCopyableClassInstance(&copyableClassCopy);
 	});
 }
+
 
 }  // namespace injection
 
