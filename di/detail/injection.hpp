@@ -33,7 +33,7 @@ struct injection {
 		assert(!empty());
 		return *get_object();
 	}
-	
+
 	T* get() {
 		assert(!empty());
 		return get_object();	
@@ -46,6 +46,10 @@ struct injection {
 
 	bool empty() const {
 		return get_object() == NULL;
+	}
+
+	operator safe_bool::type() const {
+		return empty() ? safe_bool::false_ : &safe_bool::true_;
 	}
 
 protected:

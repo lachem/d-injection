@@ -69,7 +69,6 @@ struct optional< unique<T> > :
 	optional() : base(false) {}
 };
 
-
 template<typename T>
 struct optional< service<T> > : 
 	public detail::injection< T,service<T> >, 

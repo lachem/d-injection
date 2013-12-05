@@ -19,36 +19,6 @@ struct wrap_in_identity {
 	};
 };
 
-template<unsigned i>
-struct empty_base {};
-
-namespace wrap_in_module {
-	template<typename T, unsigned i>
-	struct apply {
-		typedef di::module<T> type;
-	};
-	template<unsigned i>
-	struct apply< detail::void_, i > {
-		typedef di::detail::empty_base<i> type;
-	};
-} // namespace wrap_in_module
-
-//A bug in boost 1.51 does not allow to redefine METAFUNCION_ARITY along with all other redefinitions in variadics.hpp on GCC
-//therefore inherit metafunction cannot be used in this library.
-#define WRAP_IN_MODULE_SEPARATED(z, n, _) \
-	public wrap_in_module::apply<BOOST_PP_CAT(M,n), n>::type,
-
-#define WRAP_IN_MODULE(n) \
-	public wrap_in_module::apply<BOOST_PP_CAT(M,n), n>::type
-
-template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, BOOST_PP_INTERCEPT)>
-struct inherit_modules : 
-	BOOST_PP_REPEAT(BOOST_PP_DEC(DI_MAX_NUM_INJECTIONS), WRAP_IN_MODULE_SEPARATED, ) 
-	WRAP_IN_MODULE(BOOST_PP_DEC(DI_MAX_NUM_INJECTIONS)) {};
-
-#undef WRAP_IN_MODULE_SEPARATED
-#undef WRAP_IN_MODULE
-
 //uses template recurrence to join all module::provided type sets
 namespace join_all {
 	template<typename Seq>
@@ -77,8 +47,11 @@ namespace join_all {
  * application objects cannot exchange services.
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
-class application : public detail::inherit_modules<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> {
-	typedef di::application<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> this_type;
+class application : public boost::mpl::inherit_linearly<
+      typename boost::mpl::remove<boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)>,di::detail::void_>::type,
+      boost::mpl::inherit<boost::mpl::_1, di::module<boost::mpl::_2> > >::type
+{
+	typedef di::application<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> this_type;
 
 public:
 	application() {
@@ -124,7 +97,7 @@ private:
 		Seq& sequence;
 	};
 
-	typedef boost::mpl::vector<BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, M, BOOST_PP_INTERCEPT)> raw_module_prototypes;
+	typedef boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> raw_module_prototypes;
 	typedef typename detail::vector_without_voids<raw_module_prototypes>::type module_prototypes;
 
 	typename boost::fusion::result_of::as_set<

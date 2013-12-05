@@ -38,7 +38,7 @@ struct make_selective_use_call<true> {
 
 template<typename M>
 struct module {
-	typedef M type;
+	typedef M module_type;
 
 	template<typename T>
 	module<M>& use(const boost::shared_ptr<T>& element) {

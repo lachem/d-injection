@@ -55,6 +55,8 @@
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/for_each.hpp>
+#include <boost/mpl/inherit.hpp>
+#include <boost/mpl/inherit_linearly.hpp>
 
 namespace di {
 namespace detail {
