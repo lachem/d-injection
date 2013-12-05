@@ -1,0 +1,52 @@
+Dependency Injection Performance Note
+=====================================
+
+DI has been optimized both in terms of speed and memory consumption. However due to the necessity of using certain constructs to handle injections, there are rules that need to be followed to retain this efficiency.
+
+Avoid postponed building
+------------------------
+Objects should be built immediately after they are instatiated. This is due to the fact that injectable class attributes are written into global containers after object instantiation. Those global containers (which are traversed during building) are optimized for a small number of simultanously awaiting injections (see DI_MAX_INJECTIONS_PER_TYPE). Thus deferring building may cause a decrease in efficiency. 
+
+.Inefficient
+---------------------------------------------------------------------
+std::vector<TypeWithInjections> container;
+...
+for(int i=0; i<100000; i++) {
+    container.push_back(TypeWithInjections());
+}
+...
+for(int i=0; i<100000; i++) {
+    builder.build(container[i]);
+}
+---------------------------------------------------------------------
+
+.Efficient
+---------------------------------------------------------------------
+std::vector<TypeWithInjections> container;
+...
+for(int i=0; i<100000; i++) {
+    container.push_back(TypeWithInjections());
+    builder.build(container[i]);
+}
+---------------------------------------------------------------------
+
+.Inefficient
+---------------------------------------------------------------------
+std::vector<TypeWithInjections> container(100000);
+for(int i=0; i<100000; i++) {
+    builder.build(container[i]);
+}
+---------------------------------------------------------------------
+
+.Efficient
+---------------------------------------------------------------------
+TypeWithInjections prototype;
+builder.build(prototype);
+std::vector<TypeWithInjections> container(100000,prototype);
+---------------------------------------------------------------------
+
+Prefer build to build_part
+--------------------------
+It is correct in terms of functionality to use build_part instead of build. However as it comes to build_part it does not check the requirements. Because of that any spare injections, even if optional, will remain in the global container thus decreasing the efficiency of other builders.
+
+When many generic_builders are to be used with one object the last call for building should be build in contradiction to build_part.

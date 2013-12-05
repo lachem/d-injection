@@ -1,0 +1,141 @@
+ Dependency Injection - Header link:../../di/abstract_builder.hpp[<abstract_builder.hpp>]
+========================================================================================
+
+
+Class abstract_builder
+----------------------
+
+Abstract Builder provides convinient abstraction for building objects of abstract or concrete types. The main advantage of using  is the possibility to mock build methods. If the user does not need mocking or can test building using other means (checking injections directly) then using more convinient  is advised. 
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> class abstract_builder : public di::configurable< T >
+  {
+    virtual void build(T &instance)=0;
+    abstract_builder<T>& use(U &object);
+    abstract_builder<T>& use(const SPtr< U > &object);
+    abstract_builder<T>& replace(U &object, size_t at=0);
+    abstract_builder<T>& replace(const SPtr< U > &object, size_t at=0);
+    abstract_builder<T>& remove(size_t at=0);
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+virtual void build(T &instance)=0
+---------------------------------------------------------------------
+
+Performs injections and calls constructed() on subject. 
+
+
+
+
+
+
+
+*Requires:* Injections required by the instance object were provided to the builder.  +
+*Effects:* none +
+*Postconditions:* All provided injections have been injected, subject<T...>::constucted() has been called.  +
+*Returns:* none +
+*Throws:*  Depending on diagnostics method chosen.  +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& use(U &object)
+---------------------------------------------------------------------
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& use(const SPtr< U > &object)
+---------------------------------------------------------------------
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& replace(U &object, size_t at=0)
+---------------------------------------------------------------------
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& replace(const SPtr< U > &object, size_t at=0)
+---------------------------------------------------------------------
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+abstract_builder<T>& remove(size_t at=0)
+---------------------------------------------------------------------
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]
