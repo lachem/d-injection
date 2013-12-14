@@ -27,7 +27,11 @@ A class that requires some objects to be injected into it upon instantiation or 
 ---------------------------------------------------------------------
 struct MyClass: public di::subject<T,U,V,...>{};
 ---------------------------------------------------------------------
-Template parameters of the +di::subject+ name the types of each particular injection. For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:
+Template parameters of the +di::subject+ name the types of each particular injection. 
+
+NOTE: Deriving from di::subject<...> does change the size MyClass i.e. di::subject adds only compile time information
+
+For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:
      
 ---------------------------------------------------------------------
 struct Car: public di::subject<Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat>{};
@@ -106,7 +110,7 @@ struct Car: public di::subject<Wheel>
  
 di::unique
 ~~~~~~~~~~
-Indicates that the injection will be represented as +unique_ptr+ if available or as auto_ptr. Injection subject which requires an injection of type +di::unique+ will become noncopyable.
+Indicates that the injection will be represented as +unique_ptr+ if available, +shared_ptr+ if DI_NO_AUTO_PTR is set or +auto_ptr+ otherwise. Injection subject which requires an injection of type +di::unique+ will become noncopyable.
 
 ---------------------------------------------------------------------
 // Car is noncopyable bacause wheel injection is of type di::unique 
@@ -126,6 +130,8 @@ struct Car: public di::subject<Wheel>
     di::optional< di::service<Logger> > logger; 
 };
 ---------------------------------------------------------------------
+  
+NOTE: Injection size is equal to the size of its representation
   
 Builder
 -------
