@@ -29,7 +29,7 @@ struct MyClass: public di::subject<T,U,V,...>{};
 ---------------------------------------------------------------------
 Template parameters of the +di::subject+ name the types of each particular injection. 
 
-NOTE: Deriving from di::subject<...> does change the size MyClass i.e. di::subject adds only compile time information
+NOTE: di::subject<...> has virtual function therefore inheriting from it causes MyClass to increase in size by size of one pointer
 
 For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:
      
