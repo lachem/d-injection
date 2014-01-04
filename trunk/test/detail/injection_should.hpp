@@ -21,11 +21,17 @@ namespace injection {
 struct RequiredTrait {
 	typedef TestClassReq TestClass;
 	typedef CopyableClassReq CopyableClass;
+#ifdef DI_HAS_UNIQUE_PTR
+	typedef MoveableClassReq MoveableClass;
+#endif
 };
 
 struct OptionalTrait {
 	typedef TestClassOpt TestClass;
 	typedef CopyableClassOpt CopyableClass;
+#ifdef DI_HAS_UNIQUE_PTR
+	typedef MoveableClassOpt MoveableClass;
+#endif
 };
 
 template<typename Trait>
@@ -33,19 +39,27 @@ class InjectionShould : public ::testing::Test {
 protected:
 	typedef typename Trait::TestClass TestClass;
 	typedef typename Trait::CopyableClass CopyableClass;
+#ifdef DI_HAS_UNIQUE_PTR
+	typedef typename Trait::MoveableClass MoveableClass;
+#else
+	typedef typename Trait::CopyableClass MoveableClass;
+#endif
 
 	TestClass* testClassInstance;
 	CopyableClass* copyableClassInstance;
+	MoveableClass* moveableClassInstance;
 	TestType1 t1;
 
 	virtual void SetUp() {
 		testClassInstance = new TestClass();
 		copyableClassInstance = new CopyableClass();
+		moveableClassInstance = new MoveableClass();
 	}
 
 	virtual void TearDown() {
-		delete testClassInstance;
+		delete moveableClassInstance;
 		delete copyableClassInstance;
+		delete testClassInstance;
 	}
 
 	void givenProperlyBuiltTestClassInstance(TestClass* testClassInstance, TestType2* t2First = new TestType2, TestType2* t2Second = new TestType2) {
@@ -61,6 +75,14 @@ protected:
 		builder.use(t1);
 		builder.use(di::shared<TestType2>(t2));
 		builder.build(*copyableClassInstance);
+	}
+
+	void givenProperlyBuiltMoveableInstance(MoveableClass* movableClassInstance, TestType2* t2First, TestType2* t2Second, TestType2* t2Third) {
+		di::builder<MoveableClass> builder;
+		builder.use(di::shared<TestType2>(t2Second));
+		builder.use(di::unique<TestType2>(t2First));
+		builder.use(di::service<TestType2>(t2Third));
+		builder.build(*movableClassInstance);
 	}
 
 	void givenInproperlyBuiltTestClassInstance(TestClass* testClassInstance) {
@@ -243,23 +265,71 @@ TYPED_TEST(InjectionShould, castToBarePointerWhenDeclaredAsBarePointer) {
 	EXPECT_EQ(&this->t1,casted_injection);
 }
 
-TYPED_TEST(InjectionShould, beTestable) {
+TYPED_TEST(InjectionShould, beBooleanTestable) {
 	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance);
 	EXPECT_TRUE(this->copyableClassInstance->var_shared);
 }
 
-
-/*
+#ifdef DI_HAS_UNIQUE_PTR
 TYPED_TEST(InjectionShould, beMoveConstructible) {
 	TestType2* t2 = new TestType2;
-	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance,t2);
-	typename TypeParam::CopyableClass movableClassInstance = std::move(*this->copyableClassInstance);
+	TestType2* t3 = new TestType2;
+	TestType2* t4 = new TestType2;
+	InjectionShould<TypeParam>::givenProperlyBuiltMoveableInstance(this->moveableClassInstance,t2,t3,t4);
+	typename TypeParam::MoveableClass moveableClassInstance(std::move(*this->moveableClassInstance));
 
-	EXPECT_EQ(&this->t1,movableClassInstance.var.get());
-	EXPECT_EQ(t2,movableClassInstance.var_shared.get());
-	EXPECT_TRUE(this->copyableClassInstance->var.empty());
-	EXPECT_TRUE(this->copyableClassInstance->var_shared.empty());
-}*/
+	EXPECT_EQ(t2,moveableClassInstance.var_unique.get());
+	EXPECT_EQ(t3,moveableClassInstance.var_shared.get());
+	EXPECT_EQ(t4,moveableClassInstance.var_service.get());
+	EXPECT_TRUE(this->moveableClassInstance->var_unique.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_shared.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_service.empty());
+}
+TYPED_TEST(InjectionShould, beMoveConstructedProperlyBeforeBuilding) {
+	TestType2* t2 = new TestType2;
+	TestType2* t3 = new TestType2;
+	TestType2* t4 = new TestType2;
+	typename TypeParam::MoveableClass moveableClassInstance(std::move(*this->moveableClassInstance));
+	InjectionShould<TypeParam>::givenProperlyBuiltMoveableInstance(&moveableClassInstance,t2,t3,t4);
+
+	EXPECT_EQ(t2,moveableClassInstance.var_unique.get());
+	EXPECT_EQ(t3,moveableClassInstance.var_shared.get());
+	EXPECT_EQ(t4,moveableClassInstance.var_service.get());
+	EXPECT_TRUE(this->moveableClassInstance->var_unique.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_shared.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_service.empty());
+}
+TYPED_TEST(InjectionShould, beMoveAssignable) {
+	TestType2* t2 = new TestType2;
+	TestType2* t3 = new TestType2;
+	TestType2* t4 = new TestType2;
+	InjectionShould<TypeParam>::givenProperlyBuiltMoveableInstance(this->moveableClassInstance,t2,t3,t4);
+	typename TypeParam::MoveableClass moveableClassInstance;
+	moveableClassInstance = std::move(*this->moveableClassInstance);
+
+	EXPECT_EQ(t2,moveableClassInstance.var_unique.get());
+	EXPECT_EQ(t3,moveableClassInstance.var_shared.get());
+	EXPECT_EQ(t4,moveableClassInstance.var_service.get());
+	EXPECT_TRUE(this->moveableClassInstance->var_unique.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_shared.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_service.empty());
+}
+TYPED_TEST(InjectionShould, beMoveAssignedProperlyBeforeBuilding) {
+	TestType2* t2 = new TestType2;
+	TestType2* t3 = new TestType2;
+	TestType2* t4 = new TestType2;
+	typename TypeParam::MoveableClass moveableClassInstance;
+	moveableClassInstance = std::move(*this->moveableClassInstance);
+	InjectionShould<TypeParam>::givenProperlyBuiltMoveableInstance(&moveableClassInstance,t2,t3,t4);
+
+	EXPECT_EQ(t2,moveableClassInstance.var_unique.get());
+	EXPECT_EQ(t3,moveableClassInstance.var_shared.get());
+	EXPECT_EQ(t4,moveableClassInstance.var_service.get());
+	EXPECT_TRUE(this->moveableClassInstance->var_unique.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_shared.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_service.empty());
+}
+#endif // DI_HAS_UNIQUE_PTR
 
 class OptionalInjectionShould : public ::testing::Test {
 protected:

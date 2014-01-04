@@ -47,6 +47,15 @@ struct required< shared<T> > :
 	required(const required< shared<T> >& source) : base(source) {
 		base::do_copy(source,true);
 	}
+#ifdef DI_HAS_UNIQUE_PTR
+	required(required< shared<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,true);
+	}
+	required< shared<T> >& operator=(required< shared<T> >&& source) {
+		base::do_move_assignement(std::move(source),true);
+		return *this;
+	}
+#endif
 	required< shared<T> >& operator=(const required< shared<T> >& source) {
 		base::do_assignement(source,true);
 		return *this;
@@ -62,11 +71,21 @@ struct required< shared<T> > :
 template<typename T>
 struct required< unique<T> > : 
 	public detail::injection< T,unique<T> >, 
-	public detail::nonallocatable, public detail::noncopyable 
+	public detail::nonallocatable, 
+	public detail::noncopyable 
 {
 	typedef detail::injection< T,unique<T> > base;
 
 	required() : base(true) {}
+#ifdef DI_HAS_UNIQUE_PTR
+	required(required< unique<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,true);
+	}
+	required< unique<T> >& operator=(required< unique<T> >&& source) {
+		base::do_move_assignement(std::move(source),true);
+		return *this;
+	}
+#endif
 };
 
 template<typename T>
@@ -80,6 +99,15 @@ struct required< service<T> > :
 	required(const required< service<T> >& source) : base(source) {
 		base::do_copy(source,true);
 	}
+#ifdef DI_HAS_UNIQUE_PTR
+	required(required< service<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,true);
+	}
+	required< service<T> >& operator=(required< service<T> >&& source) {
+		base::do_move_assignement(std::move(source),true);
+		return *this;
+	}
+#endif
 	required< service<T> >& operator=(const required< service<T> >& source) {
 		base::do_assignement(source,true);
 		return *this;

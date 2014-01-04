@@ -7,11 +7,11 @@
 #include "generic_builder_should.hpp"
 #include "integration/builders_should.hpp"
 #include "diagnostics/builder_diagnostics_should.hpp"
-#include "performance/builder_performance_should.hpp"
 #include "detail/injection_should.hpp"
 #include "detail/injection_destination_container_should.hpp"
 #include "detail/injection_source_container_should.hpp"
 #include "application_should.hpp"
+#include "performance/builder_performance_should.hpp"
 #include "multithread/thread_agnostic_injections_should.hpp"
 
 int main(int argc, char **argv) {

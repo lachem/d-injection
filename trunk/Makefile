@@ -8,6 +8,8 @@ INC = ./ ./test $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/incl
 LIB = $(BOOST_LIB)/libboost_thread.a $(BOOST_LIB)/libboost_chrono.a $(BOOST_LIB)/libboost_system.a -lpthread -lrt
 DOC = $(shell find doc/ -name "*.txt")
 
+DBG_FLAGS = -DLINUX -g
+REL_FLAGS = -DLINUX -DNDEBUG -O2
 define \n
 
 
@@ -16,16 +18,20 @@ endef
 all: debug release
 
 debug: 
-	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) -DLINUX -g -o di_test_debug
+	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) $(DBG_FLAGS) -std=c++03 -o di_test_debug_cpp03
+	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) $(DBG_FLAGS) -std=c++11 -o di_test_debug_cpp11
 	
 release: 
-	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) -DLINUX -DNDEBUG -O2 -o di_test_release
+	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) $(REL_FLAGS) -std=c++03 -o di_test_release_cpp03
+	g++ $(SRC) $(addprefix -I, $(INC)) $(LIB) $(REL_FLAGS) -std=c++11 -o di_test_release_cpp11
 
 run_debug: debug
-	./di_test_debug
+	./di_test_debug_cpp03
+	./di_test_debug_cpp11
 
 run_release: release
-	./di_test_release
+	./di_test_release_cpp03
+	./di_test_release_cpp11
 
 .PHONY: doc
 doc: generate_doxygen run_doc_generator generate_asciidoc
