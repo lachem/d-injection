@@ -47,6 +47,15 @@ struct optional< shared<T> > :
 	optional(const optional< shared<T> >& source) : base(source) {
 		base::do_copy(source,false);
 	}
+#ifdef DI_HAS_UNIQUE_PTR
+	optional(optional< shared<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,false);
+	}
+	optional< shared<T> >& operator=(optional< shared<T> >&& source) {
+		base::do_move_assignement(std::move(source),false);
+		return *this;
+	}
+#endif
 	optional< shared<T> >& operator=(const optional< shared<T> >& source) {
 		base::do_assignement(source,false);
 		return *this;
@@ -62,11 +71,21 @@ struct optional< shared<T> > :
 template<typename T>
 struct optional< unique<T> > :
 	public detail::injection< T,unique<T> >, 
-	public detail::nonallocatable, public detail::noncopyable 
+	public detail::nonallocatable, 
+	public detail::noncopyable 
 {
 	typedef detail::injection< T,unique<T> > base;
 
 	optional() : base(false) {}
+#ifdef DI_HAS_UNIQUE_PTR
+	optional(optional< unique<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,false);
+	}
+	optional< unique<T> >& operator=(optional< unique<T> >&& source) {
+		base::do_move_assignement(std::move(source),false);
+		return *this;
+	}
+#endif
 };
 
 template<typename T>
@@ -80,6 +99,15 @@ struct optional< service<T> > :
 	optional(const optional< service<T> >& source) : base(source) {
 		base::do_copy(source,false);
 	}
+#ifdef DI_HAS_UNIQUE_PTR
+	optional(optional< service<T> >&& source) : base(std::move(source)) {
+		base::do_move(source,false);
+	}
+	optional< service<T> >& operator=(optional< service<T> >&& source) {
+		base::do_move_assignement(std::move(source),false);
+		return *this;
+	}
+#endif
 	optional< service<T> >& operator=(const optional< service<T> >& source) {
 		base::do_assignement(source,false);
 		return *this;

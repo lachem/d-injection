@@ -58,6 +58,9 @@ protected:
 		insert_self_into_container(is_required);
 	}
 	injection(const injection<T,P>& source) : rep_object(source.rep_object) {}
+#ifdef DI_HAS_UNIQUE_PTR
+	injection(injection<T,P>&& source) : rep_object(std::move(source.rep_object)) {}
+#endif
 	~injection() {
 		if(empty()) {
 			remove_self_from_container();
@@ -68,13 +71,32 @@ protected:
 		rep_object = source.rep_object;
 		return *this;
 	}
+#ifdef DI_HAS_UNIQUE_PTR
+	injection<T,P>& operator=(injection<T,P>&& source) {
+		rep_object = std::move(source.rep_object);
+		return *this;
+	}
+#endif
 
 	void do_copy(const injection<T,P>& source, bool is_required) {
+		//need to insert self into the container if injection has not yet been executed 
 		if(source.empty()) {			
 			insert_self_into_container(is_required);
 		}
 	}
 
+#ifdef DI_HAS_UNIQUE_PTR
+	void do_move_assignement(injection<T,P>&& source, bool is_required) {
+		if(!source.empty() && this->empty()) {
+			remove_self_from_container();
+		}
+		else
+		if(source.empty() && !this->empty()) {
+			insert_self_into_container(is_required);
+		}
+		this->operator=(std::move(source));
+	}
+#endif
 	void do_assignement(const injection<T,P>& source, bool is_required) {
 		if(!source.empty() && this->empty()) {
 			remove_self_from_container();
@@ -84,6 +106,13 @@ protected:
 			insert_self_into_container(is_required);
 		}
 		this->operator=(source);
+	}
+
+	void do_move(const injection<T,P>& source, bool is_required) {
+		//need to insert self into the container if injection has not yet been executed 
+		if(this->empty()) {			
+			insert_self_into_container(is_required);
+		}
 	}
 
 	void insert_self_into_container(bool is_required) {

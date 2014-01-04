@@ -124,6 +124,26 @@ struct CopyableClassReq : public di::subject<TestType1,TestType2> {
 	di::required< di::shared<TestType2> > var_shared;
 };
 
+#ifdef DI_HAS_UNIQUE_PTR
+struct MoveableClassReq : public di::subject<TestType2,TestType2,TestType2> {
+	MoveableClassReq() {}
+	MoveableClassReq(MoveableClassReq&& other) :
+		var_unique(std::move(other.var_unique)),
+		var_shared(std::move(other.var_shared)), 
+		var_service(std::move(other.var_service)) {}
+	MoveableClassReq& operator=(MoveableClassReq&& other) {
+		var_unique  = std::move(other.var_unique);
+		var_shared  = std::move(other.var_shared);
+		var_service = std::move(other.var_service);
+		return *this;
+	}
+
+	di::required< di::unique<TestType2>  > var_unique;
+	di::required< di::shared<TestType2>  > var_shared;
+	di::required< di::service<TestType2> > var_service;
+};
+#endif
+
 struct CopyableClassWithServicesReq : public di::subject<TestType1,TestType2,TestType1,TestType2> {
 	di::required< di::shared<TestType1> > var;
 	di::required< di::shared<TestType2> > var_shared;
@@ -141,6 +161,27 @@ struct CopyableClassOpt : public di::subject<TestType1,TestType2> {
 	di::optional<TestType1> var;
 	di::optional< di::shared<TestType2> > var_shared;
 };
+
+#ifdef DI_HAS_UNIQUE_PTR
+struct MoveableClassOpt : public di::subject<TestType2,TestType2,TestType2> {
+	MoveableClassOpt() {}
+	MoveableClassOpt(MoveableClassOpt&& other) :
+		var_unique(std::move(other.var_unique)),
+		var_shared(std::move(other.var_shared)),
+		var_service(std::move(other.var_service)) {}
+
+	MoveableClassOpt& operator=(MoveableClassOpt&& other) {
+		var_unique  = std::move(other.var_unique);
+		var_shared  = std::move(other.var_shared);
+		var_service = std::move(other.var_service);
+		return *this;
+	}
+
+	di::optional< di::unique<TestType2>  > var_unique;
+	di::optional< di::shared<TestType2>  > var_shared;
+	di::optional< di::service<TestType2> > var_service;
+};
+#endif
 
 struct CopyableClassWithBuilderInjection : public di::subject<TestType1,TestType2> {
 	di::required<TestType1> var;
