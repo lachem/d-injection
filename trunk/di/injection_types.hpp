@@ -26,7 +26,12 @@ enum injection_id {invalid,ordinary,unique,shared,service,any};
 
 template<typename T>
 struct smart_ptr {
+
+#ifdef DI_USE_BOOST_SHARED_PTR
 	typedef boost::shared_ptr<T> shared_ptr;
+#else
+	typedef std::shared_ptr<T> shared_ptr;
+#endif
 
 #ifdef DI_HAS_UNIQUE_PTR
 	typedef std::unique_ptr<T> single_ptr;
@@ -51,6 +56,15 @@ struct smart_ptr {
 		dest = src;
 #endif
 	}
+
+	template<typename U>
+	static shared_ptr const_pointer_cast(const U& ptr) {
+		#ifdef DI_USE_BOOST_SHARED_PTR
+			return boost::const_pointer_cast<T>(ptr);
+		#else
+			return std::const_pointer_cast<T>(ptr);
+		#endif
+	}
 };
 
 template<typename T>
@@ -62,7 +76,7 @@ struct ordinary {
 	
 	explicit ordinary(T* an_object) : object(an_object) {}
     
-    T* get_object() const {
+    representation get_object() const {
         return object;
     }
 
@@ -77,7 +91,7 @@ struct ordinary {
 	}
 
 private:
-	T* object;
+	representation object;
 };
 
 template<typename T>
@@ -88,8 +102,11 @@ struct unique {
 	typedef typename smart_ptr<T>::single_ptr representation;
 
 	explicit unique(T* an_object) : object(an_object) {}
-	explicit unique(representation an_object) : object(an_object) {}
-
+#ifdef DI_HAS_UNIQUE_PTR
+	explicit unique(representation&& an_object) : object(an_object.release()) {}
+#else
+	explicit unique(representation an_object) : object(an_object.release()) {}
+#endif
     T* get_object() const {
         return object;
     }
@@ -153,7 +170,7 @@ struct service {
 
 	service() : object(NULL_PTR(non_const_type)) {}
 	explicit service(T* an_object) : object(const_cast<non_const_type*>(an_object)) {}
-	explicit service(const representation& an_object) : object(boost::const_pointer_cast<non_const_type>(an_object)) {}
+	service(const representation& an_object) : object(smart_ptr<non_const_type>::const_pointer_cast(an_object)) {}
 
 	operator representation() {
 		return representation(object);
@@ -177,22 +194,39 @@ private:
 };
 
 template<typename T>
-di::shared<T> as_ordinary(T* object) {
+di::ordinary<T> as_ordinary(T* object) {
 	return di::ordinary<T>(object);
 }
 
 template<typename T>
-di::shared<T> as_unique(T* object) {
+di::unique<T> as_unique(T* object) {
 	return di::unique<T>(object);
 }
+
+#ifdef DI_HAS_UNIQUE_PTR
+template<typename T>
+di::unique<T> as_unique(std::unique_ptr<T>&& object) {
+	return di::unique<T>(std::move(object));
+}
+#endif
 
 template<typename T>
 di::shared<T> as_shared(T* object) {
 	return di::shared<T>(object);
 }
 
+template<template <typename> class SPtr, typename T>
+di::shared<T> as_shared(const SPtr<T>& object) {
+	return di::shared<T>(object);
+}
+
 template<typename T>
-di::shared<T> as_service(T* object) {
+di::service<T> as_service(T* object) {
+	return di::service<T>(object);
+}
+
+template<template <typename> class SPtr, typename T>
+di::service<T> as_service(const SPtr<T>& object) {
 	return di::service<T>(object);
 }
 

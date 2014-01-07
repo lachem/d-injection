@@ -91,7 +91,7 @@ TEST_F(ApplicationShould, allowFeedingModuleItDerivesFromInCascadicManner) {
 
 TEST_F(ApplicationShould, connectElementsProvidedByAnotherModule) {
 	di::module<Module1>& mod1 = giventwoModuleApplication();
-	boost::shared_ptr<TestType1> t1(new TestType1);
+	di::smart_ptr<TestType1>::shared_ptr t1(new TestType1);
 	mod1.use(di::service<TestType1>(t1));
 	di::module<Module2>& mod2 = giventwoModuleApplication();
 
@@ -100,7 +100,7 @@ TEST_F(ApplicationShould, connectElementsProvidedByAnotherModule) {
 
 TEST_F(ApplicationShould, connectElementsProvidedByAnotherModuleSoThatModuleCopyWorks) {
 	di::module<Module1>& mod1 = giventwoModuleApplication();
-	boost::shared_ptr<TestType1> t1(new TestType1);
+	di::smart_ptr<TestType1>::shared_ptr t1(new TestType1);
 	mod1.use(di::service<TestType1>(t1));
 	di::module<Module2>& mod2 = giventwoModuleApplication();
 	di::module<Module2> mod2Copy = mod2;
@@ -139,7 +139,7 @@ TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleA
 
 TEST_F(ApplicationShould, preconfigureAbstractBuildersWithServicesWithsixModuleApplication2) {
 	di::module<Module1>& mod1 = givensixModuleApplication();
-	boost::shared_ptr<TestType1> t1_shared(new TestType1);
+	di::smart_ptr<TestType1>::shared_ptr t1_shared(new TestType1);
 	TestType2Mock* t2 = new TestType2Mock;
 	EXPECT_CALL(*t2,die());
 	mod1.use(di::service<TestType1>(t1_shared));
@@ -188,7 +188,7 @@ TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithsixModuleAp
 
 TEST_F(ApplicationShould, preconfigureGenericBuildersWithServicesWithsixModuleApplication2) {
 	di::module<Module1>& mod1 = givensixModuleApplication();
-	boost::shared_ptr<TestType1> t1_shared(new TestType1);
+	di::smart_ptr<TestType1>::shared_ptr t1_shared(new TestType1);
 	TestType2Mock* t2 = new TestType2Mock;
 	EXPECT_CALL(*t2,die());
 	mod1.use(di::service<TestType1>(t1_shared)).use(di::service<TestType2>(t2));
@@ -235,7 +235,7 @@ TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplicati
 
 TEST_F(ApplicationShould, preconfigureBuildersWithServicesWithsixModuleApplication2) {
 	di::module<Module1>& mod1 = givensixModuleApplication();
-	boost::shared_ptr<TestType1> t1_shared(new TestType1);
+	di::smart_ptr<TestType1>::shared_ptr t1_shared(new TestType1);
 	TestType2Mock* t2 = new TestType2Mock;
 	EXPECT_CALL(*t2,die());
 	mod1.use(di::service<TestType1>(t1_shared));
