@@ -77,6 +77,7 @@ protected:
 		builder.build(*copyableClassInstance);
 	}
 
+#ifdef DI_HAS_UNIQUE_PTR
 	void givenProperlyBuiltMoveableInstance(MoveableClass* movableClassInstance, TestType2* t2First, TestType2* t2Second, TestType2* t2Third) {
 		di::builder<MoveableClass> builder;
 		builder.use(di::shared<TestType2>(t2Second));
@@ -84,6 +85,14 @@ protected:
 		builder.use(di::service<TestType2>(t2Third));
 		builder.build(*movableClassInstance);
 	}
+	void givenProperlyBuiltMoveableInstance(MoveableClass* movableClassInstance, std::unique_ptr<TestType2>&& t2First, const std::shared_ptr<TestType2>& t2Second, TestType2* t2Third) {
+		di::builder<MoveableClass> builder;
+		builder.use(di::as_shared(t2Second));
+		builder.use(di::as_unique(std::move(t2First)));
+		builder.use(di::service<TestType2>(t2Third));
+		builder.build(*movableClassInstance);
+	}
+#endif
 
 	void givenInproperlyBuiltTestClassInstance(TestClass* testClassInstance) {
 		di::builder<TestClass> builder;
@@ -253,7 +262,7 @@ TYPED_TEST(InjectionShould, castToSharedPointerWhenDeclaredAsShared) {
 	EXPECT_CALL(*t2Mock, die()).Times(1);
 
 	InjectionShould<TypeParam>::givenProperlyBuiltCopyableInstance(this->copyableClassInstance,t2Mock);
-	boost::shared_ptr<TestType2> casted_injection = this->copyableClassInstance->var_shared;
+	di::smart_ptr<TestType2>::shared_ptr casted_injection = this->copyableClassInstance->var_shared;
 
 	EXPECT_EQ(t2Mock,casted_injection.get());
 }
@@ -271,6 +280,22 @@ TYPED_TEST(InjectionShould, beBooleanTestable) {
 }
 
 #ifdef DI_HAS_UNIQUE_PTR
+TYPED_TEST(InjectionShould, beMoveInsertable) {
+	std::unique_ptr<TestType2> t2_unique(new TestType2);
+	std::shared_ptr<TestType2> t3_shared(new TestType2);
+	TestType2* t2 = t2_unique.get();
+	TestType2* t3 = t3_shared.get();
+	TestType2* t4 = new TestType2;
+	InjectionShould<TypeParam>::givenProperlyBuiltMoveableInstance(this->moveableClassInstance,std::move(t2_unique),t3_shared,t4);
+	typename TypeParam::MoveableClass moveableClassInstance(std::move(*this->moveableClassInstance));
+
+	EXPECT_EQ(t2,moveableClassInstance.var_unique.get());
+	EXPECT_EQ(t3,moveableClassInstance.var_shared.get());
+	EXPECT_EQ(t4,moveableClassInstance.var_service.get());
+	EXPECT_TRUE(this->moveableClassInstance->var_unique.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_shared.empty());
+	EXPECT_TRUE(this->moveableClassInstance->var_service.empty());
+}
 TYPED_TEST(InjectionShould, beMoveConstructible) {
 	TestType2* t2 = new TestType2;
 	TestType2* t3 = new TestType2;

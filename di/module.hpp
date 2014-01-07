@@ -40,10 +40,17 @@ template<typename M>
 struct module {
 	typedef M module_type;
 
+#ifdef DI_USE_BOOST_SHARED_PTR
 	template<typename T>
-	module<M>& use(const boost::shared_ptr<T>& element) {
+	module<M>& use(const typename boost::shared_ptr<T>& element) {
 		return use(di::service<T>(element));
 	}
+#else
+	template<typename T>
+	module<M>& use(const typename std::shared_ptr<T>& element) {
+		return use(di::service<T>(element));
+	}
+#endif
 
 	template<typename T>
 	module<M>& use(const di::service<T>& element) {
@@ -53,7 +60,7 @@ struct module {
 	}
 
 	template<typename T>
-	boost::shared_ptr<T> get() {
+	typename di::smart_ptr<T>::shared_ptr get() {
 		BOOST_MPL_ASSERT_MSG((boost::mpl::contains<typename M::needed::ref_type,di::service<T>*>::type::value), TypeIsNotOnModulesNeededServiceList,);
 		return *boost::fusion::at_key<di::service<T>*>(needed);
 	}

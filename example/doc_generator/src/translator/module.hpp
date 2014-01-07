@@ -35,7 +35,7 @@ struct Module {
 
 private:
 	di::module<Dependencies>& module;
-	boost::shared_ptr<model::Model> model;
+	std::shared_ptr<model::Model> model;
 };
 
 } // namespace translator

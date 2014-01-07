@@ -35,7 +35,7 @@ struct Module {
 private:
 	std::string inputDirectory;
 	di::module<Dependencies>& module;
-	boost::shared_ptr<XmlRepository> xmlRepository;
+	std::shared_ptr<XmlRepository> xmlRepository;
 };
 
 } // namespace doxygen_input

@@ -280,7 +280,7 @@ TEST_F(AbstractBuilderShould, notRemoveSharedInjectionsWhileProvidedSharedPtrExi
 	
 	TestType1 t1;
 	TestType2* t2 = new TestType2;
-	boost::shared_ptr<TestType2> shared_mock(t2);
+	di::smart_ptr<TestType2>::shared_ptr shared_mock(t2);
 
 	abuilder->use(t1);
 	abuilder->use(di::shared<TestType2>(shared_mock));
