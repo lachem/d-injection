@@ -782,6 +782,10 @@ cellspacing="0" cellpadding="4">
 <td align="left" valign="top"><p class="table">DI_NO_AUTO_PTR</p></td>
 <td align="left" valign="top"><p class="table">if set and DI_HAS_UNIQUE_PTR is not defined unique injections will be represented with boost shared pointer, default: defined when BOOST_NO_AUTO_PTR is defined, not defined otherwise</p></td>
 </tr>
+<tr>
+<td align="left" valign="top"><p class="table">DI_USE_BOOST_SHARED_PTR</p></td>
+<td align="left" valign="top"><p class="table">if set di will use boost::shared_ptr instead of std::shared_ptr for di::shared representation, default: defined when DI_HAS_UNIQUE_PTR is not defined, not defined otherwise</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -796,7 +800,7 @@ cellspacing="0" cellpadding="4">
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-08-06 23:05:44 CEST
+Last updated 2014-01-05 00:22:00 CET
 </div>
 </div>
 </body>
