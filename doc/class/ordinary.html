@@ -750,7 +750,7 @@ asciidoc.install(2);
   template&lt;typename T&gt; struct ordinary
   {
     ordinary(T *an_object);
-    T* get_object() const ;
+    representation get_object() const ;
     static T* extract(representation *rep);
     static const T* extract(const representation *rep);
     static void init(representation *rep);
@@ -775,7 +775,7 @@ asciidoc.install(2);
 <strong>Rationale:</strong> none<br /></p></div>
 <div class="listingblock">
 <div class="content">
-<pre><code>T* get_object() const</code></pre>
+<pre><code>representation get_object() const</code></pre>
 </div></div>
 <div class="paragraph"><p><strong>Requires:</strong> none<br />
 <strong>Effects:</strong> none<br />
@@ -837,7 +837,7 @@ asciidoc.install(2);
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-12-05 19:29:53 CET
+Last updated 2014-01-08 20:57:17 CET
 </div>
 </div>
 </body>

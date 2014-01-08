@@ -15,9 +15,9 @@ namespace di
 {
   template<typename M> struct module
   {
-    module<M>& use(const boost::shared_ptr< T > &element);
+    module<M>& use(const typename std::shared_ptr< T > &element);
     module<M>& use(const di::service< T > &element);
-    boost::shared_ptr<T> get();
+    di::smart_ptr<T>::shared_ptr get();
     smart_ptr< di::builder<C> >::single_ptr builder();
     smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder();
     smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder();
@@ -31,7 +31,7 @@ Functions
 ~~~~~~~~~
 
 ---------------------------------------------------------------------
-module<M>& use(const boost::shared_ptr< T > &element)
+module<M>& use(const typename std::shared_ptr< T > &element)
 ---------------------------------------------------------------------
 
 *Requires:* none +
@@ -59,7 +59,7 @@ module<M>& use(const di::service< T > &element)
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-boost::shared_ptr<T> get()
+di::smart_ptr<T>::shared_ptr get()
 ---------------------------------------------------------------------
 
 *Requires:* none +
