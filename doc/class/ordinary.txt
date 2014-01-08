@@ -16,7 +16,7 @@ namespace di
   template<typename T> struct ordinary
   {
     ordinary(T *an_object);
-    T* get_object() const ;
+    representation get_object() const ;
     static T* extract(representation *rep);
     static const T* extract(const representation *rep);
     static void init(representation *rep);
@@ -43,7 +43,7 @@ ordinary(T *an_object)
 *Rationale:* none +
 
 ---------------------------------------------------------------------
-T* get_object() const 
+representation get_object() const 
 ---------------------------------------------------------------------
 
 *Requires:* none +
