@@ -1,0 +1,73 @@
+ Dependency Injection - Header link:../../di/diagnostics.hpp[<diagnostics.hpp>]
+==============================================================================
+
+
+Class requirement_not_satisfied
+-------------------------------
+
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  struct requirement_not_satisfied
+  {
+    requirement_not_satisfied(void *subject_address);
+    ~requirement_not_satisfied();
+    virtual const char* what() const ;
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+requirement_not_satisfied(void *subject_address)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+~requirement_not_satisfied()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+virtual const char* what() const 
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]

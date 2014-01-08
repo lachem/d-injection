@@ -1,0 +1,73 @@
+ Dependency Injection - Header link:../../di/injection_types.hpp[<injection_types.hpp>]
+======================================================================================
+
+
+Class smart_ptr
+---------------
+
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> struct smart_ptr
+  {
+    static void assign(T *&dest, T *&src);
+    static void assign(shared_ptr &dest, shared_ptr &src);
+    static void assign(single_ptr &dest, single_ptr &src);
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+static void assign(T *&dest, T *&src)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+static void assign(shared_ptr &dest, shared_ptr &src)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+static void assign(single_ptr &dest, single_ptr &src)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]

@@ -1,0 +1,6 @@
+Dependency Injection Bibliography
+=================================
+
+http://www.martinfowler.com/articles/injection.html[Dependency Injection by Martin Fowler]
+
+include::footer.txt[]

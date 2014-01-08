@@ -1,0 +1,64 @@
+ Dependency Injection - Header link:../../di/subject.hpp[<subject.hpp>]
+======================================================================
+
+
+Class subject
+-------------
+
+Subject is a base class for all classes that are intended do have objects injected to it. All injection types are to be listed in subject's variadic template parameter list. To support multiple instances of the same types a number of operations on the list of types is performed. In the result a template list of <T,T,Y,Z,Y> is transformed into < <T,2>, <T,2>, <Z,1> >. 
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T1, typename T2, ..., template Tn> class subject
+  {
+    virtual ~subject();
+    virtual void constructed();
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+virtual ~subject()
+---------------------------------------------------------------------
+
+Classes with injections derive publicly from subject, therefore virtual destructor is required. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+virtual void constructed()
+---------------------------------------------------------------------
+
+Override this method to perform actions after building is completed. 
+
+There are situations when a user may need invoke actions on injected objects right after the injection procedure has finished. Overriding this method provides such possiblity. Each builder calls this method after successfuly performing injections or otherwise stated. 
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]

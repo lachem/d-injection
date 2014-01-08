@@ -1,0 +1,129 @@
+ Dependency Injection - Header link:../../di/configurable.hpp[<configurable.hpp>]
+================================================================================
+
+
+Class configurable
+------------------
+
+
+
+Synopsis
+~~~~~~~~
+
+---------------------------------------------------------------------
+namespace di
+{
+  template<typename T> class configurable
+  {
+    configurable<T>& use(U &object);
+    configurable<T>& use(const SPtr< U > &object);
+    configurable<T>& replace(U &object, size_t at=0);
+    configurable<T>& replace(const SPtr< U > &object, size_t at=0);
+    configurable<T>& remove(size_t at=0);
+  };
+}
+---------------------------------------------------------------------
+
+
+Functions
+~~~~~~~~~
+
+---------------------------------------------------------------------
+configurable<T>& use(U &object)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+configurable<T>& use(const SPtr< U > &object)
+---------------------------------------------------------------------
+
+Inserts object at first unoccupied position matching given type. 
+
+
+
+
+
+
+
+
+*Requires:* Injection's type is known.  +
+*Effects:* none +
+*Postconditions:* Injection has been saved inside the container.  +
+*Returns:* self  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+configurable<T>& replace(U &object, size_t at=0)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+configurable<T>& replace(const SPtr< U > &object, size_t at=0)
+---------------------------------------------------------------------
+
+Replaces nth injection of given type. 
+
+
+
+
+
+
+
+
+*Requires:* Injection's type is known.  +
+*Effects:* none +
+*Postconditions:* Injection has been saved inside the container.  +
+*Returns:* self  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+configurable<T>& remove(size_t at=0)
+---------------------------------------------------------------------
+
+Removes nth injection of given type, where n == at. 
+
+
+
+
+
+
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* Injection of requested type has been removed.  +
+*Returns:* self  +
+*Throws:* out_of_bounds Depending on diagnostics method chosen  +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+
+
+include::../footer.txt[]

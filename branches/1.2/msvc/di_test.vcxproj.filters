@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="di">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="di\custom">
+      <UniqueIdentifier>{87fdd10a-a91e-4d67-a005-b39481a73113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="di\detail">
+      <UniqueIdentifier>{aca5dde3-c608-45a1-bf03-e3cd2beffa53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="test\detail">
+      <UniqueIdentifier>{25eb9f5c-ed10-40d9-946c-febfd97262cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\multithread">
+      <UniqueIdentifier>{78f1faf9-848c-47d7-aa21-af4413f0232b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\diagnostics">
+      <UniqueIdentifier>{70c0589d-2e1f-4590-9f44-7d75a097ece7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\performance">
+      <UniqueIdentifier>{ef8242f7-4480-4f01-bdc8-f1e533e9f362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test\integration">
+      <UniqueIdentifier>{7bdafb5b-56c5-4059-99ed-8b08a7ce21fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\di\abstract_builder.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\application.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\builder.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\configurable.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\configuration.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\di.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\diagnostics.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\generic_builder.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\injection_types.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\module.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\optional.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\required.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\service_list.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\subject.hpp">
+      <Filter>di</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\injection.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\injection_destination.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\injection_destination_container.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\injection_source.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\injection_source_container.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\memory_pool.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\perform_injection.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\utility.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\detail\variadics.hpp">
+      <Filter>di\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\custom\atomic.hpp">
+      <Filter>di\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\custom\lock_guard.hpp">
+      <Filter>di\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\custom\spinlock.hpp">
+      <Filter>di\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\di\custom\synchronization.hpp">
+      <Filter>di\custom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\abstract_builder_should.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\application_should.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\generic_builder_should.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\test_types.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\detail\injection_destination_container_should.hpp">
+      <Filter>test\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\detail\injection_should.hpp">
+      <Filter>test\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\detail\injection_source_container_should.hpp">
+      <Filter>test\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\diagnostics\builder_diagnostics_should.hpp">
+      <Filter>test\diagnostics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\integration\builders_should.hpp">
+      <Filter>test\integration</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\multithread\thread_agnostic_injections_should.hpp">
+      <Filter>test\multithread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\performance\builder_performance_should.hpp">
+      <Filter>test\performance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\performance\performance_counter.hpp">
+      <Filter>test\performance</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test\main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\gmock-1.6.0\fused-src\gmock-gtest-all.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
