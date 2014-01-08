@@ -776,7 +776,17 @@ IoC
 <div class="content">
 <pre><code>struct MyClass: public di::subject&lt;T,U,V,...&gt;{};</code></pre>
 </div></div>
-<div class="paragraph"><p>Template parameters of the <code>di::subject</code> name the types of each particular injection. For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:</p></div>
+<div class="paragraph"><p>Template parameters of the <code>di::subject</code> name the types of each particular injection.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img alt="Note" src="data:image/png;base64,
+" />
+</td>
+<td class="content">di::subject&lt;&#8230;&gt; has virtual function therefore inheriting from it causes MyClass to increase in size by size of one pointer</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct Car: public di::subject&lt;Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat&gt;{};</code></pre>
@@ -881,7 +891,7 @@ di::service
 </div>
 <div class="sect2">
 <h3 id="_di_unique">di::unique</h3>
-<div class="paragraph"><p>Indicates that the injection will be represented as <code>unique_ptr</code> if available or as auto_ptr. Injection subject which requires an injection of type <code>di::unique</code> will become noncopyable.</p></div>
+<div class="paragraph"><p>Indicates that the injection will be represented as <code>unique_ptr</code> if available, <code>shared_ptr</code> if DI_NO_AUTO_PTR is set or <code>auto_ptr</code> otherwise. Injection subject which requires an injection of type <code>di::unique</code> will become noncopyable.</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>// Car is noncopyable bacause wheel injection is of type di::unique
@@ -901,6 +911,15 @@ struct Car: public di::subject&lt;Wheel&gt;
     di::optional&lt; di::service&lt;Logger&gt; &gt; logger;
 };</code></pre>
 </div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img alt="Note" src="data:image/png;base64,
+" />
+</td>
+<td class="content">Injection size is equal to the size of its representation</td>
+</tr></table>
+</div>
 </div>
 </div>
 </div>
@@ -1244,7 +1263,7 @@ struct Infrastructure
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-07-13 17:58:31 CEST
+Last updated 2013-12-14 22:57:19 CET
 </div>
 </div>
 </body>

@@ -18,6 +18,7 @@ namespace di
     static void assign(T *&dest, T *&src);
     static void assign(shared_ptr &dest, shared_ptr &src);
     static void assign(single_ptr &dest, single_ptr &src);
+    static shared_ptr const_pointer_cast(const U &ptr);
   };
 }
 ---------------------------------------------------------------------
@@ -56,6 +57,20 @@ static void assign(shared_ptr &dest, shared_ptr &src)
 
 ---------------------------------------------------------------------
 static void assign(single_ptr &dest, single_ptr &src)
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+static shared_ptr const_pointer_cast(const U &ptr)
 ---------------------------------------------------------------------
 
 *Requires:* none +
