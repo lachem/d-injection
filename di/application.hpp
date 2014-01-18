@@ -77,7 +77,7 @@ public:
 		//for_each instantiates each type in the traversed container using defualt constructor,
 		//this is unwanted, because the user might want to disable those default constructors.
 		//Workaround: transform the container so that it instantiates boost::identity<T>
-		boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(configure_modules(*this));
+		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(configure_modules(*this));
 	}
 
 	void build()   { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(build_module(*this)); }
@@ -99,8 +99,8 @@ private:
 
 	template<typename M, typename Seq>
 	void configure_intermodule_connections(Seq& sequence) {
-		boost::fusion::for_each(typename M::provided,connect_provided<Seq>(sequence));
-		boost::fusion::for_each(typename M::needed,  connect_provided<Seq>(sequence));
+		boost::fusion::for_each(di::module<M>::provided,connect_provided<Seq>(sequence));
+		boost::fusion::for_each(di::module<M>::needed,  connect_provided<Seq>(sequence));
 	}
 
 	template<typename Seq>
@@ -108,16 +108,16 @@ private:
 		connect_provided(Seq& a_sequence) : sequence(a_sequence) {}
 		template<typename T>
 		void operator()(di::service<T>*& element) const {
-            //The user might want define services to be read only for some modules and read/write for others. 
-            //Therefore a service may be non const on provided services list and const on required.
-            typedef typename boost::mpl::eval_if_c< 
-                boost::mpl::contains<Seq, di::service<T> >::type::value,
-                    boost::mpl::identity< di::service<T> >, 
-                    boost::mpl::identity< di::service<typename boost::remove_const<T>::type> > >::type contained;
+			//The user might want define services to be read only for some modules and read/write for others. 
+			//Therefore a service may be non const on provided services list and const on required.
+			typedef typename boost::mpl::eval_if_c< 
+			    boost::mpl::contains<Seq, di::service<T> >::type::value,
+			    boost::mpl::identity< di::service<T> >, 
+			    boost::mpl::identity< di::service<typename boost::remove_const<T>::type> > >::type contained;
 
 			BOOST_MPL_ASSERT_MSG((boost::mpl::contains<Seq, contained >::type::value), NoModuleProvidesTheNeededService,);
 
-            //TODO: perhaps there is a better way achieve that, without using reinterpret_cast
+			//TODO: perhaps there is a better way achieve that, without using reinterpret_cast
 			element = reinterpret_cast<di::service<T>*>(&boost::fusion::at_key<contained>(sequence));
 		}
 		Seq& sequence;
