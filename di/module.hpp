@@ -76,7 +76,7 @@ struct module {
 	}
 
 	/**
-	 * @brief Creates an abstract_builder preconfigured with applicable services.
+	 * @brief Creates an abstract builder preconfigured with applicable services.
 	 */
 	template<typename C>
 	typename smart_ptr< di::abstract_builder<C> >::single_ptr abstract_builder() {
@@ -84,7 +84,7 @@ struct module {
 	}
 
 	/**
-	 * @brief Creates an abstract_builder preconfigured with applicable services.
+	 * @brief Creates an abstract builder preconfigured with applicable services.
 	 */
 	template<typename I,typename C>
 	typename smart_ptr< di::abstract_builder<I> >::single_ptr abstract_builder() {
@@ -94,7 +94,7 @@ struct module {
 	}
 
 	/**
-	 * @brief Creates a generic_builder preconfigured with applicable services.
+	 * @brief Creates a generic builder preconfigured with applicable services.
 	 */
 	template<typename C>
 	typename smart_ptr< di::generic_builder<C> >::single_ptr generic_builder() {
@@ -102,6 +102,11 @@ struct module {
 		boost::fusion::for_each(needed,builder_feeder< di::generic_builder<C> >(*abuilder));
 		return typename smart_ptr< di::generic_builder<C> >::single_ptr(abuilder);
 	}
+
+	/**
+	 * @brief Override this function in child module to be called when application::build() is ivoked
+	 */
+	void build() {}
 
 private:
 	template<typename B>
