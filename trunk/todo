@@ -12,13 +12,13 @@
 - make it possible to define layers, and determine access rights between them
 - [done] create modules which could belong to layers and be parts of application
 - [done] change configurable replace method to use method with "at" parameter (needed for partial building)
+- [done] make di::optional cast to safe bool
+- [done] support for C++11
 - add examples to class comments
 - injecting POD types
-- support for C++11
 - builder composition for generic_builder(s) only
 - the ability for builders to feed other builders
 - dependency cycle detection in di::application
-- make di::optional cast to safe bool
 - unify tests in application_should
 - add build methods with many paramaters (passed to instantiated objects constructor)
 - support services needing services / dependency cycles detection
