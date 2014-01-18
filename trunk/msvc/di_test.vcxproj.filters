@@ -154,7 +154,7 @@
     <ClCompile Include="..\test\main.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\lib\gmock-1.6.0\fused-src\gmock-gtest-all.cc">
+    <ClCompile Include="..\..\..\..\lib\gmock-1.6.0\fused-src\gmock-gtest-all.cc">
       <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>

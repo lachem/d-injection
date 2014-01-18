@@ -56,12 +56,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..;../example/doc_generator/src;../../..//lib/gmock-1.6.0/fused-src;../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../example/doc_generator/src;../../../../lib/gmock-1.6.0/fused-src;../../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../../lib/boost_1_53_0/stage/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../lib/boost_1_53_0/stage/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
@@ -77,14 +77,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..;../example/doc_generator/src;../../..//lib/gmock-1.6.0/fused-src;../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../example/doc_generator/src;../../../../lib/gmock-1.6.0/fused-src;../../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../../lib/boost_1_53_0/stage/lib/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../../../lib/boost_1_53_0/stage/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>

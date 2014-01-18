@@ -20,20 +20,34 @@ struct wrap_in_identity {
 };
 
 //uses template recurrence to join all module::provided type sets
-namespace join_all {
-	template<typename Seq>
-	struct apply {
-		typedef typename boost::mpl::begin<Seq>::type begin_iterator;
-		typedef typename boost::mpl::erase<Seq,begin_iterator>::type sequence_without_first_element;
-		typedef typename boost::mpl::joint_view<
-			 typename begin_iterator::type::provided::type,
-			 typename join_all::apply<sequence_without_first_element>::type>::type type;
-	};
-	template<>
-	struct apply< boost::mpl::vector0<boost::mpl::na> > {
-		typedef boost::mpl::vector0<boost::mpl::na> type;
-	};
-} // namespace join_all
+template<typename Seq>
+struct join_all {
+	typedef typename boost::mpl::begin<Seq>::type begin_iterator;
+	typedef typename boost::mpl::erase<Seq,begin_iterator>::type sequence_without_first_element;
+	typedef typename boost::mpl::joint_view<
+			typename begin_iterator::type::provided::type,
+			typename join_all<sequence_without_first_element>::type>::type type;
+};
+template<>
+struct join_all< boost::mpl::vector0<boost::mpl::na> > {
+	typedef boost::mpl::vector0<boost::mpl::na> type;
+};
+
+//detects existance of module_type typedef and chooses di::application module base type
+template<class T, class U = void>  
+struct enable_if_type { typedef U type; };
+
+template<class T, class Enable = void>
+struct get_module_type {
+    typedef di::module<T> type;
+};
+
+template<class T>
+struct get_module_type<T, typename enable_if_type<typename T::module_type>::type> {
+	BOOST_MPL_ASSERT_MSG((boost::is_base_of<di::module<T>,typename T::module_type>::value), ProvidedModuleTypeDoesNotDeriveFromDiModule,);
+    typedef typename T::module_type type;
+};
+
 } // namespace detail
 
 /**
@@ -48,10 +62,15 @@ namespace join_all {
  */
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 class application : public boost::mpl::inherit_linearly<
-      typename boost::mpl::remove<boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)>,di::detail::void_>::type,
-      boost::mpl::inherit<boost::mpl::_1, di::module<boost::mpl::_2> > >::type
+      typename detail::vector_without_voids< boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> >::type,
+      boost::mpl::inherit<boost::mpl::_1, detail::get_module_type<boost::mpl::_2> > >::type
 {
 	typedef di::application<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> this_type;
+
+	typedef boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)>	raw_module_prototypes;
+	typedef typename detail::vector_without_voids<raw_module_prototypes>::type	module_prototypes;
+
+	typedef typename boost::mpl::transform< module_prototypes,detail::get_module_type<boost::mpl::_1> >::type inherited_types;
 
 public:
 	application() {
@@ -61,6 +80,11 @@ public:
 		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(configure_modules(*this));
 	}
 
+	void build() {
+		//give me template lambda expressions, please?
+		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(build_modules(*this));
+	}
+		
 private:
 	struct configure_modules {
 		explicit configure_modules(this_type& an_application) : configurator(an_application) {}
@@ -97,11 +121,23 @@ private:
 		Seq& sequence;
 	};
 
-	typedef boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> raw_module_prototypes;
-	typedef typename detail::vector_without_voids<raw_module_prototypes>::type module_prototypes;
+	struct build_modules {
+		explicit build_modules(this_type& an_application) : subject(an_application) {}
+		template<typename M>
+		void operator() (const M&) {
+			subject.build_module<typename M::type>();
+		}
+		this_type& subject;
+	};
+
+	template<typename M>
+	void build_module() {
+		typename detail::get_module_type<M>::type::build();
+	}
+
 
 	typename boost::fusion::result_of::as_set<
-		typename detail::join_all::apply<module_prototypes>::type
+		typename detail::join_all<module_prototypes>::type
 	>::type provided_by_modules;
 };
 
