@@ -47,7 +47,6 @@ struct Module5Mock : public di::module<Module5Traits> {
 	MOCK_METHOD0(build,   void());
 	MOCK_METHOD0(start,   void());
 	MOCK_METHOD0(stop,	  void());
-	MOCK_METHOD0(restart, void());
 	MOCK_METHOD0(suspend, void());
 	MOCK_METHOD0(resume,  void());
 };
@@ -65,7 +64,6 @@ struct Module6Mock : public di::module<Module6Traits> {
 	MOCK_METHOD0(build,   void());
 	MOCK_METHOD0(start,   void());
 	MOCK_METHOD0(stop,	  void());
-	MOCK_METHOD0(restart, void());
 	MOCK_METHOD0(suspend, void());
 	MOCK_METHOD0(resume,  void());
 };
@@ -290,6 +288,38 @@ TEST_F(ApplicationShould, callBuildOnEachModule) {
 	EXPECT_CALL(module5Mock,build());
 	EXPECT_CALL(module6Mock,build());
 	app.build();
+}
+
+TEST_F(ApplicationShould, callStartAndStopOnEachModule) {
+	SixModuleApplicationType& app = givensixModuleApplication();
+	Module5Mock& module5Mock = givensixModuleApplication();
+	Module6Mock& module6Mock = givensixModuleApplication();
+	
+	testing::InSequence dummy;
+
+	EXPECT_CALL(module5Mock,start());
+	EXPECT_CALL(module6Mock,start());
+	EXPECT_CALL(module5Mock,stop());
+	EXPECT_CALL(module6Mock,stop());
+
+	app.start();
+	app.stop();
+}
+
+TEST_F(ApplicationShould, callSuspendAndResumeOnEachModule) {
+	SixModuleApplicationType& app = givensixModuleApplication();
+	Module5Mock& module5Mock = givensixModuleApplication();
+	Module6Mock& module6Mock = givensixModuleApplication();
+	
+	testing::InSequence dummy;
+
+	EXPECT_CALL(module5Mock,suspend());
+	EXPECT_CALL(module6Mock,suspend());
+	EXPECT_CALL(module5Mock,resume());
+	EXPECT_CALL(module6Mock,resume());
+
+	app.suspend();
+	app.resume();
 }
 
 }  // namespace assembly

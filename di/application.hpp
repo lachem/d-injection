@@ -77,19 +77,21 @@ public:
 		//for_each instantiates each type in the traversed container using defualt constructor,
 		//this is unwanted, because the user might want to disable those default constructors.
 		//Workaround: transform the container so that it instantiates boost::identity<T>
-		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(configure_modules(*this));
+		boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(configure_modules(*this));
 	}
 
-	void build() {
-		//give me template lambda expressions, please?
-		boost::mpl::for_each<module_prototypes,detail::wrap_in_identity>(build_modules(*this));
-	}
-		
+	void build()   { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(build_module(*this)); }
+	void start()   { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(start_module(*this)); }
+	void stop()    { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(stop_module(*this)); }
+	void suspend() { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(suspend_module(*this)); }
+	void resume()  { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(resume_module(*this)); }
+
 private:
 	struct configure_modules {
 		explicit configure_modules(this_type& an_application) : configurator(an_application) {}
 		template<typename M>
 		void operator() (const M&) {
+			//Sequence (provided_by_modules) type gets deduced
 			configurator.configure_intermodule_connections<typename M::type>(configurator.provided_by_modules);
 		}
 		this_type& configurator;
@@ -97,8 +99,8 @@ private:
 
 	template<typename M, typename Seq>
 	void configure_intermodule_connections(Seq& sequence) {
-		boost::fusion::for_each(di::module<M>::provided,connect_provided<Seq>(sequence));
-		boost::fusion::for_each(di::module<M>::needed,connect_provided<Seq>(sequence));
+		boost::fusion::for_each(typename M::provided,connect_provided<Seq>(sequence));
+		boost::fusion::for_each(typename M::needed,  connect_provided<Seq>(sequence));
 	}
 
 	template<typename Seq>
@@ -121,20 +123,45 @@ private:
 		Seq& sequence;
 	};
 
-	struct build_modules {
-		explicit build_modules(this_type& an_application) : subject(an_application) {}
-		template<typename M>
-		void operator() (const M&) {
-			subject.build_module<typename M::type>();
+	struct build_module { 
+		explicit build_module(this_type& an_application) : subject(an_application) {} 
+		template<typename M> void operator() (const M&) {
+			static_cast<typename M::type&>(subject).build();
 		}
 		this_type& subject;
 	};
 
-	template<typename M>
-	void build_module() {
-		typename detail::get_module_type<M>::type::build();
-	}
+	struct start_module { 
+		explicit start_module(this_type& an_application) : subject(an_application) {} 
+		template<typename M> void operator() (const M&) {
+			static_cast<typename M::type&>(subject).start();
+		}
+		this_type& subject;
+	};
 
+	struct stop_module { 
+		explicit stop_module(this_type& an_application) : subject(an_application) {} 
+		template<typename M> void operator() (const M&) {
+			static_cast<typename M::type&>(subject).stop();
+		}
+		this_type& subject;
+	};
+
+	struct suspend_module { 
+		explicit suspend_module(this_type& an_application) : subject(an_application) {} 
+		template<typename M> void operator() (const M&) {
+			static_cast<typename M::type&>(subject).suspend();
+		}
+		this_type& subject;
+	};
+
+	struct resume_module { 
+		explicit resume_module(this_type& an_application) : subject(an_application) {} 
+		template<typename M> void operator() (const M&) {
+			static_cast<typename M::type&>(subject).resume();
+		}
+		this_type& subject;
+	};
 
 	typename boost::fusion::result_of::as_set<
 		typename detail::join_all<module_prototypes>::type

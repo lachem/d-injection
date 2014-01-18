@@ -104,9 +104,29 @@ struct module {
 	}
 
 	/**
-	 * @brief Override this function in child module to be called when application::build() is ivoked
+	 * @brief Implement this function in child module to be called when application::build() is invoked
 	 */
 	void build() {}
+
+	/**
+	 * @brief Implement this function in child module to be called when application::start() is invoked
+	 */
+	void start() {}
+
+	/**
+	 * @brief Implement this function in child module to be called when application::stop() is invoked
+	 */
+	void stop() {}
+
+	/**
+	 * @brief Implement this function in child module to be called when application::suspend() is invoked
+	 */
+	void suspend() {}
+
+	/**
+	 * @brief Implement this function in child module to be called when application::resume() is invoked
+	 */
+	void resume() {}
 
 private:
 	template<typename B>
