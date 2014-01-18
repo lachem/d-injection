@@ -50,6 +50,7 @@ generate_asciidoc:
 
 package:
 	svn export . ../dependency_injection_$(VERSION)
+	rm -f ../dependency_injection_$(VERSION)/todo
 	tar -cvf ../dependency_injection_$(VERSION).tar.gz ../dependency_injection_$(VERSION)
 	zip -r ../dependency_injection_$(VERSION).zip ../dependency_injection_$(VERSION)
 	7za -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on a ../dependency_injection_$(VERSION).7z ../dependency_injection_$(VERSION)
