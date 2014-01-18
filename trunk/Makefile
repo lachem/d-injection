@@ -1,7 +1,7 @@
-GTEST_INC = ../../lib/gmock-1.6.0/gtest
-GMOCK_INC = ../../lib/gmock-1.6.0
-BOOST_INC = ../../lib/boost_1_53_0
-BOOST_LIB = ../../lib/boost_1_53_0/stage/lib
+GTEST_INC = ../../../lib/gmock-1.6.0/gtest
+GMOCK_INC = ../../../lib/gmock-1.6.0
+BOOST_INC = ../../../lib/boost_1_53_0
+BOOST_LIB = ../../../lib/boost_1_53_0/stage/lib
 
 SRC = test/main.cpp $(GTEST_INC)/src/gtest-all.cc $(GMOCK_INC)/src/gmock-all.cc
 INC = ./ ./test $(BOOST_INC) $(GTEST_INC)/include $(GTEST_INC) $(GMOCK_INC)/include $(GMOCK_INC) 
@@ -48,3 +48,8 @@ run_doc_generator: doc_generator
 generate_asciidoc:
 	$(foreach doc,$(DOC),asciidoc.py -a data-uri -a icons -a toc -a max-width=60em $(doc)$(\n))
 
+package:
+	svn export . ../dependency_injection_$(VERSION)
+	tar -cvf ../dependency_injection_$(VERSION).tar.gz ../dependency_injection_$(VERSION)
+	zip -r ../dependency_injection_$(VERSION).zip ../dependency_injection_$(VERSION)
+	7za -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on a ../dependency_injection_$(VERSION).7z ../dependency_injection_$(VERSION)
