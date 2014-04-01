@@ -22,14 +22,14 @@ Dependency injection is an implementation of http://en.wikipedia.org/wiki/Invers
 
 Injection subject
 -----------------
-A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject.This is achieved by subclassing +di::subject+ class (declared in di/subject.hpp) in the following manner:
+A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject. This is achieved by subclassing +di::subject+ class (declared in di/subject.hpp) in the following manner:
      
 ---------------------------------------------------------------------
 struct MyClass: public di::subject<T,U,V,...>{};
 ---------------------------------------------------------------------
 Template parameters of the +di::subject+ name the types of each particular injection. 
 
-NOTE: di::subject<...> has virtual function therefore inheriting from it causes MyClass to increase in size by size of one pointer
+NOTE: di::subject<...> contains virtual functions therefore inheriting from it causes MyClass to increase in size by the size of one pointer
 
 For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:
      
@@ -440,6 +440,81 @@ struct Infrastructure
     di::service_list<Logger,const Database> provided; 
     di::service_list<> needed; 
 }; 
+---------------------------------------------------------------------
+
+Module Traits
+-------------
+
+Instead of composing Application object from a set of module types, starting from version 1.3 it is possible to use module traits. Module traits define the features of each distinct module type in separation from the type itself.
+
+---------------------------------------------------------------------
+struct Controller;
+struct ControllerTraits
+{ 
+    typedef Controller module_type;
+    di::service_list<ActionHandler> provided; 
+    di::service_list<Logger,Database> needed; 
+}; 
+
+struct Controller : di::module<ControllerTraits> 
+{
+    void build() {}
+    void start() {}
+};
+
+di::application<ControllerTraits,InfrastructureTraits,UITraits> application;
+---------------------------------------------------------------------
+
+NOTE: module_type typedef defines which type will be used by di::application
+
+Application Control
+-------------------
+
+To gain some degree of control over modules through di::application object one may choose from several methods i.e. build, start, stop, suspend and resume. All of these methods are executed in the same way, they are simply forwarded to each of the modules the application consists of. It is of course optional to make use of them, however it is always a good practice to at least separate construction from execution. 
+
+---------------------------------------------------------------------
+struct Controller;
+struct ControllerTraits
+{ 
+    typedef Controller module_type;
+    di::service_list<ActionHandler> provided; 
+    di::service_list<Logger,Database> needed; 
+}; 
+struct Controller : di::module<ControllerTraits> 
+{
+    void build() 
+    {
+        this->use(std::make_shared<ActionHandler>());
+    }
+    void start() 
+    {
+        this->get<Logger>();
+        //do control...
+    }
+};
+
+struct Infrastructure;
+struct InfrastructureTraits
+{ 
+    typedef Infrastructure module_type
+    di::service_list<Logger,const Database> provided; 
+    di::service_list<> needed; 
+};
+struct Infrastructure : di::module<InfrastructureTraits>
+{ 
+    void build() 
+    {
+        this->use(std::make_shared<Logger>(LoggingLevel::Full));
+        this->use(std::make_shared<Database>());
+    }
+}; 
+
+di::application<ControllerTraits,InfrastructureTraits> application;
+
+application.build();   //will execute build in Infrastructure and Controller
+application.start();   //will execute only start in Controller
+application.suspend(); //does nothing because neither Infrastructure nor Controller provides an implementation
+application.resume();  //does nothing because neither Infrastructure nor Controller provides an implementation
 ---------------------------------------------------------------------
 
 include::footer.txt[]
