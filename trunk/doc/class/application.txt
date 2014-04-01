@@ -16,6 +16,11 @@ namespace di
   template<typename T1, typename T2, ..., template Tn> class application
   {
     application();
+    void build();
+    void start();
+    void stop();
+    void suspend();
+    void resume();
   };
 }
 ---------------------------------------------------------------------
@@ -26,6 +31,76 @@ Functions
 
 ---------------------------------------------------------------------
 application()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+void build()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+void start()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+void stop()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+void suspend()
+---------------------------------------------------------------------
+
+*Requires:* none +
+*Effects:* none +
+*Postconditions:* none +
+*Returns:* none +
+*Throws:* none +
+*Complexity:* no info +
+*Note:* none +
+*Danger:* none +
+*Rationale:* none +
+
+---------------------------------------------------------------------
+void resume()
 ---------------------------------------------------------------------
 
 *Requires:* none +

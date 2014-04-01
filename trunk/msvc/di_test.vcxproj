@@ -103,6 +103,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..;../../../../lib/gmock-1.6.0/fused-src;../../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
       <AdditionalOptions>/D_VARIADIC_MAX=10 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +125,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..;../../../../lib/gmock-1.6.0/fused-src;../../../../lib/boost_1_53_0</AdditionalIncludeDirectories>
       <AdditionalOptions>/D_VARIADIC_MAX=10 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
