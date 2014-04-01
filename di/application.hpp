@@ -29,7 +29,7 @@ struct join_all {
 			typename join_all<sequence_without_first_element>::type>::type type;
 };
 template<>
-struct join_all< boost::mpl::vector0<boost::mpl::na> > {
+struct join_all < boost::mpl::vector0<boost::mpl::na> > {
 	typedef boost::mpl::vector0<boost::mpl::na> type;
 };
 
@@ -43,7 +43,7 @@ struct get_module_type {
 };
 
 template<class T>
-struct get_module_type<T, typename enable_if_type<typename T::module_type>::type> {
+struct get_module_type <T, typename enable_if_type<typename T::module_type>::type> {
 	BOOST_MPL_ASSERT_MSG((boost::is_base_of<di::module<T>,typename T::module_type>::value), ProvidedModuleTypeDoesNotDeriveFromDiModule,);
     typedef typename T::module_type type;
 };

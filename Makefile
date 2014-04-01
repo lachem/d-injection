@@ -54,7 +54,7 @@ generate_doxygen:
 	doxygen example/doc_generator/input/doxygen.cfg
 
 doc_generator:
-	g++ example/doc_generator/src/main.cpp -I./example/doc_generator/src -I$(BOOST_INC) -I./ $(BOOST_LIB)/libboost_filesystem.a -std=c++11 $(LIB) -g -o example/doc_generator/doc_generator
+	g++ example/doc_generator/src/main.cpp -I./example/doc_generator/src -I$(BOOST_INC) -I./ $(BOOST_LIB)/libboost_filesystem.a -std=c++11 $(LIB) -g -O0 -fno-inline -o example/doc_generator/doc_generator
 
 run_doc_generator: doc_generator
 	./example/doc_generator/doc_generator ./example/doc_generator/input ./doc

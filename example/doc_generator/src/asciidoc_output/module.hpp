@@ -16,26 +16,29 @@
 
 namespace asciidoc_output {
 
-struct Dependencies {
-	typedef di::service_list<> provided;
+struct Module;
+
+struct ModuleTraits {
+    typedef Module module_type;
+
+    typedef di::service_list<> provided;
     typedef di::service_list<const model::Model> needed;
 };
 
-struct Module {
-    
-    Module(di::module<Dependencies>& aModule, const std::string& anOutputDirectory) : 
-        module(aModule), outputDirectory(anOutputDirectory) {}
+struct Module : public di::module<ModuleTraits> {
+    void setOutputDirectory(const std::string& anOutputDirectory) {
+        outputDirectory = anOutputDirectory;
+    }
 
     void start() {
-        auto builder = module.builder<ModelPrinter>();
+        auto builder = this->builder<ModelPrinter>();
         builder->use(di::unique<filesystem::Directory>(new filesystem::Directory(outputDirectory)));
         builder->use(di::unique<asciidoc_output::Grouper>(new asciidoc_output::Grouper()));
         builder->build()->run();
     }
 
 private:
-    di::module<Dependencies>& module;
-    const std::string outputDirectory;
+    std::string outputDirectory;
 };
 
 } // namespace asciidoc_output

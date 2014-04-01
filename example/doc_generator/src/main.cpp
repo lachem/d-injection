@@ -28,18 +28,13 @@
 int main(int argc, char* argv[]) {
 
 	if(argc > 2) {
-		di::application<doxygen_input::Dependencies,translator::Dependencies,asciidoc_output::Dependencies> app;
+		di::application<doxygen_input::ModuleTraits,translator::ModuleTraits,asciidoc_output::ModuleTraits> app;
 
-		doxygen_input::Module inputModule(app,argv[1]);
-		translator::Module translatorModule(app);
-		asciidoc_output::Module outputModule(app,argv[2]);
+		app.setInputDirectory(argv[1]);
+		app.setOutputDirectory(argv[2]);
 
-		inputModule.build();
-		translatorModule.build();
-
-		inputModule.start(); // loads the doxygen input
-		translatorModule.start(); // builds the model from the input
-		outputModule.start(); // stores the model in ascii_doc format
+		app.build();
+		app.start();
 	}
 	else {
 		std::cerr << "Please provide the path to doxygen generated xml input and the path of asciidoc output." << std::endl;
