@@ -771,7 +771,7 @@ IoC
 <div class="sect1">
 <h2 id="_injection_subject">Injection subject</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject.This is achieved by subclassing <code>di::subject</code> class (declared in di/subject.hpp) in the following manner:</p></div>
+<div class="paragraph"><p>A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject. This is achieved by subclassing <code>di::subject</code> class (declared in di/subject.hpp) in the following manner:</p></div>
 <div class="listingblock">
 <div class="content">
 <pre><code>struct MyClass: public di::subject&lt;T,U,V,...&gt;{};</code></pre>
@@ -783,7 +783,7 @@ IoC
 <img alt="Note" src="data:image/png;base64,
 " />
 </td>
-<td class="content">di::subject&lt;&#8230;&gt; has virtual function therefore inheriting from it causes MyClass to increase in size by size of one pointer</td>
+<td class="content">di::subject&lt;&#8230;&gt; contains virtual functions therefore inheriting from it causes MyClass to increase in size by the size of one pointer</td>
 </tr></table>
 </div>
 <div class="paragraph"><p>For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:</p></div>
@@ -1252,6 +1252,90 @@ struct Infrastructure
     di::service_list&lt;&gt; needed;
 };</code></pre>
 </div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_module_traits">Module Traits</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Instead of composing Application object from a set of module types, starting from version 1.3 it is possible to use module traits. Module traits define the features of each distinct module type in separation from the type itself.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>struct Controller;
+struct ControllerTraits
+{
+    typedef Controller module_type;
+    di::service_list&lt;ActionHandler&gt; provided;
+    di::service_list&lt;Logger,Database&gt; needed;
+};
+
+struct Controller : di::module&lt;ControllerTraits&gt;
+{
+    void build() {}
+    void start() {}
+};
+
+di::application&lt;ControllerTraits,InfrastructureTraits,UITraits&gt; application;</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img alt="Note" src="data:image/png;base64,
+" />
+</td>
+<td class="content">module_type typedef defines which type will be used by di::application</td>
+</tr></table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_application_control">Application Control</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>To gain some degree of control over modules through di::application object one may choose from several methods i.e. build, start, stop, suspend and resume. All of these methods are executed in the same way, they are simply forwarded to each of the modules the application consists of. It is of course optional to make use of them, however it is always a good practice to at least separate construction from execution.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>struct Controller;
+struct ControllerTraits
+{
+    typedef Controller module_type;
+    di::service_list&lt;ActionHandler&gt; provided;
+    di::service_list&lt;Logger,Database&gt; needed;
+};
+struct Controller : di::module&lt;ControllerTraits&gt;
+{
+    void build()
+    {
+        this-&gt;use(std::make_shared&lt;ActionHandler&gt;());
+    }
+    void start()
+    {
+        this-&gt;get&lt;Logger&gt;();
+        //do control...
+    }
+};
+
+struct Infrastructure;
+struct InfrastructureTraits
+{
+    typedef Infrastructure module_type
+    di::service_list&lt;Logger,const Database&gt; provided;
+    di::service_list&lt;&gt; needed;
+};
+struct Infrastructure : di::module&lt;InfrastructureTraits&gt;
+{
+    void build()
+    {
+        this-&gt;use(std::make_shared&lt;Logger&gt;(LoggingLevel::Full));
+        this-&gt;use(std::make_shared&lt;Database&gt;());
+    }
+};
+
+di::application&lt;ControllerTraits,InfrastructureTraits&gt; application;
+
+application.build();   //will execute build in Infrastructure and Controller
+application.start();   //will execute only start in Controller
+application.suspend(); //does nothing because neither Infrastructure nor Controller provides an implementation
+application.resume();  //does nothing because neither Infrastructure nor Controller provides an implementation</code></pre>
+</div></div>
 <br />
 <br />
 <hr />
@@ -1263,7 +1347,7 @@ struct Infrastructure
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-12-14 22:57:19 CET
+Last updated 2014-04-01 22:01:13 CEST
 </div>
 </div>
 </body>
