@@ -38,12 +38,12 @@ template<class T, class U = void>
 struct enable_if_type { typedef U type; };
 
 template<class T, class Enable = void>
-struct get_module_type {
+struct module_type {
     typedef di::module<T> type;
 };
 
 template<class T>
-struct get_module_type <T, typename enable_if_type<typename T::module_type>::type> {
+struct module_type <T, typename enable_if_type<typename T::module_type>::type> {
 	BOOST_MPL_ASSERT_MSG((boost::is_base_of<di::module<T>,typename T::module_type>::value), ProvidedModuleTypeDoesNotDeriveFromDiModule,);
     typedef typename T::module_type type;
 };
@@ -63,14 +63,15 @@ struct get_module_type <T, typename enable_if_type<typename T::module_type>::typ
 template <BOOST_PP_ENUM_BINARY_PARAMS(DI_MAX_NUM_INJECTIONS, typename M, =detail::void_ BOOST_PP_INTERCEPT)>
 class application : public boost::mpl::inherit_linearly<
       typename detail::vector_without_voids< boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> >::type,
-      boost::mpl::inherit<boost::mpl::_1, detail::get_module_type<boost::mpl::_2> > >::type
+      boost::mpl::inherit<boost::mpl::_1, detail::module_type<boost::mpl::_2> > >::type
 {
-	typedef di::application<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)> this_type;
+	typedef di::application<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)>	this_type;
 
 	typedef boost::mpl::vector<BOOST_PP_ENUM_PARAMS(DI_MAX_NUM_INJECTIONS, M)>	raw_module_prototypes;
 	typedef typename detail::vector_without_voids<raw_module_prototypes>::type	module_prototypes;
 
-	typedef typename boost::mpl::transform< module_prototypes,detail::get_module_type<boost::mpl::_1> >::type inherited_types;
+	typedef typename boost::mpl::transform< module_prototypes,detail::module_type<boost::mpl::_1> >::type       inherited_types;
+	typedef typename boost::fusion::result_of::as_set<typename detail::join_all<module_prototypes>::type>::type provided_types;
 
 public:
 	application() {
@@ -85,6 +86,19 @@ public:
 	void stop()    { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(stop_module(*this)); }
 	void suspend() { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(suspend_module(*this)); }
 	void resume()  { boost::mpl::for_each<inherited_types,detail::wrap_in_identity>(resume_module(*this)); }
+
+#ifdef DI_USE_BOOST_SHARED_PTR
+	template<typename T> this_type& use(const typename boost::shared_ptr<T>& element) { return use(di::service<T>(element)); }
+#else
+	template<typename T> this_type& use(const typename std::shared_ptr<T>& element)   { return use(di::service<T>(element)); }
+#endif
+
+	template<typename T>
+	this_type& use(const di::service<T>& element) {
+		BOOST_MPL_ASSERT_MSG((boost::fusion::result_of::has_key< provided_types,di::service<T> >::value), TypeIsNotOnAnyModulesNeededServiceList,);
+		boost::fusion::at_key< di::service<T> >(provided_by_modules) = element;
+		return *this;
+	}
 
 private:
 	struct configure_modules {
@@ -163,9 +177,7 @@ private:
 		this_type& subject;
 	};
 
-	typename boost::fusion::result_of::as_set<
-		typename detail::join_all<module_prototypes>::type
-	>::type provided_by_modules;
+	provided_types provided_by_modules;
 };
 
 } //namspace di
