@@ -1,5 +1,25 @@
 # Dependency Injection
 
+## Table of Contents
+- [Introduction](#)
+- [License](#)
+- [Injection subject](#)
+- [Declaring injections](#)
+- [Types of injections](#)
+	- [di::ordinary](#)
+	- [di::shared](#)
+	- [di::unique](#)
+	- [di::service](#)
+- [Builder](#)
+- [Abstract builder](#)
+- [Building families of objects](#)
+- [Generic builder](#)
+- [Modules](#)
+- [Application](#)
+- [Restricting Access](#)
+- [Module Traits](#)
+- [Runtime application control](#)
+
 ## Introduction
 This library is header only. To use it just include di/di.hpp in your project.
 
