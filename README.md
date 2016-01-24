@@ -227,3 +227,46 @@ construct_builder->build(highway);
 construct_builder->build(garage1);
 construct_builder->build(garage2);
 ```
+
+## Generic builder
+It would be inconvienient to setup many abstract builders for a set of subject types which are interested in the same injections. To overcome this inconvience the approach proposed in previous chapter could be used. It has a major drawback though, it requires specific class hierarchy, here generic builder comed to the rescue. Generic builder is a kind of builder that has been designed to inject dependencies into any type of subject. Its flexiblity however, comes for a price. Because it has been achieved by replacing virtual ```build(…)``` method with its template counterpart, ```generic_builder<…>::build``` cannot be mocked. Example of ```generic_builder``` usage.
+```cpp
+class Truck : public di::subject<Logger>
+{
+    di::required<Logger> log;
+};
+
+class Road : public di::subject<Logger,Database,ConversionTools>
+{
+    di::required<Logger> log;
+    di::required<Database> db;
+    di::required<ConversionTools> conversion;
+};
+
+class Garage : public di::subject<Logger,Database,ConversionTools>
+{
+    di::required<Logger> log;
+    di::required<Database> db;
+    di::required<ConversionTools> conversion;
+};
+
+
+Truck scania;
+Truck mercedes;
+Road highway;
+Garage garage1,garage2;
+
+...
+
+di::generic_builder< di::subject<Logger> > gbuilder;
+gbuilder.use(loggerInstance);
+...
+gbuilder.build(scania);
+gbuilder.build(mercedes);
+gbuilder.build_part(highway);
+gbuilder.build_part(garage1);
+gbuilder.build_part(garage2);
+//inject rest of required dependencies to highway, garage1, garage2 using
+//abstract_builder or another generic_builder
+```
+The difference between ```di::generic_builder<…>::build_part``` and ```di::generic_builder<…>::build``` is that the former does not check whether all requirements have been met. This way issuing ```gbuilder.build(scania)``` is perfectly fine because ```Logger``` is the only dependency required by Truck whereas issuing ```gbuilder.build(highway)``` would result in an error (assertion, exception or custom defined), while ```di::generic_builder< di::subject<Logger> >``` does not provide ```Database``` and ```ConversionTools``` required by ```Road``` class. Additionally in contradiction to ```di::generic_builder<…>::build``` ```di::generic_builder<…>::build_part``` does not invoke subject’s constructed method.
