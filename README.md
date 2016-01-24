@@ -1,24 +1,24 @@
 # Dependency Injection
 
 ## Table of Contents
-- [Introduction](#)
-- [License](#)
-- [Injection subject](#)
-- [Declaring injections](#)
-- [Types of injections](#)
-	- [di::ordinary](#)
-	- [di::shared](#)
-	- [di::unique](#)
-	- [di::service](#)
-- [Builder](#)
-- [Abstract builder](#)
-- [Building families of objects](#)
-- [Generic builder](#)
-- [Modules](#)
-- [Application](#)
-- [Restricting Access](#)
-- [Module Traits](#)
-- [Runtime application control](#)
+- [Introduction](#introduction)
+- [License](#license)
+- [Injection subject](#injection-subject)
+- [Declaring injections](#declaring-injections)
+- [Types of injections](#types-of-injections)
+	- [ordinary](#ordinary)
+	- [shared](#shared)
+	- [unique](#unique)
+	- [service](#service)
+- [Builder](#builder)
+- [Abstract builder](#abstract-builder)
+- [Building families of objects](#building-families-of-objects)
+- [Generic builder](#generic-builder)
+- [Modules](#modules)
+- [Application](#application)
+- [Restricting Access](#restricting-access)
+- [Module Traits](#module-traits)
+- [Runtime application control](#runtime-application-control)
 
 ## Introduction
 This library is header only. To use it just include di/di.hpp in your project.
@@ -75,7 +75,7 @@ There are situtations when it is impossible to determine which part of a system 
 * di::unique
 * di::service
 
-### di::ordinary
+### ordinary
 Indicates that the injection is represented as a bare pointer and the user is responsible for deleting the object.
 ** Note ** | not providing injection type at all is equivalent to using di::ordinary
 ```cpp
@@ -92,7 +92,7 @@ struct Car : public di::subject<Wheel>
 };
 ```
 
-### di::shared
+### shared
 Indicates that the injection is represented as a shared_ptr. The object will be released when there are no more associations to it. Due to its internal represantation ```di::shared``` injections can be converted to ```boost::shared_ptr```.
 ```cpp
 struct Car : public di::subject<Wheel>
@@ -101,7 +101,7 @@ struct Car : public di::subject<Wheel>
 };
 ```
 
-### di::unique
+### unique
 Indicates that the injection will be represented as ```unique_ptr``` if available, shared_ptr if ```DI_NO_AUTO_PTR``` is set or ```auto_ptr``` otherwise. Injection subject which requires an injection of type ```di::unique``` will become noncopyable.
 ```cpp
 // Car is noncopyable bacause wheel injection is of type di::unique
@@ -111,7 +111,7 @@ struct Car: public di::subject<Wheel>
 };
 ```
 
-### di::service
+### service
 Is a special kind of injection that is used in conjunction with ```di::module``` and ```di::application```. It is represented by a ```boost::shared_ptr``` and can be converted to it.
 ```cpp
 struct Car : public di::subject<Wheel>
