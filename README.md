@@ -342,3 +342,26 @@ builder.use(actionHandler);  // action handler needs to be passed seperately see
 unique_ptr<Command> c = builder.build();  // we can build - module has passed Database and Logger to the builder
 ```
 **Warning** | ```di::module``` and ```di::application``` have been designed solely for the purpose of exchanging services **between** modules. Therefore mentioning the same service on both provided and needed service lists of the same module will not work as expected. This is a concious limitation introduced to ensure ```di::modules``` will not be used for intra module depedency exchanging.
+
+## Restricting Access
+In addition to the dependency exchange mechanism di::modules also provides means of defining service access policy. It is possible to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without a possiblity to alter it. "const" before service type on needed service list enforces that.
+```cpp
+struct Controller
+{
+    di::service_list<ActionHandler> provided;
+    di::service_list<Logger,const Database> needed;
+};
+```
+Moreover it is also possible to restrict access from the provider side, so that no other module has write access to a specific service.
+```cpp
+struct Controller
+{
+    di::service_list<ActionHandler> provided;
+    di::service_list<Logger,const Database> needed;
+};
+struct Infrastructure
+{
+    di::service_list<Logger,const Database> provided;
+    di::service_list<> needed;
+};
+```
