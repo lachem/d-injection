@@ -155,3 +155,32 @@ struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
 ```
 ** Note ** | All builders are injection type aware i.e. ```builder.use(di::shared<Wheel>(w1))``` will be injected to ```di::required< di::shared<Wheel> >``` and not to ```di::required<Wheel>```.
 
+## Abstract builder
+In many cases it may be impractical to use raw builder<T> due to higher coupling and decreased testability. Prefferably one might want to be able to build an object of class Car while passing a handle to class Vehicle (base of Car). Furthermore it is reasonable to expect to have the possibility of mocking builder::build(T&) method to build/inject mocks/stubs instead of real objects.
+Considering:
+```cpp
+struct Vehicle : public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
+{
+    virtual void move(...) = 0;
+};
+
+struct Car: public Vehicle
+{
+    di::required<Wheel> frontLeftWheel;
+    di::required<Wheel> frontRightWheel;
+    di::required<Wheel> rearLeftWheel;
+    di::required<Wheel> rearRightWheel;
+    di::required<Seat> leftSeat;
+    di::required<Seat> rightSeat;
+    di::required<HandBrake> handBrake;
+    virtual void move(...) {...};
+};
+```
+one might write
+```cpp
+di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>();
+Vehicle* porshe = new Porshe();
+vehicle_builder->build(*porshe);
+```
+** Note ** | The class which is the template parameter of ```di::abstract_builder``` is the one that needs to derive (publicly) from ```di::subject```. This is a necessary limitation.
+
