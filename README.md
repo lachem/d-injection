@@ -5,6 +5,9 @@ This library is header only. To use it just include di/di.hpp in your project.
 
 Dependency injection is an implementation of Inversion of Control known from java frameworks such as Spring or Qi4j. Still C++ community lacks a dependency injection framework that would be portable and independent from libraries like Qt. This is an attempt to create a simple yet powerful DI library built on boost.
 
+## License
+Distributed under the Boost Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
+
 ## Injection subject
 A class that requires some objects to be injected into it upon instantiation or delegation has to be declared an injection subject. This is achieved by subclassing di::subject class (declared in di/subject.hpp) in the following manner:
 ```cpp
