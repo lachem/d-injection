@@ -253,7 +253,6 @@ class Garage : public di::subject<Logger,Database,ConversionTools>
     di::required<ConversionTools> conversion;
 };
 
-
 Truck scania;
 Truck mercedes;
 Road highway;
@@ -279,18 +278,18 @@ Apart from class level dependencies DI introduces also a way to handle dependeci
 ```cpp
 struct Controller
 {
-    di::service_list<ActionHandler> provided;
-    di::service_list<Logger,Database> needed;
+    typedef di::service_list<ActionHandler> provided;
+    typedef di::service_list<Logger,Database> needed;
 };
 struct Infrastructure
 {
-    di::service_list<Logger,Database> provided;
-    di::service_list<> needed;
+    typedef di::service_list<Logger,Database> provided;
+    typedef di::service_list<> needed;
 };
 struct UI
 {
-    di::service_list<> provided;
-    di::service_list<ActionHandler> needed;
+    typedef di::service_list<> provided;
+    typedef di::service_list<ActionHandler> needed;
 };
 ```
 The implementer of each module is responsible for providing pointers to those services.
@@ -351,21 +350,21 @@ In addition to the dependency exchange mechanism ```di::modules``` also provides
 ```cpp
 struct Controller
 {
-    di::service_list<ActionHandler> provided;
-    di::service_list<Logger,const Database> needed;
+    typedef di::service_list<ActionHandler> provided;
+    typedef di::service_list<Logger,const Database> needed;
 };
 ```
 Moreover it is also possible to restrict access from the provider side, so that no other module has write access to a specific service.
 ```cpp
 struct Controller
 {
-    di::service_list<ActionHandler> provided;
-    di::service_list<Logger,const Database> needed;
+    typedef di::service_list<ActionHandler> provided;
+    typedef di::service_list<Logger,const Database> needed;
 };
 struct Infrastructure
 {
-    di::service_list<Logger,const Database> provided;
-    di::service_list<> needed;
+    typedef di::service_list<Logger,const Database> provided;
+    typedef di::service_list<> needed;
 };
 ```
 
@@ -376,8 +375,8 @@ struct Controller;
 struct ControllerTraits
 {
     typedef Controller module_type;
-    di::service_list<ActionHandler> provided;
-    di::service_list<Logger,Database> needed;
+    typedef di::service_list<ActionHandler> provided;
+    typedef di::service_list<Logger,Database> needed;
 };
 
 struct Controller : di::module<ControllerTraits>
@@ -397,8 +396,8 @@ struct Controller;
 struct ControllerTraits
 {
     typedef Controller module_type;
-    di::service_list<ActionHandler> provided;
-    di::service_list<Logger,Database> needed;
+    typedef di::service_list<ActionHandler> provided;
+    typedef di::service_list<Logger,Database> needed;
 };
 struct Controller : di::module<ControllerTraits>
 {
@@ -417,8 +416,8 @@ struct Infrastructure;
 struct InfrastructureTraits
 {
     typedef Infrastructure module_type
-    di::service_list<Logger,const Database> provided;
-    di::service_list<> needed;
+    typedef di::service_list<Logger,const Database> provided;
+    typedef di::service_list<> needed;
 };
 struct Infrastructure : di::module<InfrastructureTraits>
 {
