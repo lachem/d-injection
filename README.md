@@ -97,3 +97,61 @@ struct Car : public di::subject<Wheel>
 };
 ```
 **Note** | Injection size is equal to the size of its representation
+
+## Builder
+The most basic form of building a dependency injection subject is by utilizing ```builder``` defined in di/builder.hpp. ```di::builder``` is a class with two template paramters from which only the first is obligatory as it names the real type ```builder``` is able to build.
+
+Having a ```Car``` class which derives from ```subject``` and a ```builder<Car>``` an instance of Car may be created. However before that could happen, ```builder<Car>``` needs to know the objects it is supposed to inject to ```Car```.
+```cpp
+di::builder<Car> builder;
+
+Wheel w1,w2,w3,w4;
+builder.use(w1).use(w2).use(w3).use(w4);
+
+Seat s1,s2;
+HandBrake hb;
+builder.use(s1).use(s2).use(hb);
+
+//if available returns unique_ptr otherwise auto_ptr or shared_ptr
+unique_ptr<Car> car = builder.build();
+
+assert(&w1 == car->frontLeftWheel);
+assert(&w2 == car->frontRightWheel);
+assert(&w3 == car->rearLeftWheel);
+assert(&w4 == car->rearRightWheel);
+assert(&s1 == car->leftSeat);
+assert(&s1 == car->rightSeat);
+assert( 0  == car->backSeat);
+assert(&hb == car->handBrake);
+```
+
+In contradiction to subject’s template parameters, the order of use calls is strictly bound to the order in which requireds and optionals are declared. This is bound to the order of requireds and optionals of same types e.g. in the above example changing the order of use calls to ```builder.use(w4).use(w2).use(w3).use(w1)``` would result in ```car->frontLeftWheel == &w4``` and ```car->rearRightWheel == &w1```. Furthermore the injection process is greedy i.e. it injects objects objects to the first field that matches a type. For this reason changing the order in which optionals and requireds are declared would result in an error (assert, exception etc. depending on user’s choice), because the third second seat passed to builder would be injected into ```optional```, thus leaving the last ```required<Seat>``` unsatisfied. By the rule of thumb always put optionals after requireds.
+```cpp
+struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
+{
+    di::required<Wheel> frontLeftWheel;  //<-- first use<Wheel>(...) call
+    di::required<Wheel> frontRightWheel; //<-- second use<Wheel>(...) call
+    di::required<Wheel> rearLeftWheel;   //<-- third use<Wheel>(...) call
+    di::required<Wheel> rearRightWheel;  //<-- fourth use<Wheel>(...) call
+    di::required<Seat> leftSeat;         //<-- first use<Seat>(...) call
+    di::required<Seat> rightSeat;        //<-- second use<Seat>(...) call
+    di::optional<Seat> backSeat;         //<-- third use<Seat>(...) call
+    di::required<HandBrake> handBrake;   //<-- first use<HandBrake>(...) call
+};
+```
+```cpp
+struct Car: public di::subject<Seat,Wheel,Wheel,HandBrake,Wheel,Seat,Wheel>
+{
+    di::required<Wheel> frontLeftWheel;  //<-- first use<Wheel>(...) call
+    di::required<Wheel> frontRightWheel; //<-- second use<Wheel>(...) call
+    di::required<Wheel> rearLeftWheel;   //<-- third use<Wheel>(...) call
+    di::required<Wheel> rearRightWheel;  //<-- fourth use<Wheel>(...) call
+    di::required<Seat> leftSeat;         //<-- first use<Seat>(...) call
+    di::optional<Seat> backSeat;         //<-- second use<Seat>(...) call
+    di::required<Seat> rightSeat;        //<-- third use<Seat>(...) call
+    //builder knows only about two seats, third seat will cause an error
+    di::required<HandBrake> handBrake;   //<-- first use<HandBrake>(...) call
+};
+```
+** Note ** | All builders are injection type aware i.e. ```builder.use(di::shared<Wheel>(w1))``` will be injected to ```di::required< di::shared<Wheel> >``` and not to ```di::required<Wheel>```.
+
