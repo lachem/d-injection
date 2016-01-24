@@ -184,3 +184,46 @@ vehicle_builder->build(*porshe);
 ```
 **Note** | The class which is the template parameter of ```di::abstract_builder``` is the one that needs to derive (publicly) from ```di::subject```. This is a necessary limitation.
 
+## Building families of objects
+Aforementioned ```di::abstract_builder::build(T&)``` method allows building families of objects. In the provided example all classes which are subclasses of ```Construct``` are considered to be members of one family and can be build using the same builder. Additionaly this example has been enriched with a code showing a two phased building (trucks are built once for theirs Construct-subjects and once for theirs Vehicle-subjects).
+```cpp
+class Construct : public di::subject<Logger,Database,ConversionTools> {};
+
+class ConstructImp : public Construct
+{
+    di::required<Logger> log;
+    di::required<Database> db;
+    di::required<ConversionTools> conversion;
+};
+
+class Truck : public Car, public ConstructImp {};
+
+class Road : public ConstructImp {};
+
+class Garage : public ConstructImp {};
+
+
+Truck scania;
+Truck mercedes;
+Road highway;
+Garage garage1,garage2;
+
+...
+
+di:abstract_builder<Vehicle>* vehicle_builder = new di::builder<Car,Vehicle>()
+di:abstract_builder<Construct>* construct_builder = new di::builder<Construct,ConstructImp>()
+
+//setup both builders
+
+...
+
+vehicle_builder->build(scania);
+construct_builder->build(scania);
+
+vehicle_builder->build(mercedes);
+construct_builder->build(mercedes);
+
+construct_builder->build(highway);
+construct_builder->build(garage1);
+construct_builder->build(garage2);
+```
