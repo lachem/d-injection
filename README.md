@@ -305,3 +305,40 @@ Modules are connected to each other. Therefore all Modules should firstly provid
 
 Modules work in terms of services. Only one instance per service type is supported. That is neither one module nor two different modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which "provider" should be connected to which "needer".
 
+## Application
+Application is a construct that binds modules with each other. For example to bind previously defined Controller, Infrastructure and UI modules an application object should be created
+```cpp
+di::application<Controller,Infrastructure,UI> application;
+```
+obtaining ```di::module``` s from application instance is pretty simple
+```cpp
+di::module<Controller>& controllerModule = application;
+di::module<Infrastructure>& infrastructureModule = application;
+di::module<UI>& uiModule = application;
+```
+This way ```controllerModule```, ```infrastructureModule``` and ```uiModule``` can be fed seperately.
+```cpp
+// Controller module code
+boost::shared_ptr<ActionHandler> actionHandler(new ActionHandler);
+controllerModule.use(actionHandler);
+...
+//Infrastructure module code
+infrastructureModule.use(di::service<Logger>(new Logger));
+infrastructureModule.use(di::service<Database>(new Database));
+```
+Modules are connected and filled with services. It is now possible to create a preconfigured builder from it.
+```cpp
+//Infrastructure module code
+class Command : public di::subject<ActionHandler, Database, Logger> {
+private:
+    di::required<ActionHandler> handler;
+    di::required<Database> db;
+    di::required<Logger> logger;
+};
+...
+
+unique_ptr< di::builder<Command> > builder = controllerModule.builder<Command>();
+builder.use(actionHandler);  // action handler needs to be passed seperately see warning note below
+unique_ptr<Command> c = builder.build();  // we can build - module has passed Database and Logger to the builder
+```
+**Warning** | ```di::module``` and ```di::application``` have been designed solely for the purpose of exchanging services **between** modules. Therefore mentioning the same service on both provided and needed service lists of the same module will not work as expected. This is a concious limitation introduced to ensure ```di::modules``` will not be used for intra module depedency exchanging.
