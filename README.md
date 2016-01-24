@@ -344,7 +344,7 @@ unique_ptr<Command> c = builder.build();  // we can build - module has passed Da
 **Warning** | ```di::module``` and ```di::application``` have been designed solely for the purpose of exchanging services **between** modules. Therefore mentioning the same service on both provided and needed service lists of the same module will not work as expected. This is a concious limitation introduced to ensure ```di::modules``` will not be used for intra module depedency exchanging.
 
 ## Restricting Access
-In addition to the dependency exchange mechanism di::modules also provides means of defining service access policy. It is possible to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without a possiblity to alter it. "const" before service type on needed service list enforces that.
+In addition to the dependency exchange mechanism ```di::modules``` also provides means of defining service access policy. It is possible to declare a service to be read only for some modules. Like the Controller from previous example may only be allowed to access Database without a possiblity to alter it. "const" before service type on needed service list enforces that.
 ```cpp
 struct Controller
 {
@@ -365,3 +365,25 @@ struct Infrastructure
     di::service_list<> needed;
 };
 ```
+
+## Module Traits
+Instead of composing Application object from a set of module types, starting from version 1.3 it is possible to use module traits. Module traits define the features of each distinct module type in separation from the type itself.
+```cpp
+struct Controller;
+struct ControllerTraits
+{
+    typedef Controller module_type;
+    di::service_list<ActionHandler> provided;
+    di::service_list<Logger,Database> needed;
+};
+
+struct Controller : di::module<ControllerTraits>
+{
+    void build() {}
+    void start() {}
+};
+
+di::application<ControllerTraits,InfrastructureTraits,UITraits> application;
+```
+**Note** | ```module_type``` typedef defines which type will be used by ```di::application```
+
