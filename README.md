@@ -12,7 +12,7 @@ struct MyClass: public di::subject<T,U,V,...> {};
 ```
 **Note** | ```di::subject<…>``` contains virtual functions therefore inheriting from it causes ```MyClass``` to increase in size by the size of one pointer
 
-For the sake of clarity, let us consider a simple example. Assuming that a Car class requires four wheels, one handbrake and two seats, its declaration would look like this:
+For the sake of clarity, let us consider a simple example. Assuming that a ```Car``` class requires four wheels, one handbrake and two seats, its declaration would look like this:
 ```cpp
 struct Car: public di::subject<Wheel,Wheel,Wheel,Wheel,HandBrake,Seat,Seat> {};
 ```
@@ -269,4 +269,39 @@ gbuilder.build_part(garage2);
 //inject rest of required dependencies to highway, garage1, garage2 using
 //abstract_builder or another generic_builder
 ```
-The difference between ```di::generic_builder<…>::build_part``` and ```di::generic_builder<…>::build``` is that the former does not check whether all requirements have been met. This way issuing ```gbuilder.build(scania)``` is perfectly fine because ```Logger``` is the only dependency required by Truck whereas issuing ```gbuilder.build(highway)``` would result in an error (assertion, exception or custom defined), while ```di::generic_builder< di::subject<Logger> >``` does not provide ```Database``` and ```ConversionTools``` required by ```Road``` class. Additionally in contradiction to ```di::generic_builder<…>::build``` ```di::generic_builder<…>::build_part``` does not invoke subject’s constructed method.
+The difference between ```di::generic_builder<…>::build_part``` and ```di::generic_builder<…>::build``` is that the former does not check whether all requirements have been met. This way issuing ```gbuilder.build(scania)``` is perfectly fine because ```Logger``` is the only dependency required by ```Truck``` whereas issuing ```gbuilder.build(highway)``` would result in an error (assertion, exception or custom defined), while ```di::generic_builder< di::subject<Logger> >``` does not provide ```Database``` and ```ConversionTools``` required by ```Road``` class. Additionally in contradiction to ```di::generic_builder<…>::build``` ```di::generic_builder<…>::build_part``` does not invoke subject’s constructed method.
+
+## Modules
+Apart from class level dependencies DI introduces also a way to handle dependecies in a more coarse-grained level. This is achieved by logicaly dividing an application into modules. Each module defines a list of services it provides and a list of services it needs in the following manner:
+```cpp
+struct Controller
+{
+    di::service_list<ActionHandler> provided;
+    di::service_list<Logger,Database> needed;
+};
+struct Infrastructure
+{
+    di::service_list<Logger,Database> provided;
+    di::service_list<> needed;
+};
+struct UI
+{
+    di::service_list<> provided;
+    di::service_list<ActionHandler> needed;
+};
+```
+The implementer of each module is responsible for providing pointers to those services.
+```cpp
+// Controller module code
+di::module<Controller>& controllerModule;
+controllerModule.use(di::service<ActionHandler>(new ActionHandler));
+...
+//Infrastructure module code
+di::module<Infrastructure>& infrastructureModule;
+infrastructureModule.use(di::service<Logger>(new Logger));
+infrastructureModule.use(di::service<Database>(new Database));
+```
+Modules are connected to each other. Therefore all Modules should firstly provide their services by calling the ```di::module<Module>::use``` method before any of them could obtain any of the needed services.
+
+Modules work in terms of services. Only one instance per service type is supported. That is neither one module nor two different modules can provide two services of the same type. Although if required user might use BOOST_STRONG_TYPEDEF to create multiple distinct types for the same service type to indicate which "provider" should be connected to which "needer".
+
