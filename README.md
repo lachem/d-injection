@@ -387,3 +387,54 @@ di::application<ControllerTraits,InfrastructureTraits,UITraits> application;
 ```
 **Note** | ```module_type``` typedef defines which type will be used by ```di::application```
 
+## Runtime application control
+To gain some degree of control over modules through ```di::application``` object one may choose from several methods i.e. ```build```, ```start```, ```stop```, ```suspend``` and ```resume```. All of these methods are executed in the same way, they are simply forwarded to each of the modules the application consists of. It is of course optional to make use of them, however it is always a good practice to at least separate construction from execution.
+```cpp
+struct Controller;
+struct ControllerTraits
+{
+    typedef Controller module_type;
+    di::service_list<ActionHandler> provided;
+    di::service_list<Logger,Database> needed;
+};
+struct Controller : di::module<ControllerTraits>
+{
+    void build()
+    {
+        this->use(std::make_shared<ActionHandler>());
+    }
+    void start()
+    {
+        this->get<Logger>();
+        //do control...
+    }
+};
+
+struct Infrastructure;
+struct InfrastructureTraits
+{
+    typedef Infrastructure module_type
+    di::service_list<Logger,const Database> provided;
+    di::service_list<> needed;
+};
+struct Infrastructure : di::module<InfrastructureTraits>
+{
+    void build()
+    {
+        this->use(std::make_shared<Logger>(LoggingLevel::Full));
+        this->use(std::make_shared<Database>());
+    }
+};
+
+di::application<ControllerTraits,InfrastructureTraits> application;
+
+application.build();   //will execute build in Infrastructure and Controller
+application.start();   //will execute only start in Controller
+application.suspend(); //does nothing because neither Infrastructure nor Controller provides an implementation
+application.resume();  //does nothing because neither Infrastructure nor Controller provides an implementation
+```
+---
+
+Copyright © 2016 Adam Lach
+
+Distributed under the Boost Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt).
